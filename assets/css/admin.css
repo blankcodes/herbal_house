@@ -1,0 +1,20 @@
+.footer {
+    border-top: 1px solid rgba(152,166,173,.2);
+    bottom: none !important;
+    padding: 19px 24px 20px;
+    position: relative !important;
+    right: none !important;
+    color: #98a6ad;
+    left: 260px;
+    margin-top: 70px !important;
+}
+.navbar-custom .topbar-menu .nav-link {
+    padding-top: 25px;
+    color: #98a6ad;
+    min-width: 32px;
+    display: block;
+    text-align: center;
+    margin: 0 10px;
+    position: relative;
+
+}
