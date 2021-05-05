@@ -221,12 +221,10 @@ $("#_account_settings_form").on('submit', function(e){
    			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
    			$("#_account_password_form input").val('');
 		}
-		else if(res.data.message.mobile_number){
-   			$.NotificationApp.send("Oh, snap!",res.data.message.mobile_number,"top-right","rgba(0,0,0,0.2)","error");
+		else {
+   			$.NotificationApp.send("Oh, snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
 		}
-		else if(res.data.message.email_address){
-   			$.NotificationApp.send("Oh, snap!",res.data.message.email_address,"top-right","rgba(0,0,0,0.2)","error");
-		}
+		
 		$("#_update_acct_btn").removeAttr('disabled').text('Update');
    		newCsrfData();
 	})

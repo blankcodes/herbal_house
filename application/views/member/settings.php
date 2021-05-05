@@ -45,7 +45,7 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <button class="btn btn-lg btn-primary rounded font-17" type="submit" id="_update_acct_btn">Update</button>
+                                        <button class="btn btn-lg btn-primary rounded font-17 k-btn" type="submit" id="_update_acct_btn">Update</button>
                                     </div>
                                 </form>
                             </div>
@@ -77,7 +77,7 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <button class="btn btn-lg btn-primary rounded font-17" type="submit" id="_change_pass_btn">Change Password</button>
+                                        <button class="btn btn-lg btn-primary rounded font-17 k-btn" type="submit" id="_change_pass_btn">Change Password</button>
                                     </div>
                                 </form>
                             </div>

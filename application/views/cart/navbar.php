@@ -25,7 +25,7 @@
                                 <li class="dropdown notification-list">
                                     <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                         <i class="dripicons-cart noti-icon"></i>
-                                        <span class="cart-icon-badge bg-success"></span>
+                                        <span id="cart_span" class="cart-icon-badge circle bg-success"></span>
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg cart-mobile-wrapper">
 
@@ -47,6 +47,12 @@
 
                                     </div>
                                 </li>
+
+                                <?php if (!isset($this->session->user_id)){ ?>
+                                <li class="notification-list">
+                                    <a href="<?=base_url('login')?>" class="btn btn-success btn-rounded" style="display: block; margin-top: 15px; padding: 5 13px;"><i class="uil-user "></i> Login</a>
+                                </li>
+                                <?php } ?>
 
                                 <?php if ($this->session->user_id){ ?>
                                  <li class="dropdown notification-list">
@@ -98,7 +104,7 @@
                                         </a>
 
                                         <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <a href="<?=base_url('member/settings')?>" class="dropdown-item notify-item">
                                             <i class="mdi mdi-account-edit me-1"></i>
                                             <span>Settings</span>
                                         </a>

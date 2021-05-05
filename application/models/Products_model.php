@@ -176,6 +176,7 @@ class Products_model extends CI_Model {
 					'dc_price'=>$q['dc_price'],
 					'image'=>$q['image'],
 					'qty'=>$q['qty'],
+					'points'=>$q['points'] * .1,/* 10% for the unilvl of products purchase*/
 					'status'=>$q['status'],
 					'sku'=>$q['sku'],
 					'url'=>base_url('product/').$q['url'],
@@ -331,7 +332,7 @@ class Products_model extends CI_Model {
     	foreach($query as $q){
 			$array = array(
 				'p_pub_id'=>$q['p_pub_id'],
-				'product_name'=> ( strlen($q['name']) > 30 ) ? substr($q['name'], 0, 28).'...' : $q['name'],
+				'product_name'=> $q['name'],
 				'category'=>$q['category'],
 				'price'=>(isset($this->session->user_id)) ? number_format($q['dc_price'], 2): number_format($q['srp_price'], 2) ,
 				'product_image'=>base_url().$q['image'],

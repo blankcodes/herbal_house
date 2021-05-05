@@ -14,9 +14,10 @@ if (page == 'index') {
 function showProductData(page_no) {
 	$("#loader").removeAttr('hidden');
 	$.ajax({
-		url: base_url+'api/v1/product/_get_products/'+page_no,
+		url: base_url+'api/v1/product/_get_products',
 		type: 'GET',
 		dataType: 'JSON',
+        data: {page_no:page_no}
 	})
 	.done(function(res) {
 		$('#products_pagination').html(res.pagination);
@@ -27,9 +28,9 @@ function showProductData(page_no) {
 				string += '<div class="col-md-4 col-lg-3 col-6">'
                        +'<div class="card">'
                            	+'<a href="'+res.result[i].url+'"><img src="'+res.result[i].product_image+'" class="card-img-top" alt="'+res.result[i].product_name+'"></a>'
-                           	+'<div class="card-body">'
-                                +'<a href="'+res.result[i].url+'"><h5 class="card-title text-secondary">'+res.result[i].product_name+'<br>'
-                                	+'<small class="product-category">'+res.result[i].category+'</small></h5>'
+                           	+'<div class="card-body card-title-div">'
+                                +'<a href="'+res.result[i].url+'"><h2 class="card-title text-secondary product-name">'+res.result[i].product_name+'<br>'
+                                	+'<small class="product-category">'+res.result[i].category+'</small></h2>'
                                 +'</a>'
                                 +'<h3 class="card-title text-success">₱ '+res.result[i].price+'</h3>'
                                 // +'<button href="#add_to_cart" class="btn btn-success btn-sm mt-2" onclick="addToCart(\''+res.result[i].p_pub_id+'\')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>'

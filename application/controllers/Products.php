@@ -27,7 +27,8 @@ class Products extends CI_Controller {
 		$data = $this->products_model->deleteCategory();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
-	public function show($row_no=0){
+	public function show(){
+		$row_no = $this->input->get('page_no');
 		// Row per page
     	$row_per_page = 10;
 
@@ -43,13 +44,14 @@ class Products extends CI_Controller {
 		$products = $this->products_model->getAllProductData($row_per_page, $row_no);
 
    		// Pagination Configuration
-	    $config['base_url'] = base_url('ecom/products/');
+	    $config['base_url'] = base_url().'api/v1/product/_get_all';
 	    $config['use_page_numbers'] = TRUE;
 	    $config['total_rows'] = $all_count;
 	    $config['per_page'] = $row_per_page;
 
 	    // Pagination with bootstrap
-		$config['use_page_numbers'] = TRUE;
+	    $config['page_query_string'] = TRUE;
+	    $config['query_string_segment'] = 'page_no';
 		$config['full_tag_open'] = '<ul class="pagination btn-xs">';
 	    $config['full_tag_close'] = '</ul>';
 	    $config['num_tag_open'] = '<li class="page-item ">';
@@ -149,9 +151,10 @@ class Products extends CI_Controller {
 		$data = $this->products_model->updateProductCategoryStatus();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
-	public function getShopProducts($row_no = 0) {
+	public function getShopProducts() {
+		$row_no = $this->input->get('page_no');
 		// Row per page
-    	$row_per_page = 10;
+    	$row_per_page = 8;
 
     	// Row position
 	    if($row_no != 0){
@@ -165,13 +168,14 @@ class Products extends CI_Controller {
 		$products = $this->products_model->getShopProducts($row_per_page, $row_no);
 
    		// Pagination Configuration
-	    $config['base_url'] = base_url('ecom/products-category/');
+	    $config['base_url'] = base_url('api/v1/product/_get_products');
 	    $config['use_page_numbers'] = TRUE;
 	    $config['total_rows'] = $all_count;
 	    $config['per_page'] = $row_per_page;
 
 	    // Pagination with bootstrap
-		$config['use_page_numbers'] = TRUE;
+		$config['page_query_string'] = TRUE;
+	    $config['query_string_segment'] = 'page_no';
 		$config['full_tag_open'] = '<ul class="pagination btn-xs">';
 	    $config['full_tag_close'] = '</ul>';
 	    $config['num_tag_open'] = '<li class="page-item ">';

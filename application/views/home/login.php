@@ -26,10 +26,7 @@
                             <div id="" style="margin-top: -50px;"></div>
                             <!-- Logo -->
                             <div class="card-header pt-4 pb-4 text-center bg-success rounded">
-                                <span><h3 class="c-white fw-500"><img src="<?=base_url('assets/images/favicon.png')?>" height="45"> Herbal House</h3></span>
-                                <!-- <a href="index.html">
-                                    <span><img src="<?=base_url()?>assets/images/herbal-house-logo.png" alt="" height="78"></span>
-                                </a> -->
+                                <span><a href="<?=base_url();?>"><h3 class="c-white fw-500"><img src="<?=base_url('assets/images/favicon.png')?>" height="45"> Herbal House</h3></a></span>
                             </div>
 
                             <div class="card-body p-4">
@@ -64,7 +61,7 @@
                                     </div>
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                     <div class="mb-3 mb-0 text-center">
-                                        <button class="btn btn-success rounded btn-lg col-lg-12 col-12 font-18" id="login_btn" type="submit"> Log In </button>
+                                        <button class="btn btn-success rounded k-btn btn-lg col-lg-12 col-12 font-17" id="login_btn" type="submit"> Log In </button>
                                     </div>
 
                                 </form>
@@ -77,18 +74,18 @@
                             <nav class="mobile-bottom-nav row">
                                 <div class="col-4 col-md-4">
                                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
-                                        <i class="uil-home-alt "></i>
+                                        <i class="uil-home-alt "></i> home
                                     </div>      
-                                </div>
-                                <div class="col-4 col-md-4">       
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                                        <i class=" uil-cart "></i> <span class="mobile-cart-badge bounce bg-success" id="mobile_nav_cart_alert"></span>
-                                    </div>
                                 </div>
                                 <div class="col-4 col-md-4">
                                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
                                         <i class="uil-user active"></i>
                                     </div>      
+                                </div>
+                                <div class="col-4 col-md-4">       
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                    </div>
                                 </div>
                             </nav>
                         </div>

@@ -153,7 +153,7 @@
                                                                 </div> <!-- end col -->
                                                                 <div class="col-sm-6">
                                                                     <div class="text-sm-end">
-                                                                       <button type="submit" id="_proceed_to_shipping_btn" class="btn btn-primary btn-lg rounded">
+                                                                       <button type="submit" id="_proceed_to_shipping_btn" class="btn btn-primary btn-lg k-btn rounded">
                                                                            <i class="mdi mdi-truck-fast me-1"></i> Proceed to Shipping 
                                                                        </button>
                                                                     </div>
@@ -295,12 +295,12 @@
 
                                                             <div class="row mt-4">
                                                                 <div class="col-sm-6">
-                                                                    <a href="apps-ecommerce-shopping-cart.html" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
+                                                                    <a href="<?=base_url('cart')?>" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
                                                                         <i class="mdi mdi-arrow-left"></i> Back to Shopping Cart </a>
                                                                 </div> <!-- end col -->
                                                                 <div class="col-sm-6">
                                                                     <div class="text-sm-end">
-                                                                        <button type="submit" id="_cont_to_payment_btn" class="btn btn-primary btn-lg rounded">
+                                                                        <button type="submit" id="_cont_to_payment_btn" class="btn btn-primary btn-lg k-btn rounded">
                                                                             <i class="mdi mdi-cash-multiple me-1"></i> Continue to Payment </button>
                                                                     </div>
                                                                 </div> <!-- end col -->
@@ -350,13 +350,13 @@
 
                                                         <div class="row mt-4">
                                                             <div class="col-sm-6">
-                                                                <a href="apps-ecommerce-shopping-cart.html" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
+                                                                <a href="<?=base_url('cart')?>" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
                                                                     <i class="mdi mdi-arrow-left"></i> Back to Shopping Cart </a>
                                                             </div> <!-- end col -->
                                                             <div class="col-sm-6">
                                                                 <div class="text-sm-end">
-                                                                    <button id="_complete_order_btn" type="submit" class="btn btn-success btn-lg rounded">
-                                                                        <i class="uil-bill  me-1"></i> Confirm and Pay </button>
+                                                                    <button id="_complete_order_btn" type="submit" class="btn btn-success btn-lg k-btn rounded">
+                                                                        <i class="uil-bill  me-1"></i> Place Order</button>
                                                                 </div>
                                                             </div> <!-- end col -->
                                                         </div> <!-- end row-->

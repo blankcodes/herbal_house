@@ -19,10 +19,13 @@ function showMemberList (page_no) {
 	.done(function(res) {
 		$('#member_list_pagination').html(res.pagination);
 		string = '';
-		user_type = 'info'
+		user_type = ''
 		for(var i in res.result) {
 			if (res.result[i].user_type == 'admin') {
 				user_type = 'success';
+			}
+			else{
+				user_type = 'info';
 			}
 			string += '<tr>'
                     +'<td>'
@@ -65,3 +68,93 @@ function showMemberList (page_no) {
 		$("#_member_list_tbl").html('<tr class="text-center"><td colspan="6">No result found!</td></tr>');
 	})
 }
+$("#_add_member").on('click', function() {
+	$.ajax({
+		url: base_url+'api/v1/package/_get_package_list',
+		type: 'GET',
+		dataType: 'JSON',
+	})
+	.done(function(res) {
+		string = '<option disabled="" selected="">Select User Type</option>'
+		for(var i in res.data) {
+			string +='<option value="'+res.data[i].p_id+'">'+res.data[i].name+'</option>'
+		}
+		$("#_select_package").html(string);
+	})
+	$("#password").val('123456'); /* default password */
+	$("#add_member_modal").modal('show');
+})
+
+$('#user_type').on('change', function() {
+	user_type = $(this).val();
+	if (user_type == 'member') {
+	    $("#package_id").removeAttr('hidden');
+	    $("#_select_package").val()
+	}
+	else if (user_type == 'admin'){
+	    $("#_select_package").val('')
+	    $("#package_id").attr('hidden','hidden');
+	}	
+})
+
+$("#_register_new_member_form").on('submit', function(e){
+	e.preventDefault();
+
+	user_type = $('#user_type').val();
+	package = $('#_select_package').val();
+
+    if (!user_type || user_type == '') {
+        $.NotificationApp.send("Oh, Snap!","User Type is Required","top-right","rgba(0,0,0,0.2)","error");
+        $('html, body').animate({
+            scrollTop: 0
+        }, 800);
+        return false;
+    }
+    if (user_type == 'member' && package == '') {
+    	$.NotificationApp.send("Oh, Snap!","Package is Required","top-right","rgba(0,0,0,0.2)","error");
+        $('html, body').animate({
+            scrollTop: 0
+        }, 800);
+        return false;
+    }
+
+	$("#loader").removeAttr('hidden');
+    $("#add_new_member").attr('disabled','disabled');
+	$.ajax({
+		url: base_url+'api/v1/register/_new_member',
+		type: 'POST',
+		dataType: 'JSON',
+		data: $(this).serialize(),
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			showMemberList (1)
+			$("#add_new_member").removeAttr('disabled');
+			$("#_register_new_member_form input").val('');
+			$("#add_member_modal").modal('hide');
+		}
+		else if (res.data.status == 'failed' && res.data.message.mobile_number){
+			$.NotificationApp.send("Oh, Snap!",res.data.message.mobile_number,"top-right","rgba(0,0,0,0.2)","error");
+			$("#add_new_member").removeAttr('disabled');
+		}
+		else if (res.data.status == 'failed' && res.data.message.username){
+			$.NotificationApp.send("Oh, Snap!",res.data.message.username,"top-right","rgba(0,0,0,0.2)","error");
+			$("#add_new_member").removeAttr('disabled');
+		}
+		else if (res.data.status == 'failed' && res.data.message.password){
+			$.NotificationApp.send("Oh, Snap!",res.data.message.password,"top-right","rgba(0,0,0,0.2)","error");
+			$("#add_new_member").removeAttr('disabled');
+		}
+		else {
+			$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			$("#add_new_member").removeAttr('disabled');
+		}
+        $("#loader").attr('hidden','hidden');
+		newCsrfData();
+	})
+	.fail(function() {
+        $("#loader").attr('hidden','hidden');
+	})
+	
+})

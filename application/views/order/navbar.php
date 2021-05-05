@@ -98,7 +98,7 @@
                                         </a>
 
                                         <!-- item-->
-                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                                        <a href="<?=base_url('member/settings')?>" class="dropdown-item notify-item">
                                             <i class="mdi mdi-account-edit me-1"></i>
                                             <span>Settings</span>
                                         </a>

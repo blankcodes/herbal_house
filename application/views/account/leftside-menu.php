@@ -56,6 +56,9 @@
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
                                     <li>
+                                        <a href="<?=base_url('product/code-list')?>">Product Code List</a>
+                                    </li>
+                                    <li>
                                         <a href="<?=base_url('ecom/products')?>">Products</a>
                                     </li>
                                     <li>
@@ -102,7 +105,7 @@
                         </li>
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/binary')?>" class="side-nav-link">
-                                <i class="mdi mdi-family-tree "></i>
+                                <i class="uil-game-structure "></i>
                                 <span> Binary Tree </span>
                             </a>
                         </li>
@@ -114,7 +117,7 @@
                         </li>
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/ewallet')?>" class="side-nav-link">
-                                <i class="uil-money-withdrawal "></i>
+                                <i class="uil-wallet "></i>
                                 <span> E-wallet</span>
                             </a>
                         </li>

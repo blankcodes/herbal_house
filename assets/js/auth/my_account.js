@@ -4,6 +4,10 @@ if (page == 'dashboard') {
 	getUserDashboardOverview();
 }
 
+else if (page == 'admin_dashboard') {
+	getHerbalHouseOverview();
+}
+
 $(".close-jq-toast-single").on('click', function() {
 	$("#_alert_web_message").fadeOut(500)
 })
@@ -37,6 +41,22 @@ function getUserDashboardOverview () {
 	})
 	.done(function(res) {
 		$("#_cash_wallet").text(res.data.wallet)
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		console.log("error");
+	})
+}
+function getHerbalHouseOverview() {
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/website/_get_overview', type: 'GET', dataType: 'JSON',
+	})
+	.done(function(res) {
+		$("#_members_count").text(res.data.member_count)
+		$("#_orders_count").text(res.data.order_count)
+		$("#_total_sales").text(res.data.total_sales)
+
 		$("#loader").attr('hidden','hidden');
 	})
 	.fail(function() {

@@ -251,4 +251,9 @@ class Order_model extends CI_Model {
 		}
 		return $result;
 	}
+	public function getSuccessOrdersCount(){
+		if (isset($this->session->admin)) {
+			return $this->db->WHERE('status','delivered')->OR_WHERE('status','shipped')->GET('order_tbl')->num_rows();
+		}
+	}
 }

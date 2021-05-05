@@ -26,7 +26,7 @@
                                     <div class="card-body">
                                         <div class="row mb-2">
                                             <div class="col-sm-4">
-                                                <a href="javascript:void(0);" class="btn btn-success mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Member</a>
+                                                <a href="javascript:void(0);" id="_add_member" class="btn btn-success mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Member</a>
                                             </div>
                                             <div class="col-sm-8">
                                                 <div class="text-sm-end">
@@ -69,6 +69,73 @@
                         </div>
                         <!-- end row -->
 
+                        <div id="add_member_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="success-header-modalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header modal-colored-header bg-success">
+                                        <h4 class="modal-title" id="success-header-modalLabel"><i class="uil-user-plus"></i> Add New Member</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="_register_new_member_form">
+                                            <div class=" mt-2">
+                                                <select class="form-control select2" name="user_type" data-toggle="select2" id="user_type" required="">
+                                                    <option disabled="" selected="">Select User Type</option>
+                                                    <option value="member">Member</option>
+                                                    <option value="admin">Admin</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mb-2 mt-2" id="package_id" hidden="hidden">
+                                                <select class="form-control select2" name="package" data-toggle="select2" id="_select_package">
+                                                    <!-- <option disabled="" selected="">Select Package</option>
+                                                    <?php foreach ($package as $p ){ ?>
+                                                    <option value="<?=$p['p_id']?>"><?=$p['name']?></option>
+                                                    <?php } ?> -->
+                                                </select>
+                                            </div>
+
+                                            <div class="form-floating mb-2 mt-2">
+                                                <input type="text" class="form-control" name="username" value="" id="username" placeholder="Enter username" required autofocus="autofocus" />
+                                                <label for="username" class="fw-400">Username</label>
+                                            </div>
+
+                                            <div class="form-floating mb-2">
+                                                <input type="text" class="form-control" name="fname" value="" id="fname" placeholder="Enter First Name" required />
+                                                <label for="fname" class="fw-400">First Name</label>
+                                            </div>
+
+                                            <div class="form-floating mb-2">
+                                                <input type="text" class="form-control" name="lname" value="" id="lname" placeholder="Enter Last Name" required />
+                                                <label for="lname" class="fw-400">Last Name</label>
+                                            </div>
+
+                                            <div class="form-floating mb-2">
+                                                <input type="text" maxlength="11" class="form-control" name="mobile_number" value="" id="mobile_number" placeholder="Enter Mobile Number" required  />
+                                                <label for="mobile_number" class="fw-400">Mobile Number</label>
+                                            </div>
+
+                                            <div class="form-floating">
+                                                <input type="password" class="form-control" name="password" value="123456" id="password" placeholder="Enter Password" required autofocus="autofocus" />
+                                                <label for="password" class="fw-400">Password</label>
+                                                <small class="">*Default password is 123456</small>
+                                                <div class="mt-2 pointer-cursor" data-password="false">
+                                                    <small><span class="password-eye pointer-cursor"></span> Show Password</small>
+                                                </div>
+                                            </div>
+
+                                            <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                            <div class="modal-footer mt-3">
+                                                <button type="submit" class="btn btn-success btn-rounded" id="add_new_member">Register Member</button>
+                                                <button type="button" class="btn btn-light btn-rounded" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                   
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
                     </div> <!-- container -->
 
                 </div> <!-- content -->

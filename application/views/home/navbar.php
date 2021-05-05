@@ -7,7 +7,7 @@
                     <div class="navbar-custom" style="left: 0px !important;">
                         <div class="container">
                             <div class="float-start padding-top-5 margin-right-20 home-logo">
-                                <a href="<?=base_url()?>"><img src="<?=base_url('assets/images/herbal-house-logo.png')?>" alt="herebal house logo" height="60" /></a>
+                                <a href="<?=base_url();?>"><img src="<?=base_url('assets/images/herbal-house-logo.png')?>" alt="herbal house" height="60" /></a>
                             </div>
                             <ul class="list-unstyled topbar-menu float-end mb-0">
 
@@ -25,9 +25,17 @@
                                 <li class="dropdown notification-list">
                                     <a class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                                         <i class="dripicons-cart noti-icon"></i>
-                                        <span class="cart-icon-badge bg-success"></span>
+                                        <span id="cart_span" class="cart-icon-badge circle bg-success"></span>
                                     </a>
-                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
+
+                                    <!-- <div class="row">
+                                      <div class="cell">
+                                        <div class="circle bounce"></div>
+                                        <p>bounce</p>
+                                      </div>
+                                    </div> -->
+
+                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg cart-mobile-wrapper">
 
                                         <!-- item-->
                                         <div class="dropdown-item noti-title">
@@ -88,7 +96,7 @@
                                     <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#drop" role="button" aria-haspopup="false"
                                         aria-expanded="false">
                                         <span class="account-user-avatar"> 
-                                            <i class="uil-user-circle " style="font-size: 28px;"></i>
+                                            <i class="uil-user-circle " style="font-size: 30px; margin-top: -8px;"></i>
                                         </span>
                                         <span>
                                             <span class="account-user-name text-capitalize"><?=$userData['fname'].' '.$userData['lname'];?></span>
@@ -104,7 +112,7 @@
                                         </a>
 
                                         <!-- item-->
-                                        <a href="<?=base_url('member/settings')?>" class="dropdown-item notify-item">
+                                        <a href="javascript:void(0);" class="dropdown-item notify-item">
                                             <i class="mdi mdi-account-edit me-1"></i>
                                             <span>Settings</span>
                                         </a>
@@ -123,7 +131,8 @@
                                 <!-- <i class="mdi mdi-menu"></i> -->
                                 <a href="<?=base_url();?>"><img src="<?=base_url('assets/images/favicon.png')?>" height="55"></a>
                             </button>
-                            
+
+
                             <div class="app-search d-none d-lg-block">
                                 <form id="search_product_form">
                                     <div class="input-group">

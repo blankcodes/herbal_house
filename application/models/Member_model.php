@@ -6,6 +6,9 @@ class Member_model extends CI_Model {
 	/*
 	* $this->session->temp_user_id is a non-member/disributor, a visitor who added to cart.
 	*/ 
+	private function hash_password($password){
+       return password_hash($password, PASSWORD_BCRYPT);
+    }
 	public function generateCode() {
 		$input_num = $this->input->post('number');
 
@@ -20,6 +23,140 @@ class Member_model extends CI_Model {
 		$response['message'] = 'Successfully generated '.$input_num.' activation codes';
 		return $response;
 	}
+	public function getPackageList() {
+		return $this->db->SELECT('p_id, name')->GET('package_tbl')->result_array();
+	}
+	public function addNewMember() {
+		if (isset($this->session->admin)) {
+
+			$user['username'] = $this->input->post('username');
+			$user['fname'] = $this->input->post('fname');
+	        $user['lname'] = $this->input->post('lname');
+	        $user['mobile_number'] = $this->input->post('mobile_number');
+	        $user['password'] = $this->input->post('password');
+	        $user['user_type'] = $this->input->post('user_type');
+	        $user['package'] = $this->input->post('package');
+
+
+	        if ($user['user_type'] == 'member' && isset($user['package'])) {
+				$checkActivationCode = $this->db->WHERE('p_id',$user['package'])->WHERE('status','new')->GET('activation_code_tbl')->num_rows();
+				if ($checkActivationCode <= 0) {
+					$response['status'] = 'failed';
+					$response['message'] = "There's no available activation code. Please generate first and try again.";
+					return $response;
+					exit();
+				}
+			}
+			else if($user['user_type'] == 'member' && !isset($user['package'])){
+				$response['status'] = 'failed';
+				$response['message'] = "Package is required!";
+				return $response;
+				exit();
+			}
+
+			$this->form_validation->set_rules('password', 'Password', 'required',
+				array('required' => 'Password is Required!')
+			);
+
+			$this->form_validation->set_rules('mobile_number', 'Mobile Number', 'is_unique[user_tbl.mobile_number]',
+				array('is_unique' => 'Mobile Number Already Exist!')
+			);
+
+			$this->form_validation->set_rules('username', 'Username', 'is_unique[user_tbl.username]',
+				array('is_unique' => 'Username Already Exist!')
+			);
+
+			if ($this->form_validation->run() == FALSE) {
+				$response['status'] = 'failed';
+				$response['message'] = $this->form_validation->error_array();
+			}
+			else{
+				$referred_id = $this->insertNewAccountData($user);
+				$response['status'] = 'success';
+				$response['message'] = 'User successfully registered!';
+			}
+		
+			return $response;
+		}
+	}
+	public function insertNewAccountData ($user) {
+		if (isset($this->session->admin)) {
+			$data = array(
+				'user_type'=>$user['user_type'],
+				'username'=>$user['username'],
+				'fname'=>$user['fname'],
+				'lname'=>$user['lname'],
+				'mobile_number'=>$user['mobile_number'],
+				'password'=>$this->hash_password($user['password']),
+				'status'=>'inactive',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('user_tbl', $data);
+			$id = $this->db->insert_id();
+
+			$user_code = $this->generateUserCode($id); /* INSERT user unique USER_CODE*/
+			
+			if ($user['user_type'] == 'member') {
+				/* GET ACTIVATION CODE WHERE SELECTED PACKAGE ID */ 
+				$package = $this->db->SELECT('act.code')
+					->FROM('package_tbl as pt')
+					->JOIN('activation_code_tbl as act', 'act.p_id=pt.p_id')
+					->WHERE('pt.p_id', $user['package'])
+					->WHERE('act.status', 'new')
+					->GET()->row_array();
+
+				/* INSERT THE CHOSEN CODE FROM ACTIVATION CODE TBL TO USER CODE TBL*/ 
+				$dataCodeArr = array(
+					'p_id'=>$user['package'],
+					'user_code'=> $user_code, 
+					'code'=>$package['code'],
+					'status'=>'used',
+					'created_at'=>date('Y-m-d H:i:s'),
+					'updated_at'=>date('Y-m-d H:i:s'),
+				);
+				$this->db->INSERT('user_code_tbl', $dataCodeArr);
+
+				/* INSERT THE ACTIVATION CODE TO THE NEW MEMBER*/ 
+				$dataMemCodeArr = array('member_code'=>$package['code']);
+				$this->db->WHERE('user_code', $user_code)->UPDATE('user_tbl', $dataMemCodeArr);
+
+				/* UPDATE THE ACTIVATION CODE TO USED */ 
+				$dataActCodeArr = array('status'=>'used');
+				$this->db->WHERE('code', $package['code'])->UPDATE('activation_code_tbl', $dataActCodeArr);
+			}
+			
+
+			$notif_log = array('user_id'=>$id, 'message'=>'Welcome to Herbal House!','created_at'=>date('Y-m-d H:i:s')); 
+			$this->insertNewNotification($notif_log); /* INSERT new Notification */
+
+			$activity_log = array('user_id'=>$id, 'message_log'=>'Created account','ip_address'=>$this->input->ip_address(), 'platform'=>$this->agent->platform(), 'browser'=>$this->agent->browser(),'created_at'=>date('Y-m-d H:i:s')); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+		}
+	}
+	public function generateUserCode ($id, $length = 19) {
+	    $characters = '0123456789QWERTYUIOPASDFGHJKLZXCVBNM';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    $u_code = 'HBH'.$randomString.$id;
+
+	    $check = $this->db->WHERE('user_code', $u_code)->GET('user_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateUserCode($id);
+	    }
+	    else{
+	    	$data = array('user_code' => $u_code);
+		    $this->db->WHERE('user_id', $id)
+		    	->UPDATE('user_tbl', $data); /* INSERT user user_code used for invites for selling */
+		    return $u_code;
+	    }
+	}
+	public function insertNewNotification ($notif_log) {
+		$this->db->INSERT('notification_tbl', $notif_log);
+	}
+	
 	public function generateActivationCode($length = 15){
 		$characters = '0123456789ABCDEF';
 	    $charactersLength = strlen($characters);
@@ -273,6 +410,57 @@ class Member_model extends CI_Model {
     	if ($this->session->user_id) {
     		$this->db->WHERE('user_id', $this->session->user_id)
     			->UPDATE('user_tbl', $data);
+    	}
+    }
+    public function getMembersCount() {
+    	if (isset($this->session->admin)) {
+    		return $this->db->GET('user_tbl')->num_rows();
+    	}
+    }
+    public function getTotalSales() {
+        if (isset($this->session->admin)) {
+            $query = $this->db->SELECT_SUM('pt.cost')
+                ->FROM('package_tbl as pt')
+                ->JOIN('activation_code_tbl as act', 'act.p_id=pt.p_id')
+                ->WHERE('act.status', 'used')
+                ->GET()->row_array();
+
+            return number_format( $query['cost'], 2);
+        }
+    }
+    public function checkEmail($email_address) {
+    	if (isset($this->session->user_id)) {
+    		$sameEmail = $this->db->WHERE('email_address', $email_address)
+    			->WHERE('user_id', $this->session->user_id)
+    			->GET('user_tbl')->num_rows();
+
+    		$emailExisting = $this->db->WHERE('email_address', $email_address)
+    			->GET('user_tbl')->num_rows();
+    			
+
+    		if ($sameEmail > 0) {
+    			return 'no_changes';
+    		}
+    		else if( $emailExisting > 0){
+    			return 'existing';
+    		}
+    	}
+    }
+    public function checkMobNumber($mobile_number) {
+    	if (isset($this->session->user_id)) {
+    		$sameNumber = $this->db->WHERE('mobile_number', $mobile_number)
+    			->WHERE('user_id', $this->session->user_id)
+    			->GET('user_tbl')->num_rows();
+    		
+    		$numberExisting = $this->db->WHERE('mobile_number', $mobile_number)
+    			->GET('user_tbl')->num_rows();
+
+    		if ($sameNumber > 0) {
+    			return 'no_changes';
+    		}
+    		else if( $numberExisting > 0){
+    			return 'existing';
+    		}
     	}
     }
 }

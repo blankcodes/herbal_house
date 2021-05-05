@@ -109,9 +109,10 @@ $("#_add_product_form").on('submit', function(e) {
 function showProducts(page_no){
 	$("#_products_tbl").html('<tr class="text-center"><td colspan="9">Loading Products...</td></tr>');
 	$.ajax({
-		url: base_url+'products/show/'+page_no,
+		url: base_url+'api/v1/product/_get_all',
 		type: 'GET',
 		dataType: 'JSON',
+		data: {page_no:page_no}
 	})
 	.done(function(res) {
 		$('#product_pagination').html(res.pagination);
@@ -134,15 +135,16 @@ function showProducts(page_no){
 	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
 	                    +'</div>'
                     +'</td>'
-                    +'<td width="230">'
+                    +'<td width="190">'
                         +'<img src="'+base_url+res.result[i].image+'" alt="product img" class="rounded me-1" height="25" />'
-                        +'<p class="m-0 d-inline-block align-middle font-16">'
+                        +'<p class="m-0 d-inline-block align-middle">'
                             +'<a target="_blank" href="'+res.result[i].url+'" class="text-body">'+res.result[i].name+'</a>'
                         +'</p>'
                     +'</td>'
                     +'<td width="150">'+res.result[i].category+'</td>'
                     +'<td>₱ '+res.result[i].srp_price+'</td>'
                     +'<td>₱ '+res.result[i].dc_price+'</td>'
+                    +'<td> '+res.result[i].points+'</td>'
                     
                     +'<td>'+res.result[i].qty+' <i class="uil-edit pointer-cursor" onclick="updateQty(\''+res.result[i].qty+'\',\''+res.result[i].p_id+'\')"></i></td>'
                     +'<td><span class="text-capitalize badge '+status+' pointer-cursor" onclick="changeProductStatus(\''+res.result[i].p_id+'\',\''+res.result[i].status+'\')">'+res.result[i].status+'</span></td>'

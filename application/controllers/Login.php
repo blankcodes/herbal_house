@@ -34,7 +34,10 @@ class Login extends CI_Controller {
                 $this->session->set_userdata('user_id', $checkUser['user_id']);
                 $this->session->set_userdata('user_type', $checkUser['user_type']);
               	$this->session->set_userdata('user_code', $checkUser['user_code']);
-                
+
+                if ($checkUser['user_type'] == 'admin') {
+                    $this->session->set_userdata('admin', $checkUser['username']);
+                }
                 if (isset($this->session->temp_user_id)) {
                     $checkUserCart = $this->cart_model->checkUserCart();
                     if (isset($checkUserCart)) {
@@ -47,7 +50,14 @@ class Login extends CI_Controller {
 
                 $this->login_model->insertNewRememberLogin($remember_login);
                 
-                $activity_log = array('user_id'=>$checkUser['user_id'], 'message_log'=>'Login', 'ip_address'=>$this->input->ip_address(), 'platform'=>$this->agent->platform(), 'browser'=>$this->agent->browser(), 'created_at'=>date('Y-m-d H:i:s')); 
+                $activity_log = array(
+                    'user_id'=>$checkUser['user_id'], 
+                    'message_log'=>'Login', 
+                    'ip_address'=>$this->input->ip_address(), 
+                    'platform'=>$this->agent->platform(), 
+                    'browser'=>$this->agent->browser(), 
+                    'created_at'=>date('Y-m-d H:i:s')
+                ); 
                 $this->register_model->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
 
                 $response['status'] = 'success';

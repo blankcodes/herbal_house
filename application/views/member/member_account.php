@@ -5,7 +5,7 @@
                     <div class="container-fluid">
                         
                         <!-- start page title -->
-                        <div class="row">
+                        <div class="row mt-3">
                             <div class="col-12">
                                 <div class="page-title-box">
                                     <div class="page-title-right">

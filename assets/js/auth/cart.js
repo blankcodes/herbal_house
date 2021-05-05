@@ -131,10 +131,11 @@ function getCartData(){
                    +' </p>'
                 +'</a>'
 			}
-			
+			$("#cart_span").addClass('bounce');
 		}
 		else{
-			string= '<div class="text-center mb-2"><i class="uil-sad-squint"></i> Your cart is empty!</div>'
+			string= '<div class="text-center mb-2"><i class="uil-sad-squint"></i> Your cart is empty!</div>';
+			$("#cart_span").removeClass('bounce');
 		}
 		$("#cart_panel").html(string)
 		$("#cart_panel_home_mobile").html(string)
@@ -159,9 +160,9 @@ function getShoppingCartData(){
 			for(var i in res.data.cart) {
 				string+='<tr>'
                         +'<td>'
-                           	+'<img src="'+res.data.cart[i].product_image+'" alt="contact-img" title="contact-img" class="rounded me-3" height="64" />'
+                           	+'<a href="'+res.data.cart[i].product_url+'" class="text-body"><img src="'+res.data.cart[i].product_image+'" alt="contact-img" title="contact-img" class="rounded me-3" height="54" /></a>'
                             +'<p class="m-0 d-inline-block align-middle font-15" style="width: 260px;">'
-                                +'<a href="'+res.data.cart[i].product_url+'" class="text-body">'+res.data.cart[i].product_name+'</a>'
+                                +'<a href="'+res.data.cart[i].product_url+'" class="text-body cart-product-title">'+res.data.cart[i].product_name+'</a>'
                                 +'</small>'
                             +'</p>'
                         +'</td>'
@@ -178,7 +179,7 @@ function getShoppingCartData(){
 			}
 
 			for(var i in res.data.cart) {
-				mob_string += '<div class="col-md-6 col-12">'
+				mob_string += '<div class="col-md-12 col-12">'
                         +'<div class="card product-cards">'
                             +'<div class="row">'
                                 +'<div class="col-4 product-cards-img">'
@@ -440,3 +441,12 @@ $("#_mobile_search_product_form").on('submit', function(e) {
 		console.log("error");
 	})
 })
+function openProductImg() {
+	img = $("#prod_shp_img").attr('src');
+	img = $("#product_image_details").attr('src');
+	alt = $("#prod_shp_img").attr('alt');
+
+	$("#prod_modal_img").html('<img src="'+img+'" class="rounded img-fluid" alt="'+alt+'">')
+	
+	$("#open_product_img").modal('toggle');
+}	

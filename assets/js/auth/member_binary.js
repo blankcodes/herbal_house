@@ -20,7 +20,7 @@ $('#register_direct_form').on('submit', function(e) {
         }, 800);
         return false;
     }
-
+    $("#loader").removeAttr('hidden');
     $("#register_user_btn").attr('disabled','disabled');
 	$.ajax({
 		url: base_url+'api/v1/register/_direct_user',
@@ -60,9 +60,11 @@ $('#register_direct_form').on('submit', function(e) {
 			$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
 			$("#register_user_btn").removeAttr('disabled');
 		}
+        $("#loader").attr('hidden','hidden');
 		newCsrfData();
 	})
 	.fail(function() {
+        $("#loader").attr('hidden','hidden');
 	})
 })
 function showBinaryTree(code_id) {
@@ -147,7 +149,7 @@ function showBinaryTree(code_id) {
             }
 
 
-			if (direct[0].dLvl2[1] != undefined ) {
+			if (direct[1] != undefined ) {
                 // level 2 RIGHT (left and right)
                 if (direct[1].position == 'right') {
                     tbl_node_r_left_lvl2 = '<a class="register-name" href="'+base_url+'register/sponsor/'+user_code+'/'+direct[1].user_code+'/left">Register</a>';

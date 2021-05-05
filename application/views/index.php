@@ -5,9 +5,29 @@
         <meta charset="utf-8" />
         <title>Herbal House - Business Helping Porgram</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Herbal House | Business Helping Porgram" name="description" />
+        <meta content="Herbal House - Business Helping Porgram. Your partner for good health." name="description" />
         <meta name="theme-color" content="#0acf67" />
         <meta name="mobile-web-app-capable" content="yes">
+
+        <!-- Open Graph data -->
+        <meta property="fb:app_id" content="" />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="Herbal House - Business Helping Porgram" />
+        <meta property="og:description" content="Your partner for good health." />
+        <meta property="og:url" content="<?=base_url()?>" />
+        <meta property="og:site_name" content="Herbal House" />
+        <meta property="og:image" content="<?=base_url()?>" />
+        <meta property="og:image:width" content="800" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:image:alt" content="Herbal House - Business Helping Program" />
+
+        <!-- Twitter Card data -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:site" content="@herbalhouse>">
+        <meta name="twitter:creator" content="@herbalhouse">
+        <meta name="twitter:title" content="Herbal House - Business Helping Program">
+        <meta name="twitter:description" content="Your partner for good health.">
+        <meta name="twitter:image" content="Herbal House - Business Helping Progra">
 
         <!-- App favicon -->
         <link rel="shortcut icon" href="<?=base_url()?>assets/images/favicon.png">
@@ -37,7 +57,7 @@
                         <div class="dropdown notification-list cart-nav-mobile " id="mobile-view">
                             <a class="nav-link dropdown-toggle arrow-none c-white" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
                             <i class="dripicons-cart noti-icon"></i>
-                            <span class="cart-icon-badge bg-success" style="top: 30px; right: 10px;"></span>
+                            <span id="cart_span" class="cart-icon-badge circle bg-success" style="top: 30px; right: 10px;"></span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
                                     <!-- item-->
@@ -60,7 +80,6 @@
                     </button>
                     <div id="mySidenav" class="sidenav mobile-view">
                         <a  class="closebtn" onclick="closeNav()">&times;</a>
-                        <a href="javascript:void(0)" class="nav-link active">Home</a>
                         <a class="nav-link active" href="#shop_now">Products</a>
                         <a class="nav-link active" href="#contact_us">Contact</a>
                         <a class="nav-link active" href="<?=base_url('about')?>">About</a>
@@ -72,7 +91,6 @@
                         <!-- left menu -->
                         <ul class="navbar-nav me-auto align-items-center">
                             <li class="nav-item mx-lg-1">
-                                <a class="nav-link active" href="">Home</a>
                             </li>
                             <li class="nav-item mx-lg-1">
                                 <a class="nav-link active" href="#shop_now">Products</a>
@@ -181,10 +199,10 @@
                 <div class="row py-4 product_top_menu">
                     <div class="col-lg-12">
                         <div class="text-center">
-                            <h1 class="mt-0"><i class=" uil-heartbeat "></i></h1>
-                            <h3>Explore our <span class="text-success">Herbal</span> and <span class="text-success">Healthy</span> products</h3>
+                            <h3 class="mt-0 font-30"><i class=" uil-heartbeat "></i></h3>
+                            <h1 class="font-25">Explore our <span class="text-success">Herbal</span> and <span class="text-success">Healthy</span> products</h1>
                             <p class="text-muted mt-2">Prevention is better than cure;<br>
-                        why wait for things to go wrong with your health?</p>
+                            Why wait for things to go wrong with your health?</p>
                         </div>
                     </div>
                 </div>
@@ -209,18 +227,18 @@
             <nav class="mobile-bottom-nav row">
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
-                        <i class="uil-home-alt active"></i>
+                        <i class="uil-home-alt active"></i> home
                     </div>      
-                </div>
-                <div class="col-4 col-md-4">       
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                        <i class=" uil-cart "></i> <span class="mobile-cart-badge bounce bg-success" id="mobile_nav_cart_alert"></span>
-                    </div>
                 </div>
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
                         <i class="uil-user"></i>
                     </div>      
+                </div>
+                <div class="col-4 col-md-4">       
+                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                    </div>
                 </div>
             </nav>
         </div>

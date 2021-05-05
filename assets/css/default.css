@@ -802,6 +802,15 @@ input[type=number] {
 .skype-color {
   color: #00aff0;
 }
+.facebook-c:hover {
+   color: #3b5998;
+}
+.twitter-c:hover {
+  color: #1da1f2;
+}
+.instagram-c:hover {
+  color: #5851db;
+}
 /*.btn.btn-secondary {
   color: #3f4254;
   background-color: #e4e6ef;
@@ -1003,17 +1012,19 @@ input[type=number] {
   display: inline-block;
   position: absolute;
   top: 22.5px;
-  right: 3px;
+  right: 1px;
   border-radius: 50%;
   height: 7px;
   width: 7px;
   background-color: #fa5c7c;
 }
 .notification-list .noti-icon-badge {
-  right: 5px;
+  right: 4px;
 }
 @media only screen and (min-width: 769px) {
-
+  .rounded-modal{
+    border-radius: 20px !important;
+  }
   /* Navbar */
   .navbar-custom .app-search form {
     max-width: 600px !important;
@@ -1057,7 +1068,8 @@ input[type=number] {
     z-index: 999 !important;
   }
   .nav-user {
-    min-height: 80px;
+    min-height: 80px !important;
+    margin-top: -10px;
   }
   .loader-wrapper{
     position: fixed;
@@ -1237,6 +1249,9 @@ input[type=number] {
   }
 }
 @media only screen and (max-width: 415px) {
+  .rounded-modal{
+    border-radius: 15px !important;
+  }
   .search-result-wrapper{
     width: 390px;
   }
@@ -1555,6 +1570,16 @@ body{
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
+#_register_new_member_form .select2-selection__rendered {
+    line-height: 58px !important;
+}
+#_register_new_member_form .select2-container .select2-selection--single {
+    height: 58px !important;
+}
+#_register_new_member_form .select2-selection__arrow {
+    height: 58px !important;
+}
+
 #register_direct_form .select2-selection__rendered {
     line-height: 58px !important;
 }
@@ -1564,7 +1589,114 @@ body{
 #register_direct_form .select2-selection__arrow {
     height: 58px !important;
 }
+/*#register_direct_form, #_register_new_member_form .select2-results__option--highlighted {
+  background-color: #3699ff !important;
+}
+#register_direct_form, #_register_new_member_form .select2-results .select2-highlighted {
+    background: #3ea211;
+}*/
 .alert-light {
   background: #f7f8fd  !important;
   border-color: #f7f8fd  !important;
+}
+#open_product_img .modal-header{
+  border-bottom: none !important;
+}
+
+/* animation */
+.circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: whiteSmoke;
+  box-shadow: 4px -40px 60px 5px rgb(26, 206, 71) inset;
+}
+.bounce {
+  animation: bounce 2s ease infinite;
+}
+@keyframes bounce {
+    70% { transform:translateY(0%); }
+    80% { transform:translateY(-15%); }
+    90% { transform:translateY(0%); }
+    95% { transform:translateY(-7%); }
+    97% { transform:translateY(0%); }
+    99% { transform:translateY(-3%); }
+    100% { transform:translateY(0); }
+}
+
+.shake {
+  animation: shake 2s ease infinite;
+}
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  10%, 30%, 50%, 70%, 90% {transform: translateX(-10px);}
+  20%, 40%, 60%, 80% {transform: translateX(10px);}
+}
+.hero-section::after {
+  top: 20px;
+  background: linear-gradient(0deg, rgba(33, 37, 41,.5), rgba(33, 37, 41,.8)), url('../images/gallery/cover-about.jpg') no-repeat center;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  height: 85%;
+}
+.team-leader-section {
+  width: 100%;
+  min-width: 320px;
+}
+.account-pages{
+  background:#fff;
+  padding-top: 50px;
+  /*-webkit-transform: skewY(-2deg);*/
+  /*transform: skewY(-2deg);*/
+}
+
+.abt-img-shadow{
+  box-shadow: .5rem .5rem 0 rgba(233,236,239,.5);
+}
+.k-btn{
+  padding: 1rem 1.875rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: .5rem;
+}
+.btn-social {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: .75rem;
+  font-size: 1rem;
+
+  display: inline-block;
+  padding: 8px 10px;
+  transition: border-color 0.25s ease-in-out,background-color 0.25s ease-in-out,color 0.25s ease-in-out;
+  color: #fff;
+  text-align: center;
+  text-decoration: none !important;
+}
+.btn-social:hover {
+  background-color: #fff !important;
+  box-shadow: none !important;
+}
+.btn-social-outline{
+  border-color: rgba(255,255,255,0.14);
+  background-color: transparent;
+}
+.footer-bt{
+  border-top: 1px solid rgba(152,166,173,.2);
+  bottom: 0;
+}
+.footer-links a{
+  color: #98a6ad;
+  margin-left: 1.5rem;
+  -webkit-transition: all .4s;
+  transition: all .4s;
+}
+.text-md-end{
+  text-align: right !important;
+}
+.d-md-block {
+  display: block !important;
 }

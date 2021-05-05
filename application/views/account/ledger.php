@@ -51,6 +51,7 @@
                                                         <th>Cost</th>
                                                         <th>Direct Referral</th>
                                                         <th>Match Points</th>
+                                                        <th>UniLvl Points</th>
                                                         <th>Status</th>
                                                         <th>Added Date</th>
                                                         <th style="width: 85px;">Action</th>
@@ -64,6 +65,8 @@
                                         <div id="_package_list_pagination"></div>
                                     </div> <!-- end card-body-->
                                 </div> <!-- end card-->
+
+
                             </div> <!-- end col -->
                         </div>
                         <!-- end row --> 
@@ -112,6 +115,11 @@
                         </div>
 
                         <div class="mt-2">
+                            <label class="fw-500">Entry UniLevel Bonus</label>
+                            <input type="number" class="form-control" id="unilvl_points" name="unilvl_points" placeholder="Entry Unilevel Points" required="required">
+                        </div>
+
+                        <div class="mt-2">
                             <label class="fw-500">Package Description</label>
                             <textarea class="form-control" name="description" placeholder="Ex. Package worth PHP 2,800.00 - PHP 3,600.00" required="required"></textarea>
                         </div>
@@ -155,8 +163,13 @@
                         </div>
 
                         <div class="mt-2">
-                            <label class="fw-500">Points</label>
+                            <label class="fw-500">Sales Match Points</label>
                             <input type="number" class="form-control" id="_edit_match_points" name="match_points" placeholder="Points earned for every Sales Match" required="required">
+                        </div>
+
+                        <div class="mt-2">
+                            <label class="fw-500">Entry UniLevel Bonus</label>
+                            <input type="number" class="form-control" id="_edit_unilvl_points" name="unilvl_points" placeholder="Entry Unilevel Points" required="required">
                         </div>
 
                         <div class="mt-2">

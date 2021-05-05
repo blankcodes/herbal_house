@@ -12,6 +12,7 @@ class Home extends CI_Controller {
         $this->load->model('cart_model');
         $this->load->model('order_model');
         $this->load->model('binary_model');
+        $this->load->model('member_model');
 		$this->load->library('user_agent');
         $this->load->library('form_validation');
 		$this->load->helper('cookie');
@@ -29,38 +30,7 @@ class Home extends CI_Controller {
 			$this->load->view('errors/maintenance');
 		}
     }
-   	public function members(){
-    	if (isset($this->session->user_id)) {
-			$data['title'] = 'Member List';
-			$data['page'] = 'members_page';
-			$data['userData'] = $this->my_account_model->getUserData();
-			$this->load->view('account/header', $data);
-			$this->load->view('account/leftside-menu');
-			$this->load->view('account/navbar');
-			$this->load->view('account/members');
-			$this->load->view('widget');
-			$this->load->view('account/footer');
-		}
-		else{
-			header('location:'.base_url('login'));
-		}
-    }
-    public function maintenance(){
-    	if (isset($this->session->user_id)) {
-			$data['title'] = 'Maintenance Page';
-			$data['page'] = 'maintenance_page';
-			$data['userData'] = $this->my_account_model->getUserData();
-			$this->load->view('account/header', $data);
-			$this->load->view('account/leftside-menu');
-			$this->load->view('account/navbar');
-			$this->load->view('account/maintenance');
-			$this->load->view('widget');
-			$this->load->view('account/footer');
-		}
-		else{
-			header('location:'.base_url('/login?').uri_string());
-		}
-    }
+   	
 	public function getCsrfData()
 	{	
 		$data = $this->csrf_model->getCsrfData();
@@ -86,16 +56,17 @@ class Home extends CI_Controller {
 		header('location:'.base_url('login'));
 	}
 	public function register (){
-		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
-		$data['page'] = 'register';
-		$this->load->view('home/register', $data);
-		$this->load->view('home/footer');
+		header('location:'.base_url('login'));
+		// $data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+		// $data['page'] = 'register';
+		// $this->load->view('home/register', $data);
+		// $this->load->view('home/footer');
 	}
 	/* admin panel start */ 
 	public function account (){
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'My Account';
-			$data['page'] = 'dashboard';
+			$data['page'] = 'admin_dashboard';
 			$data['userData'] = $this->my_account_model->getUserData();
 			$this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
@@ -119,6 +90,56 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	public function productCodeList (){
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+		if (isset($this->session->admin)) {
+			$data['title'] = 'Product Code List';
+			$data['page'] = 'product_code_list';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('products/navbar');
+			$this->load->view('products/product_code_list');
+			$this->load->view('products/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
+	public function members(){
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+    	if (isset($this->session->admin)) {
+			$data['package'] = $this->member_model->getPackageList();
+			$data['title'] = 'Member List';
+			$data['page'] = 'members_page';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/members');
+			$this->load->view('widget');
+			$this->load->view('account/footer');
+		}
+		else{
+			header('location:'.base_url('login'));
+		}
+    }
+    public function maintenance(){
+    	if (isset($this->session->admin)) {
+			$data['title'] = 'Maintenance Page';
+			$data['page'] = 'maintenance_page';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/maintenance');
+			$this->load->view('widget');
+			$this->load->view('account/footer');
+		}
+		else{
+			header('location:'.base_url('/login?').uri_string());
+		}
+    }
 	public function products (){
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
@@ -332,7 +353,7 @@ class Home extends CI_Controller {
 		if ($this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
-            $data['page'] = 'payout_page';
+            $data['page'] = 'wallet';
             $data['title'] = 'E-wallet';
             $this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
@@ -393,7 +414,7 @@ class Home extends CI_Controller {
 		$data['page'] = 'about_page';
 		$data['title'] = 'About Us';
 		$this->load->view('cart/header', $data);
-		$this->load->view('shop/navbar');
+		$this->load->view('home/navbar');
 		$this->load->view('home/about');
 		$this->load->view('cart/footer');
 	}

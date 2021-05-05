@@ -46,13 +46,14 @@
         <script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
+        <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
+        
         <?php if ($page=='code_list'){ ?>
         <script src="<?=base_url()?>assets/js/auth/admin_code_list.js"></script>
         <?php }else if($page == 'order_details_admin') { ?>
         <script src="<?=base_url()?>assets/js/auth/admin_orders.js"></script>
         <?php }else if($page == 'members_page') { ?><script src="<?=base_url()?>assets/js/auth/admin_members.js"></script>
-    <?php }else if($page == 'admin_ledger') { ?><script src="<?=base_url()?>assets/js/auth/admin_ledger.js"></script>
-        <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
+        <?php }else if($page == 'admin_ledger') { ?><script src="<?=base_url()?>assets/js/auth/admin_ledger.js"></script>
     <?php } ?>
 
 	</body>

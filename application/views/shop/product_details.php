@@ -26,13 +26,13 @@
                                             <div class="col-lg-5">
                                                 <!-- Product image -->
                                                 <a href="javascript: void(0);" class="text-center d-block mb-4">
-                                                   <img id="" src="<?=$product['image_url']?>" class="img-fluid product--image" style="max-width: 500px;" alt="<?=$product['name']?> - Herbal House" />
+                                                   <img id="prod_shp_img" onclick="openProductImg()" src="<?=$product['image_url']?>" class="img-fluid product--image" style="max-width: 500px;" alt="<?=$product['name']?> - Herbal House" />
                                                 </a>
 
                                             </div> <!-- end col -->
                                             <div class="col-lg-6 product--details">
                                                 <!-- Product title -->
-                                                <h2 class="mt-0 font-24" id="_view_prod_name"><a href="javascript: void(0);" class=""></a> <?=$product['name']?></h2>
+                                                <h1 class="mt-0 font-24" id="_view_prod_name"><a href="javascript: void(0);" class=""></a> <?=$product['name']?></h1>
 
                                                 <!-- Product stock -->
                                                 <div class="mt-0">
@@ -140,11 +140,11 @@
                                     </div>
                                 </div>
 
-                                 <img id="product_image_details" src="<?=$product['image_url']?>" class="img-fluid mobile-product-page-img  mt-2" alt="<?=$product['name']?> - Herbal House" />
+                                 <img onclick="openProductImg()" id="product_image_details" src="<?=$product['image_url']?>" class="img-fluid mobile-product-page-img  mt-2" alt="<?=$product['name']?> - Herbal House" />
 
                                 <div class="card product-page-body">
                                     <div class="card-body">
-                                        <h2 class="product-page-title"><?=$product['name']?></h2>
+                                        <h1 class="product-page-title"><?=$product['name']?></h1>
                                         <small><?=$product['category']?></small>
 
                                         <div class="mt-2">
@@ -173,17 +173,24 @@
                         <!-- Mobile Nav -->
                         <div id="mobile-view" class="mobile-menu">
                             <nav class="mobile-bottom-nav row">
-                                <div class="col-3 col-md-3">       
-                                    <div class="mobile-prod-nav-btn cart-prod-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                                        <i class=" uil-cart font-32 ms-2"></i> <span class="mobile-prod-badge bounce bg-success" id="mobile_nav_cart_alert"></span>
-                                    </div>
+                                <div class="col-3 col-md-3">
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                        <i class="uil-home-alt "></i>
+                                    </div>      
                                 </div>
 
-                                <div class="col-3 col-md-3">
+                                <div class="col-3 col-md-3">       
+                                    <div class="mobile-prod-nav-btn cart-prod-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                        <i class="dripicons-cart font-32 ms-2"></i> <span class=" bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                    </div>
+                                </div>
+                                <input min="1" value="1" type="hidden" id="_qty_" name="qty" class="mobile-qty-prod form-control">
+
+                                <!-- <div class="col-3 col-md-3">
                                     <div class="mobile-prod-nav-btn">
                                        <input min="1" value="1" type="number" id="_qty_" name="qty" class="mobile-qty-prod form-control">
                                     </div>     
-                                </div>
+                                </div> -->
 
                                 <div class="col-6 col-md-6">
                                     <div class="mobile-prod-nav-btn">
@@ -215,5 +222,17 @@
                         </div>
 
                     </div> <!-- container -->
-                    
+                    <div id="open_product_img" class="modal " tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg ">
+                            <div class="modal-content rounded-modal" >
+                                <div class="modal-header">
+                                    <h4 class="modal-title font-18" id="fullWidthModalLabel"><i class="uil-pricetag-alt "></i> <?=$product['name']?></h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                </div>
+                                <div class="modal-body text-center mb-4" id="prod_modal_img">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                    

@@ -31,7 +31,7 @@ class Binary extends CI_Controller {
 				$data['position'] = $position;
 				$data['sponsorID'] = $sponsorID;
 				$data['linkID'] = $linkID;
-	            $data['userData'] = $this->my_account_model->getUserData();;
+	            $data['userData'] = $this->my_account_model->getUserData();
 	            $data['page'] = 'register_direct';
 	            $data['title'] = 'Register Direct';
 	            $this->load->view('account/header', $data);

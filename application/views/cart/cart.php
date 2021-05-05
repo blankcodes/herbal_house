@@ -148,7 +148,7 @@
                                                     </div> <!-- end col -->
                                                     <div class="col-sm-6">
                                                         <div class="text-sm-end">
-                                                            <a href="<?=base_url('checkout')?>" class="btn btn-success btn-lg rounded">
+                                                            <a href="<?=base_url('checkout')?>" class="btn btn-success font-15 rounded k-btn">
                                                                 <i class="uil-cart me-1"></i> Check Out </a>
                                                         </div>
                                                     </div> <!-- end col -->

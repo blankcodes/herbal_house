@@ -15,6 +15,10 @@ class Members extends CI_Controller {
     private function hash_password($password){
        return password_hash($password, PASSWORD_BCRYPT);
     }
+    public function addNewMember(){
+        $data = $this->member_model->addNewMember();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
     public function generateCode(){
     	$data = $this->member_model->generateCode();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
@@ -321,37 +325,33 @@ class Members extends CI_Controller {
         $lname = $this->input->post('lname');
         $email_address = $this->input->post('email_address');
         $mobile_number = $this->input->post('mobile_number');
+
+        $checkEmail = $this->member_model->checkEmail($email_address);
+        $checkNumber = $this->member_model->checkMobNumber($mobile_number);
+
         $data = array(
             'fname'=>$fname,
             'lname'=>$lname,
             'email_address'=>$email_address,
             'mobile_number'=>$mobile_number,
         );
-        // Validation
-        $this->form_validation->set_rules('email_address', 'Email', 'required|valid_email|is_unique[user_tbl.email_address]',
-            array(
-                'is_unique' => 'Email Address Already Exist!',
-                'valid_email' => 'Please input a valid Email Address!',
-                'required' => 'Email Address is Required!'
-            )
-        );
-
-        $this->form_validation->set_rules('mobile_number', 'Mobile Number', 'required|is_unique[user_tbl.mobile_number]',
-            array(
-                'is_unique' => 'Mobile Number Already Exist!',
-                'required' => 'Mobile Number is Required!'
-            )
-        );
-
-        if ($this->form_validation->run() == FALSE) {
+        
+        if ($checkEmail == 'existing') {
             $response['status'] = 'failed';
-            $response['message'] = $this->form_validation->error_array();
+            $response['message'] = 'Email Address Already Exist!';
+        }
+
+        else if ($checkNumber == 'existing') {
+            $response['status'] = 'failed';
+            $response['message'] = 'Mobile Already Exist!';
         }
         else{
             $this->member_model->updateAccountData($data);
             $response['status'] = 'success';
             $response['message'] = 'Account info successfully updated!';
         }
+       
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
     }
+
 }

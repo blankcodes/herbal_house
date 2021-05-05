@@ -61,7 +61,7 @@ $("#_code_form").on('submit', function(e){
 })
 
 function showMemberCodes(page_no){
-	$("#_code_list_tbl").html('<tr class="text-center"><td colspan="5">Getting activation codes...</td></tr>');
+	$("#_code_list_tbl").html('<tr class="text-center"><td colspan="6">Getting activation codes...</td></tr>');
 
 	$.ajax({
 		url: base_url+'api/v1/codes/_get/'+page_no,
@@ -109,12 +109,12 @@ function showMemberCodes(page_no){
 			}
 		}
 		else{
-			string = '<tr class="text-center"><td colspan="5">No Records Found...</td></tr>';
+			string = '<tr class="text-center"><td colspan="6">No Records Found!</td></tr>';
 		}
 		$("#_code_list_tbl").html(string);
 	})
 	.fail(function() {
-		$("#_code_list_tbl").html('<tr class="text-center"><td colspan="5">No records found!...</td></tr>');
+		$("#_code_list_tbl").html('<tr class="text-center"><td colspan="6">No records Found!</td></tr>');
 	})
 }
 function deleteCode(id){
