@@ -18,6 +18,8 @@ class Ledger extends CI_Controller {
         $match_points = $this->input->post('match_points');
     	$direct_points = $this->input->post('direct_points');
         $unilvl_points = $this->input->post('unilvl_points');
+        $max_points_am = $this->input->post('max_points_am');
+        $max_points_pm = $this->input->post('max_points_pm');
 
     	$dataArr = array(
     		'name'=>$package,
@@ -27,6 +29,8 @@ class Ledger extends CI_Controller {
     		'match_points'=>$match_points,
             'direct_points'=>$direct_points,
             'unilvl_points'=>$unilvl_points,
+            'am_maximum_points'=>$max_points_am,
+            'pm_maximum_points'=>$max_points_pm,
     		'created_at'=>date('Y-m-d H:i:s')
     	);
     	$checkPackage = $this->db->WHERE('name', $package)->GET('package_tbl')->num_rows();
@@ -104,6 +108,8 @@ class Ledger extends CI_Controller {
     	$match_points = $this->input->post('match_points');
         $direct_points = $this->input->post('direct_points');
         $unilvl_points = $this->input->post('unilvl_points');
+        $max_points_am = $this->input->post('max_points_am');
+        $max_points_pm = $this->input->post('max_points_pm');
 
     	$dataArr = array(
     		'name'=>$package,
@@ -111,7 +117,9 @@ class Ledger extends CI_Controller {
     		'match_points'=>$match_points,
             'direct_points'=>$direct_points,
             'unilvl_points'=>$unilvl_points,
-    		'description'=>$description,
+            'description'=>$description,
+            'am_maximum_points'=>$max_points_am,
+    		'pm_maximum_points'=>$max_points_pm,
     		'updated_at'=>date('Y-m-d H:i:s')
     	);
     	$this->ledger_model->updatePackageData($dataArr);
@@ -143,7 +151,9 @@ class Ledger extends CI_Controller {
         $data = $this->ledger_model->getWalletBalance();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function getWalletRecentActivity($row_no = 0){
+    public function getWalletRecentActivity(){
+        $row_no = $this->input->get('page_no');
+        
         // Row per page
         $row_per_page = 10;
 
@@ -165,7 +175,8 @@ class Ledger extends CI_Controller {
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
-        $config['use_page_numbers'] = TRUE;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';

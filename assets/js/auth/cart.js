@@ -8,7 +8,7 @@ if (page == 'shopping_cart') {
 	getShoppingCartData();
 }
 else if(page == 'shop_product') {
-	recommendedProducts(product_pub_id)
+	recommendedProducts(product_pub_id, nonce)
 }
 
 
@@ -156,7 +156,7 @@ function getShoppingCartData(){
 		mob_string = '';
 		
 		$("#cart_count").text(res.data.count+ ' items')
-		if (res.data.cart.length > 0) {
+		if (parseInt(res.data.count) > 0) {
 			for(var i in res.data.cart) {
 				string+='<tr>'
                         +'<td>'
@@ -331,10 +331,10 @@ function updateCartQtyMobile(c_pub_id, p_qty) {
 		console.log("error");
 	})
 }
-function recommendedProducts(p_pub_id) {
+function recommendedProducts(p_pub_id, nonce) {
 	qty = 1;
 	$.ajax({
-		url: base_url+'api/v1/product/_get_recommended_products',type: 'GET',dataType: 'JSON', data: {p_pub_id:p_pub_id},
+		url: base_url+'api/v1/product/_get_recommended_products',type: 'GET',dataType: 'JSON', data: {p_pub_id:p_pub_id, nonce:nonce},
 	})
 	.done(function(res) {
 		string = '';

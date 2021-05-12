@@ -23,7 +23,8 @@ class Members extends CI_Controller {
     	$data = $this->member_model->generateCode();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function showActivationCodes($row_no = 0){
+    public function showActivationCodes(){
+        $row_no = $this->input->get('page_no');
         // Row per page
         $row_per_page = 10;
 
@@ -45,7 +46,8 @@ class Members extends CI_Controller {
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
-        $config['use_page_numbers'] = TRUE;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';
@@ -86,7 +88,12 @@ class Members extends CI_Controller {
         $data = $this->member_model->sendUserCode();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function showMemberActivationCodes($row_no = 0){
+    public function transferUserCode(){
+        $data = $this->member_model->transferUserCode();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function showMemberActivationCodes(){
+        $row_no = $this->input->get('page_no');
         // Row per page
         $row_per_page = 10;
 
@@ -108,7 +115,8 @@ class Members extends CI_Controller {
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
-        $config['use_page_numbers'] = TRUE;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';
@@ -192,7 +200,9 @@ class Members extends CI_Controller {
         $data['count'] = $all_count;
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    public function geUserCodeHistory($row_no = 0){
+    public function geUserCodeHistory(){
+        $row_no = $this->input->get('page_no');
+
         // Row per page
         $row_per_page = 10;
 
@@ -214,7 +224,8 @@ class Members extends CI_Controller {
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
-        $config['use_page_numbers'] = TRUE;
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';

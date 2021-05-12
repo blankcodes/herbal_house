@@ -1,29 +1,28 @@
-var base_url;
-var page;
+var nonce;
 
 $('#products_pagination').on('click','a',function(e){
     e.preventDefault(); 
     var page_no = $(this).attr('data-ci-pagination-page');
-    showProductData(page_no);
+    showProductData(page_no, nonce);
 });
 
 if (page == 'index') {
-	showProductData(1)
+	showProductData(1, nonce)
 }
 
-function showProductData(page_no) {
+function showProductData(page_no, nonce) {
 	$("#loader").removeAttr('hidden');
 	$.ajax({
 		url: base_url+'api/v1/product/_get_products',
 		type: 'GET',
 		dataType: 'JSON',
-        data: {page_no:page_no}
+        data: {page_no:page_no,nonce:nonce}
 	})
 	.done(function(res) {
 		$('#products_pagination').html(res.pagination);
 		mob_string = '';
 		string = '';
-		if (res.result.length > 0) {
+		if (parseInt(res.count) > 0) {
 			for(var i in res.result) {
 				string += '<div class="col-md-4 col-lg-3 col-6">'
                        +'<div class="card">'
@@ -60,9 +59,17 @@ function showProductData(page_no) {
                        +'</div> '
                     +'</div>'
             }
-            $("#products_wrapper_home").html(string);
-			$(".mobile_products_wrapper").html(mob_string);
 		}
+        else{
+            $('#err_title').text('Error Getting Products!')
+            $('#err_message').html("There's an error getting Products! Please refresh the page or click the <b>Refresh</b> button below.")
+            $("#_product_warning_modal").modal('show');
+            string = "<div class='text-center text-secondary'>Seems there's an error. Please try again!</div>"
+            mob_string = "<div class='text-center text-secondary'>Seems there's an error. Please try again!</div>"
+        }
+
+        $("#products_wrapper_home").html(string);
+        $(".mobile_products_wrapper").html(mob_string);
 	})
 	.fail(function() {
 		

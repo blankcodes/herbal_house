@@ -25,6 +25,8 @@ class My_account extends CI_Controller {
 	}
 	public function getUserOverview() {
 		$data['wallet'] = $this->my_account_model->getUserWallet();
+		$data['left_side_monitor'] = $this->my_account_model->getLeftSidePoints();
+		$data['right_side_monitor'] = $this->my_account_model->getRightSidePoints();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 }

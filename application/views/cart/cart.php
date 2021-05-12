@@ -8,7 +8,7 @@
                                     <div class="page-title-left">
                                         <ol class="breadcrumb mt-2">
                                             <li class="breadcrumb-item"><a href="<?=base_url();?>">Herbal House</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Shop</a></li>
+                                            <li class="breadcrumb-item"><a href="<?=base_url('#shop_now');?>">Shop</a></li>
                                             <li class="breadcrumb-item active">Shopping Cart</li>
                                         </ol>
                                     </div>
@@ -143,7 +143,7 @@
                                                 <!-- action buttons-->
                                                 <div class="row mt-4">
                                                     <div class="col-sm-6">
-                                                        <a href="<?=base_url();?>" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
+                                                        <a href="<?=base_url('#shop_now');?>" class="btn text-muted d-none d-sm-inline-block btn-link fw-semibold">
                                                             <i class="mdi mdi-arrow-left"></i> Continue Shopping </a>
                                                     </div> <!-- end col -->
                                                     <div class="col-sm-6">

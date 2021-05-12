@@ -235,4 +235,6 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="_product_nonce" name="<?=$nonce['name'];?>" value="<?=$nonce['hash'];?>" />
+
                    

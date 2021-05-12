@@ -26,9 +26,10 @@ function getWalletBalance() {
 function getWalletActivity(page_no){
 	$("#_wallet_activity_tbl").html("<tr class='text-center'><td colspan='4'>Getting wallet's recent activity...</td></tr>");
 	$.ajax({
-		url: base_url+'api/v1/wallet/_get_recent_activity/'+page_no,
+		url: base_url+'api/v1/wallet/_get_recent_activity',
 		type: 'GET',
 		dataType: 'JSON',
+		data: {page_no:page_no}
 	})
 	.done(function(res) {
 		string = '';

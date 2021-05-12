@@ -191,7 +191,8 @@ class Member_model extends CI_Model {
     		$query = $this->db->SELECT('ac_id, code, act.status, act.created_at, pt.name, pt.cost, act.updated_at')
 	    		->FROM('activation_code_tbl as act')
 	    		->JOIN('package_tbl as pt', 'pt.p_id = act.p_id')
-				->ORDER_BY('act.created_at', 'DESC')
+				->ORDER_BY('act.status', 'DESC')
+				->ORDER_BY('act.created_at', 'ASC')
 				->LIMIT($row_per_page, $row_no)
 				->GET()->result_array();
 			$result = array();
@@ -217,9 +218,9 @@ class Member_model extends CI_Model {
 		return $response;
 	}
 	public function getUsers() {
-		if ($this->session->user_type == 'admin') {
+		if ($this->session->user_id) {
 			$search = $this->input->get('keyword');
-			$query = $this->db->SELECT('fname, lname, user_code, user_type, status')
+			$query = $this->db->SELECT('fname, lname, user_code')
 				->LIKE('fname', $search)
 				->OR_LIKE('lname', $search)
 				->OR_LIKE('user_code', $search)
@@ -235,7 +236,17 @@ class Member_model extends CI_Model {
 				);
 				array_push($result, $array);
 			}
-			return $result;
+
+			if (!empty($result)) {
+				$data['search'] = $result;
+				$data['status'] = 'success';
+				return $data;
+			}
+			else{
+				$data['status'] = 'no_record';
+				$data['message'] = 'No record found!';
+				return $data;
+			}
 		}
 	}
 	public function sendUserCode(){
@@ -272,10 +283,32 @@ class Member_model extends CI_Model {
 		}
 		return $response;
 	}
-	public function getMemberActivationCodeCount () {
-    	$userData = $this->db->SELECT('user_code')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+	public function transferUserCode(){
+		$code = $this->input->get('code');
+		$user_code = $this->input->get('user_code');
 
-    	return $this->db->WHERE('user_code', $userData['user_code'])
+		/* check if there's existing code sent to the user_code (user) AND if the user_code(user) is existing */ 
+		$checkActivationCode = $this->db->WHERE('code', $code)->WHERE('status','sent')->GET('activation_code_tbl')->num_rows();
+		$checkUserCode = $this->db->WHERE('code', $code)->WHERE('status','new')->OR_WHERE('status','transfered')->WHERE('user_code', $this->session->user_code)->GET('user_code_tbl')->num_rows();
+		if ($checkUserCode > 0 && $checkActivationCode > 0) {
+			$data = array(
+				'user_code'=>$user_code, 
+				'status'=>'new'
+			);
+			$this->db->WHERE('code',$code)->UPDATE('user_code_tbl', $data); 
+
+			$response['status'] = 'success';
+			$response['message'] = 'Code Successfully Transferred!';
+		}
+		else{
+			$response['status'] = 'failed';
+			$response['message'] = 'Something went wrong. Please try again!';
+		}
+		return $response;
+	}
+	public function getMemberActivationCodeCount () {
+    	return $this->db->WHERE('user_code', $this->session->user_code)
+    		->WHERE('status','new')
 			->GET('user_code_tbl')->num_rows();
     }
     public function getMemberActivationCodes ($row_per_page, $row_no) {
@@ -283,7 +316,8 @@ class Member_model extends CI_Model {
     		->FROM('user_code_tbl as uct')
     		->JOIN('activation_code_tbl as act', 'act.code = uct.code', 'left')
     		->JOIN('package_tbl as pt', 'pt.p_id = act.p_id', 'left')
-			->WHERE('user_code', $this->session->user_code)
+			->WHERE('uct.user_code', $this->session->user_code)
+			->WHERE('uct.status','new')
 			->ORDER_BY('uct.created_at', 'DESC')
 			->LIMIT($row_per_page, $row_no)
 			->GET()->result_array();

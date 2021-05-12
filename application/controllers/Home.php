@@ -21,7 +21,8 @@ class Home extends CI_Controller {
     public function index(){
     	$checkMaintenance = $this->my_account_model->checkMaintenance();
 		if ($checkMaintenance <= 0) {
-			$data = $this->csrf_model->getCsrfData();
+			$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+			$this->session->set_userdata('_product_nonce', $data['nonce']['hash']);
 			$data['page'] = 'index';
 	    	$this->load->view('index', $data);
 			$this->load->view('footer');
@@ -31,11 +32,9 @@ class Home extends CI_Controller {
 		}
     }
    	
-	public function getCsrfData()
-	{	
+	public function getCsrfData() {	
 		$data = $this->csrf_model->getCsrfData();
    		$this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
-
 	}
 	public function login() {
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
@@ -242,6 +241,8 @@ class Home extends CI_Controller {
 		$data['product'] = $this->products_model->getProductDataByURL($product_url);
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'shop_product';
+		$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+		$this->session->set_userdata('_rec_product_nonce', $data['nonce']['hash']);
 
 		if (isset($data['product']['name'])) {
 			$this->load->view('shop/header', $data);

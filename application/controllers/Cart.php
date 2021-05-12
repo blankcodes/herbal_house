@@ -19,7 +19,9 @@ class Cart extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
     public function getShoppingCartData() {
-    	$data = $this->cart_model->getShoppingCartData();
+        $data = $this->cart_model->getShoppingCartData();
+    	if ($data['count'] <= 0 && $data['grand_total'] == "0.00") {
+        }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
     public function deleteCart() {

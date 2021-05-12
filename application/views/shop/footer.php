@@ -71,6 +71,7 @@
         <script>
             var base_url = '<?=base_url()?>';
             var page = '<?=$page?>';
+            var nonce = '<?=$nonce['hash']?>';
             <?php if ($page == 'shop_product') { ?>var product_pub_id = '<?=$product['p_pub_id'];?>';var p_qty = '<?=$product['qty'];?>';<?php } ?>
 
         </script>

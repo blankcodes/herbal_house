@@ -41,6 +41,8 @@ function getUserDashboardOverview () {
 	})
 	.done(function(res) {
 		$("#_cash_wallet").text(res.data.wallet)
+		$("#_left_side_monitor").text(res.data.left_side_monitor.pos_left)
+		$("#_right_side_monitor").text(res.data.right_side_monitor.pos_right)
 		$("#loader").attr('hidden','hidden');
 	})
 	.fail(function() {

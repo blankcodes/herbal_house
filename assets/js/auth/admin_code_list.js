@@ -64,9 +64,10 @@ function showMemberCodes(page_no){
 	$("#_code_list_tbl").html('<tr class="text-center"><td colspan="6">Getting activation codes...</td></tr>');
 
 	$.ajax({
-		url: base_url+'api/v1/codes/_get/'+page_no,
+		url: base_url+'api/v1/codes/_get',
 		type: 'GET',
 		dataType: 'JSON',
+		data: {page_no:page_no}
 	})
 	.done(function(res) {
 		string ='';
@@ -166,16 +167,24 @@ function sendTo(ac_id, code, cost){
 	$("#send_to_modal").modal('show');
 }
 
-$
+
+function searchUserCode(user_code, name){
+	$("#search_code_name").val('');
+	$("#_user_name").val(name);
+	$("#_user_code").val(user_code)
+	$("#search_user_dropdown").hide()
+}
+
 if ($("#search_code_name_form").val() == '') {
 	$("#search_user_dropdown").hide()
 }
+
 if (page == 'code_list') {
 	$("#search_code_name_form").on('submit', function(e) {
 		e.preventDefault();
 		keyword = $("#search_code_name").val();
 
-		if (!keyword || keyword == '') {
+		if (!keyword || keyword == '' || keyword == ' ') {
 			return false;
 		}
 		$.ajax({
@@ -186,29 +195,30 @@ if (page == 'code_list') {
 		})
 		.done(function(res) {
 			string = '';
-			if (res.data.length > 0) {
-				$("#search_user_dropdown").show()
-				for(var i in res.data){
-					string+='<a href="#" onclick="searchUserCode(\''+res.data[i].user_code+'\',\''+res.data[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data[i].name+'</span> <span>(#'+res.data[i].user_code+')</span></a>'
+			if (res.data.status == 'success') {
+				for(var i in res.data.search){
+					string+='<a href="#" onclick="searchUserCode(\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
 				}
 			}
-			else{
-				string = '<span class="margin-left-10">No record found!</span>'
+			else if(res.data.status == 'no_record'){
+				string = '<span class="margin-left-10">'+res.data.message+'</span>'
 			}
+			$("#search_user_dropdown").show()
 			$("#_member_search").html(string);
 		})
 		.fail(function() {
-			console.log("error");
+			string = '<span class="margin-left-10">No records found!</span>'
+			$("#_member_search").html(string);
+
 		})
 	});
 }
-function searchUserCode(user_code, name){
+function searchUserCode(search_user_code, name){
 	$("#search_code_name").val('');
 	$("#_user_name").val(name);
-	$("#_user_code").val(user_code)
+	$("#_user_code").val(search_user_code)
 	$("#search_user_dropdown").hide()
 }
-
 $("#_send_member_code_btn").on('click', function(){
 	code = $("#_activation_code").val(); /* code to be sent */
 	user_code = $("#_user_code").val(); /* user code, the receiver*/
@@ -231,9 +241,9 @@ $("#_send_member_code_btn").on('click', function(){
 	.done(function(res) {
 		if (res.data.status == 'success') {
 			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
-			showMemberCodes(1)
 			$("#search_code_name_form input").val('');
 			$("#send_to_modal").modal('hide');
+			showMemberCodes(1)
 		}
 		else{
 			$.NotificationApp.send("Oh, snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
@@ -242,5 +252,4 @@ $("#_send_member_code_btn").on('click', function(){
 	.fail(function() {
 		console.log("error");
 	})
-	
 })

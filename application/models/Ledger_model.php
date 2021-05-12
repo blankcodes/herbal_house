@@ -26,6 +26,8 @@ class Ledger_model extends CI_Model {
 					'match_points'=>'₱ '.number_format($q['match_points'], 2),
 					'unilvl_points'=>'₱ '.number_format($q['unilvl_points'], 2),
 					'direct_points'=>'₱ '.number_format($q['direct_points'], 2),
+					'pm_maximum_points'=>$q['pm_maximum_points'],
+					'am_maximum_points'=>$q['am_maximum_points'],
 					'status'=>$q['status'],
 					'cost'=>'₱ '.number_format($q['cost'], 2),
 					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
@@ -84,6 +86,7 @@ class Ledger_model extends CI_Model {
 			$query = $this->db->SELECT_SUM('amount')
 				->WHERE('user_code',$this->session->user_code)
 				->WHERE('status !=','withdrawal')
+				->WHERE('status !=','unilvl_bonus')
 				->GET('wallet_tbl')->row_array();
 
 			$balance = '₱ '.number_format($query['amount'], 2);
@@ -97,6 +100,7 @@ class Ledger_model extends CI_Model {
 			$query = $this->db
 				->ORDER_BY('created_at', 'DESC')
 				->ORDER_BY('status', 'DESC')
+				->WHERE('status !=', 'unilvl_bonus')
 				->WHERE('user_code',$this->session->user_code)
 				->LIMIT($row_per_page, $row_no)
 				->GET('wallet_tbl')->result_array();

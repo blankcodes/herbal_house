@@ -43,19 +43,6 @@
                                 <div class="card widget-flat">
                                     <div class="card-body">
                                         <div class="float-end">
-                                            <i class="mdi mdi-cart-check widget-icon"></i>
-                                        </div>
-                                        <h5 class="text-muted fw-normal mt-0" title="Number of Customers">Product Wallet</h5>
-                                        <h3 class="mt-3 mb-3" id="_product_wallet">0</h3>
-                                        
-                                    </div> <!-- end card-body-->
-                                </div> <!-- end card-->
-                            </div> <!-- end col-->
-
-                            <div class="col-lg-4">
-                                <div class="card widget-flat">
-                                    <div class="card-body">
-                                        <div class="float-end">
                                             <i class="mdi mdi-account-arrow-left widget-icon"></i>
                                         </div>
                                         <h5 class="text-muted fw-normal mt-0" title="Number of Customers">Left Side Monitor</h5>
@@ -77,6 +64,21 @@
                                     </div> <!-- end card-body-->
                                 </div> <!-- end card-->
                             </div> <!-- end col-->
+
+                            <div class="col-lg-4">
+                                <div class="card widget-flat">
+                                    <div class="card-body">
+                                        <div class="float-end">
+                                            <i class="mdi mdi-cart-check widget-icon"></i>
+                                        </div>
+                                        <h5 class="text-muted fw-normal mt-0" title="Number of Customers">Product Wallet</h5>
+                                        <h3 class="mt-3 mb-3" id="_product_wallet">0</h3>
+                                        
+                                    </div> <!-- end card-body-->
+                                </div> <!-- end card-->
+                            </div> <!-- end col-->
+
+                            
 
                             <div class="col-lg-4">
                                 <div class="card widget-flat">

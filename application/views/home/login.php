@@ -26,7 +26,13 @@
                             <div id="" style="margin-top: -50px;"></div>
                             <!-- Logo -->
                             <div class="card-header pt-4 pb-4 text-center bg-success rounded">
-                                <span><a href="<?=base_url();?>"><h3 class="c-white fw-500"><img src="<?=base_url('assets/images/favicon.png')?>" height="45"> Herbal House</h3></a></span>
+                                <span>
+                                    <a href="<?=base_url();?>">
+                                        <h3 class="c-white fw-500"><img src="<?=base_url('assets/images/favicon.png')?>" height="45"> Herbal House <br>
+                                            <!-- <small class="c-white" style="margin-left: 50px !important;margin-top: -50px !important;">Business Helping Program</small> -->
+                                        </h3>
+                                    </a>
+                                </span>
                             </div>
 
                             <div class="card-body p-4">

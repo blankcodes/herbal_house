@@ -73,10 +73,27 @@ class My_account_model extends CI_Model {
 		if (isset($this->session->user_id)) {
 			$query = $this->db->SELECT_SUM('amount')
 				->WHERE('status !=','withdrawal')
+				->WHERE('status !=','unilvl_bonus')
 				->WHERE('user_code', $this->session->user_code)
 				->GET('wallet_tbl')->row_array();
 			return '₱ '.number_format($query['amount'], 2);
 
+		}
+	}
+	public function getLeftSidePoints() {
+		if (isset($this->session->user_id)) {
+			$query = $this->db->SELECT('pos_left')
+				->WHERE('user_code ',$this->session->user_code)
+				->GET('user_sales_match_tbl')->row_array();
+			return $query;
+		}
+	}
+	public function getRightSidePoints() {
+		if (isset($this->session->user_id)) {
+			$query = $this->db->SELECT('pos_right')
+				->WHERE('user_code ',$this->session->user_code)
+				->GET('user_sales_match_tbl')->row_array();
+			return $query;
 		}
 	}
 }

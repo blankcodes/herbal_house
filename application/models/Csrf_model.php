@@ -10,4 +10,11 @@ class Csrf_model extends CI_Model {
         );
         return $data;
 	}
+	public function productNonce() {
+		$data = array(
+            'name' => 'product_nonce',
+            'hash' => $this->security->get_csrf_hash()
+        );
+        return $data;
+	}
 }

@@ -42,7 +42,7 @@ $("#_new_package_form").on('submit', function(e){
 })
 
 function showPackageList(page_no) {
-	$("#_package_list_tbl").html('<tr class="text-center"><td colspan="9">Getting package list...</td></tr>');
+	$("#_package_list_tbl").html('<tr class="text-center"><td colspan="10">Getting package list...</td></tr>');
 	$.ajax({
 		url: base_url+'api/v1/package/_get_package_list/'+page_no,
 		type: 'GET',
@@ -61,12 +61,6 @@ function showPackageList(page_no) {
 				}
 				
 				string += '<tr>'
-	                    +'<td>'
-	                        +'<div class="form-check">'
-	                            +'<input type="checkbox" class="form-check-input" id="customCheck2">'
-	                            +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
-	                        +'</div>'
-	                    +'</td>'
 	                    +'<td class="table-user">'
 	                        +'<a href="javascript:void(0);" class="text-body"font-14">'+res.result[i].name+'</a>'
 	                    +'</td>'
@@ -79,17 +73,23 @@ function showPackageList(page_no) {
 	                    +'<td>'
 	                        +'<span class="font-14">'+res.result[i].match_points+'</span>'
 	                    +'</td>'
-	                     +'<td>'
+	                    +'<td>'
 	                        +'<span class="font-14">'+res.result[i].unilvl_points+'</span>'
 	                    +'</td>'
 	                    +'<td>'
-	                        +'<span class="fw-400 badge badge-'+badge_status+'-lighten text-capitalize font-13 pointer-cursor" onclick="updatePackageStatus(\''+res.result[i].p_id+'\', \''+status_update+'\',\''+page_no+'\')">'+res.result[i].status+'</span>'
+	                        +'<span class="font-14">'+res.result[i].pm_maximum_points+'</span>'
 	                    +'</td>'
-	                    +'<td class=""><span class="font-14">'+res.result[i].created_at+'</td>'
+	                    +'<td>'
+	                        +'<span class="font-14">'+res.result[i].am_maximum_points+'</span>'
+	                    +'</td>'
+	                    +'<td>'
+	                        +'<span class="fw-400 badge badge-'+badge_status+'-lighten text-capitalize pointer-cursor font-12" onclick="updatePackageStatus(\''+res.result[i].p_id+'\', \''+status_update+'\',\''+page_no+'\')">'+res.result[i].status+'</span>'
+	                    +'</td>'
+	                    +'<td class=""><span>'+res.result[i].created_at+'</td>'
 	                    
 	                    +'<td>'
 	                        +'<div class="dropdown">'
-							    +'<button class="btn btn-light btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+							    +'<button class="btn btn-light btn-sm dropdown-toggle font-12" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
 							        +'Action'
 							    +'</button>'
 							    +'<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
@@ -101,13 +101,13 @@ function showPackageList(page_no) {
 			}
 		}
 		else{
-			string = '<tr class="text-center"><td colspan="9">No record found!</td></tr>';
+			string = '<tr class="text-center"><td colspan="10">No record found!</td></tr>';
 		}
 		$("#_package_list_tbl").html(string);
 
 	})
 	.fail(function() {
-		$("#_package_list_tbl").html('<tr class="text-center"><td colspan="9">No record found!</td></tr>');
+		$("#_package_list_tbl").html('<tr class="text-center"><td colspan="10">No record found!</td></tr>');
 
 	})
 }
@@ -127,6 +127,8 @@ function editPackage(p_id){
 		$("#_edit_cost").val(res.data.cost);
 		$("#_edit_unilvl_points").val(res.data.unilvl_points);
 		$("#_edit_description").val(res.data.description);
+		$("#_edit_max_points_am").val(res.data.am_maximum_points);
+		$("#_edit_max_points_pm").val(res.data.pm_maximum_points);
 		$("#edit_package_modal").modal('show');
 		$("#loader").attr('hidden','hidden');
 

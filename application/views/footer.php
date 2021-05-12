@@ -3,6 +3,23 @@
                 <img src="<?=base_url('assets/images/loader.gif')?>" width="120" heigth="120">
             </div>
         </div>
+
+        <!-- Warning Alert Modal -->
+        <div id="_product_warning_modal" class="modal margin-top-50" tabindex="-1" role="dialog" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false"> 
+            <div class="modal-dialog modal-md ">
+                <div class="modal-content rounded-modal">
+                    <div class="modal-body p-4">
+                        <div class="text-center">
+                            <i class="uil-exclamation-triangle h1 text-warning"></i>
+                            <h2 class="mt-2 font-23" id="err_title"></h2>
+                            <p class="mt-3" id="err_message"></p>
+                            <button type="button" class="btn btn-warning my-2 rounded" onclick="window.location.reload()">Refresh</button>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
         <!-- START FOOTER -->
         <footer class="bg-dark py-4">
             <div class="container">
@@ -67,9 +84,11 @@
             </div>
         </footer>
         <!-- END FOOTER -->
+        <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
         <script>
         	var base_url = '<?=base_url();?>';
         	var page = '<?=$page;?>';
+            var nonce = '<?=$nonce['hash'];?>';
             function openNav() {
               document.getElementById("mySidenav").style.width = "250px";
             }
@@ -91,11 +110,9 @@
 
         </script>
         <!-- bundle -->
-        <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
         <script src="<?=base_url()?>assets/js/app.min.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_products.js"></script>
-
     </body>
 
 </html>

@@ -81,9 +81,9 @@
                                         </div>
 
                                         <div class="form-floating">
-                                            <input type="password" class="form-control" name="password" value="" id="password" placeholder="Enter Password" required autofocus="autofocus" />
+                                            <input type="password" class="form-control" name="password" value="123456" id="password" placeholder="Enter Password" required autofocus="autofocus" />
                                             <label for="password" class="fw-400">Password</label>
-                                            
+                                            <small>*Default password is 123456</small>
                                             <div class="mt-2 pointer-cursor" data-password="false">
                                                 <small><span class="password-eye pointer-cursor"></span> Show Password</small>
                                             </div>

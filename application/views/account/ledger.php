@@ -38,20 +38,16 @@
                 
                                         <div class="table-responsive">
                                             <h2 class="font-22">Package List</h2>
-                                            <table class="table table-centered w-100 dt-responsive nowrap" id="products-datatable">
+                                            <table class="table table-centered w-100 dt-responsive nowrap font-12" id="products-datatable">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th class="all" style="width: 20px;">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                                                            </div>
-                                                        </th>
                                                         <th class="all">Package Name</th>
                                                         <th>Cost</th>
                                                         <th>Direct Referral</th>
                                                         <th>Match Points</th>
                                                         <th>UniLvl Points</th>
+                                                        <th>AM Points</th>
+                                                        <th>PM Points</th>
                                                         <th>Status</th>
                                                         <th>Added Date</th>
                                                         <th style="width: 85px;">Action</th>
@@ -94,34 +90,46 @@
                             Include every details about the package.
                         </div>
                         <input type="hidden" id="csrf_token" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
-                        <div class="mt-2">
-                            <label class="fw-500">Package Name</label>
-                            <input type="text" class="form-control" name="package" placeholder="Ex. Package 2498" required="required">
+
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control"  name="package"  id="" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="" class="fw-400">Package Name</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="cost" id="" placeholder="Ex. 2498" required="required"/>
+                            <label for="" class="fw-400">Package Cost</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="direct_points" id="" placeholder="Points/Cash earned for Direct Referral" required="required"/>
+                            <label for="" class="fw-400">Direct Referral Bonus</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="match_points"  id="" placeholder="Ex. Package 2498" required="required" />
+                            <label for="" class="fw-400">Sales Match Points</label>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="unilvl_points"  id="" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="" class="fw-400">Entry UniLevel Bonus</label>
+                        </div>
+
+                         <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="max_points_am"  id="" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="" class="fw-400">AM Sales Match Points</label>
+                            <small>Maximum Sales Match Bunos get in the AM period (00:01 - 11:59)</small>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="max_points_pm" id="" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="" class="fw-400">PM Sales Match Points</label>
+                            <small>Maximum Sales Match Bunos get in the PM period (12:00 - 23:59)</small>
                         </div>
 
                         <div class="mt-2">
-                            <label class="fw-500">Package Cost</label>
-                            <input type="number" class="form-control" name="cost" placeholder="Ex. 2498" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Direct Referral Bonus</label>
-                            <input type="number" class="form-control" name="direct_points" placeholder="Points/Cash earned for Direct Referral" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Sales Match Points</label>
-                            <input type="number" class="form-control" name="match_points" placeholder="Points earned for every Sales Match" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Entry UniLevel Bonus</label>
-                            <input type="number" class="form-control" id="unilvl_points" name="unilvl_points" placeholder="Entry Unilevel Points" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Package Description</label>
-                            <textarea class="form-control" name="description" placeholder="Ex. Package worth PHP 2,800.00 - PHP 3,600.00" required="required"></textarea>
+                            <textarea class="form-control" name="description" id="" placeholder="Package Description" required="required"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -147,34 +155,46 @@
                         </div>
                         <input type="hidden" id="csrf_token" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                         <input type="hidden" id="p_id" name="p_id" value="" />
-                        <div class="mt-2">
-                            <label class="fw-500">Package Name</label>
-                            <input type="text" class="form-control" id="_edit_package" name="package" placeholder="Ex. Package 2498" required="required">
+
+                        <div class="form-floating mt-2">
+                            <input type="text" class="form-control"  name="package" value="" id="_edit_package" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="_edit_package" class="fw-400">Package Name</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="cost" value="" id="_edit_cost" placeholder="Ex. 2498" required="required"/>
+                            <label for="_edit_cost" class="fw-400">Package Cost</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="direct_points" value="" id="_edit_direct_points" placeholder="Points/Cash earned for Direct Referral" required="required"/>
+                            <label for="_edit_direct_points" class="fw-400">Direct Referral Bonus</label>
+                       </div>
+
+                       <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="match_points" value="" id="_edit_match_points" placeholder="Ex. Package 2498" required="required" />
+                            <label for="_edit_match_points" class="fw-400">Sales Match Points</label>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="unilvl_points" value="" id="_edit_unilvl_points" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="_edit_unilvl_points" class="fw-400">Entry UniLevel Bonus</label>
+                        </div>
+
+                         <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="max_points_am" value="" id="_edit_max_points_am" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="_edit_max_points_am" class="fw-400">AM Sales Match Points</label>
+                            <small>Maximum Sales Match Bunos get in the AM period (00:01 - 11:59)</small>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="max_points_pm" value="" id="_edit_max_points_pm" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="_edit_max_points_pm" class="fw-400">PM Sales Match Points</label>
+                            <small>Maximum Sales Match Bunos get in the PM period (12:00 - 23:59)</small>
                         </div>
 
                         <div class="mt-2">
-                            <label class="fw-500">Package Cost</label>
-                            <input type="number" class="form-control" id="_edit_cost" name="cost" placeholder="Ex. 2498" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Direct Referral Bonus</label>
-                            <input type="number" class="form-control" name="direct_points" id="_edit_direct_points" placeholder="Points/Cash earned for Direct Referral" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Sales Match Points</label>
-                            <input type="number" class="form-control" id="_edit_match_points" name="match_points" placeholder="Points earned for every Sales Match" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Entry UniLevel Bonus</label>
-                            <input type="number" class="form-control" id="_edit_unilvl_points" name="unilvl_points" placeholder="Entry Unilevel Points" required="required">
-                        </div>
-
-                        <div class="mt-2">
-                            <label class="fw-500">Package Description</label>
-                            <textarea class="form-control" name="description" id="_edit_description" placeholder="Ex. Package worth PHP 2,800.00 - PHP 3,600.00" required="required"></textarea>
+                            <textarea class="form-control" name="description" id="_edit_description" placeholder="Package Description" required="required"></textarea>
                         </div>
                     </div>
                     <div class="modal-footer">

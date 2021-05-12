@@ -354,27 +354,34 @@ class Products_model extends CI_Model {
 		return $response;
     }
     public function getRecommendedProducts(){
-    	$query = $this->db->SELECT('pt.name as product_name, pt.p_pub_id, pt.sku, pt.srp_price, pt.dc_price, pt.image, pt.url, pct.name as category')
-    		->FROM('products_tbl as pt')
-    		->JOIN('product_category_tbl as pct','pct.pc_id = pt.pc_id', 'left')
-    		->WHERE('pt.status','active')
-    		->WHERE_NOT_IN('pt.p_pub_id', $this->input->get('p_pub_id'))
-    		->LIMIT(4)
-    		->GET('products_tbl')->result_array();
-    	$result = array();
-    	foreach($query as $q){
-			$array = array(
-				'p_pub_id'=>$q['p_pub_id'],
-				'product_name'=> ( strlen($q['product_name']) > 30 ) ? substr($q['product_name'], 0, 28).'...' : $q['product_name'],
-				'category'=>$q['category'],
-				'price'=>(isset($this->session->user_id)) ? number_format($q['dc_price'], 2): number_format($q['srp_price'], 2) ,
-				'product_image'=>base_url().$q['image'],
-				'sku'=>$q['sku'],
-				'url'=>base_url('product/').$q['url'],
-			);
-			array_push($result, $array);
-    	}
-    	return $result;
+    	if ($this->input->get('nonce') !== $this->session->_rec_product_nonce) {
+			$data['status'] = 405;
+			$data['response'] = 'Request is not allowed!';
+			$this->output->set_content_type('application/json')->set_output(json_encode($data));
+		}
+		else{
+			$query = $this->db->SELECT('pt.name as product_name, pt.p_pub_id, pt.sku, pt.srp_price, pt.dc_price, pt.image, pt.url, pct.name as category')
+	    		->FROM('products_tbl as pt')
+	    		->JOIN('product_category_tbl as pct','pct.pc_id = pt.pc_id', 'left')
+	    		->WHERE('pt.status','active')
+	    		->WHERE_NOT_IN('pt.p_pub_id', $this->input->get('p_pub_id'))
+	    		->LIMIT(4)
+	    		->GET('products_tbl')->result_array();
+	    	$result = array();
+	    	foreach($query as $q){
+				$array = array(
+					'p_pub_id'=>$q['p_pub_id'],
+					'product_name'=> ( strlen($q['product_name']) > 30 ) ? substr($q['product_name'], 0, 28).'...' : $q['product_name'],
+					'category'=>$q['category'],
+					'price'=>(isset($this->session->user_id)) ? number_format($q['dc_price'], 2): number_format($q['srp_price'], 2) ,
+					'product_image'=>base_url().$q['image'],
+					'sku'=>$q['sku'],
+					'url'=>base_url('product/').$q['url'],
+				);
+				array_push($result, $array);
+	    	}
+	    	return $result;
+		}
     }
 
     public function searchProduct(){
