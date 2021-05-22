@@ -28,6 +28,7 @@ class Ledger_model extends CI_Model {
 					'direct_points'=>'₱ '.number_format($q['direct_points'], 2),
 					'pm_maximum_points'=>$q['pm_maximum_points'],
 					'am_maximum_points'=>$q['am_maximum_points'],
+					'profit_sharing_points'=>$q['profit_sharing_points'],
 					'status'=>$q['status'],
 					'cost'=>'₱ '.number_format($q['cost'], 2),
 					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
@@ -113,8 +114,11 @@ class Ledger_model extends CI_Model {
 				else if($q['status'] == 'withdrawal'){
 					$activity = 'Withdraw';
 				}
-				else if($q['status'] == 'uni_lvl_bonus'){
+				else if($q['status'] == 'unilvl_bonus'){
 					$activity = 'Entry UniLevel Bonus';
+				}
+				else if($q['status'] == 'sales_match'){
+					$activity = 'Sales Match';
 				}
 				$array = array(
 					'activity'=>$activity,

@@ -101,7 +101,7 @@
 								<table class="flexible" width="600" align="center" style="margin:0 auto;" cellpadding="0" cellspacing="0">
 									<tr>
 										<td class="" style="padding-bottom: 10px; padding-top: 20px;"> 
-											<a href="<?=$header_image_url?>"><img src="<?=$header_image?>" style="width: 280px; height: auto;" alt="Herbalhouse.com"></a>
+											<a href="<?=$header_image_url?>"><img src="<?=$header_image?>" style="width: 280px; height: auto;" alt="HerbalHouseBHP.com"></a>
 										</td>
 									</tr>
 									<tr>

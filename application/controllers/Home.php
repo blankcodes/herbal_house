@@ -189,6 +189,22 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	public function walkinBuyers (){
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
+			$data['title'] = 'Walk-in Buyers';
+			$data['page'] = 'admin_walkin_buyers';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/walkin_buyers');
+			$this->load->view('account/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	public function orderAdmin (){
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Orders';
@@ -328,6 +344,69 @@ class Home extends CI_Controller {
 			$this->load->view('account/leftside-menu');
             $this->load->view('account/navbar');
             $this->load->view('member/direct_invites');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
+
+	public function profitSharing (){
+		if ($this->session->user_type == 'member' && $this->session->user_id) {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['page'] = 'profit_sharing';
+            $data['title'] = 'Profit Sharing Board';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('member/profit_sharing');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
+	public function memberProducts (){
+		if ($this->session->user_type == 'member' && $this->session->user_id) {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+			$this->session->set_userdata('_product_nonce', $data['nonce']['hash']);
+            $data['page'] = 'member_products';
+            $data['title'] = 'Products';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('member/member_products');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
+	public function customerOrders (){
+		if ($this->session->user_type == 'member' && $this->session->user_id) {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['page'] = 'customer_orders';
+            $data['title'] = 'Customer Orders';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('member/customer_orders');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
+	public function myOrders (){
+		if ($this->session->user_type == 'member' && $this->session->user_id) {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['page'] = 'my_orders';
+            $data['title'] = 'My Orders';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('member/my_orders');
             $this->load->view('member/footer');
 		}
 		else{

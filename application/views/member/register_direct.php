@@ -61,7 +61,7 @@
                                         </div>
 
                                         <div class="form-floating mb-2">
-                                            <input type="text" maxlength="11" class="form-control" name="mobile_number" value="" id="mobile_number" placeholder="Enter Mobile Number" required  />
+                                            <input type="text" maxlength="11" class="form-control" name="mobile_number" value="09" id="mobile_number" placeholder="Enter Mobile Number" required  />
                                             <label for="mobile_number" class="fw-400">Mobile Number</label>
                                         </div>
 
@@ -85,7 +85,7 @@
                                             <label for="password" class="fw-400">Password</label>
                                             <small>*Default password is 123456</small>
                                             <div class="mt-2 pointer-cursor" data-password="false">
-                                                <small><span class="password-eye pointer-cursor"></span> Show Password</small>
+                                                <span class="password-eye pointer-cursor"></span> <small id="show_pass_reg">Show/Hide Password</small>
                                             </div>
                                         </div>
 

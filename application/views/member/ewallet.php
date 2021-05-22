@@ -44,7 +44,7 @@
                                 <div class="card widget-flat mt-3">
                                     <div class="card-body table-responsive mt-2">
                                         <h3 class="font-21">Recent Activity</h3>
-                                            <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap mt-2" id="">
+                                            <table class="table table-centered table-hover w-100 dt-responsive nowrap mt-2" id="">
                                                 <thead class="table-light">
                                                     <tr>
                                                         <th style="width: 20px;">

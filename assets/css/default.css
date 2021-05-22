@@ -1700,3 +1700,6 @@ body{
 .d-md-block {
   display: block !important;
 }
+.profile-image-upload > input {
+  display: none;
+}

@@ -8,7 +8,12 @@ if (page == 'admin_products') {
 else if (page == 'admin_products_category') {
 	showProductsCategory(1);
 }
-
+else if (page == 'product_code_list') {
+	showProductsCodeList(1);
+}
+else if (page == 'admin_walkin_buyers') {
+	showWalkinTx(1);
+}
 $("#refresh_prodct_tbl").on('click', function() {
 	showProducts(1);	
 })
@@ -151,7 +156,7 @@ function showProducts(page_no){
                     +'<td>'+res.result[i].created_at+'</td>'
                     +'<td class="take-action">'
                     		+'<div class="dropdown">'
-					    	+'<button class="btn btn-light dropdown-toggle btn-md" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+					    	+'<button class="btn btn-light dropdown-toggle btn-md font-12" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
 					        +'Action'
 					    	+'</button>'
 					    	+'<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
@@ -406,6 +411,7 @@ function getProductDataByID(p_id) {
 		$("#_edit_qty").val(res.data.qty)
 		$("#_edit_p_id").val(res.data.p_id)
 		$("#_edit_priority").val(res.data.priority)
+		$("#_edit_profit_sharing_points").val(res.data.profit_sharing_points)
 		$("#_edit_points").val(res.data.points)
 		$(tinymce.get('_edit_editor_description').getBody()).html(res.data.description);
 		$("#_edit_prodct_img_thumbnail").attr('src', base_url+''+res.data.image)
@@ -586,3 +592,211 @@ $("#_update_product_qty_form").on('submit', function(e) {
 	});
 	
 })
+$("#generate_code_btn").on('click', function() {
+	getProductList();
+	$("#generate_prod_code_modal").modal('show')	
+})
+$("#_generate_prod_form").on('submit', function(e) {
+	e.preventDefault();
+
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/product/_generate_code',
+		type: 'POST',
+		dataType: 'JSON',
+		data: $(this).serialize(),
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$("#generate_code_modal").modal('hide');
+			showProductsCodeList(1)
+			$("#_code_form input").val('');
+		}
+		else {
+			$.NotificationApp.send("Oh, snap!","Something went wrong. Please try again!","top-right","rgba(0,0,0,0.2)","error");
+		}
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		console.log("error");
+		$("#loader").attr('hidden','hidden');
+	})
+})
+$("#refresh_prodct_code_tbl").on('click', function() {
+	showProductsCodeList(1);
+})
+function showProductsCodeList(page_no){
+	$("#_product_codes_tbl").html('<tr class="text-center"><td colspan="6">Loading Product Category...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/product/_get_product_codes',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$('#product_code_pagination').html(res.pagination);
+		string = '';
+		for(var i in res.result) {
+			if (res.count > 0) {
+				string +='<tr>'
+                 	+'<td>'
+	                    +'<div class="form-check">'
+	                        +'<input type="checkbox" class="form-check-input" id="customCheck2">'
+	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
+	                    +'</div>'
+                    +'</td>'
+                    +'<td>'+res.result[i].name+'</td>'
+                    +'<td>'+res.result[i].product_code+'</td>'
+                    +'<td>'+res.result[i].created_at+'</td>'
+                    +'<td class="take-action text-left">'
+                    	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'
+                    +'</td>'
+       			+'</tr>'
+			}
+			else{
+				string = '<tr class="text-center"><td colspan="6">No records found!...</td></tr>';
+			}
+			$('#_product_codes_tbl').html(string);
+		}
+	})
+	.fail(function() {
+		$("#_product_codes_tbl").html('<tr class="text-center"><td colspan="6">No records found!</td></tr>');
+	})
+}
+$("#_process_walkin_buyer").on('click', function() {
+	getProductList();
+	$("#walkin_buy_modal").modal('toggle');
+})
+$("#search_code_name_form").on('submit', function(e) {
+	e.preventDefault();
+	keyword = $("#search_code_name").val();
+
+	if (!keyword || keyword == '' || keyword == ' ') {
+		return false;
+	}
+	$.ajax({
+		url: base_url+'api/v1/users/_get',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {keyword:keyword}
+	})
+	.done(function(res) {
+		string = '';
+		if (res.data.status == 'success') {
+			for(var i in res.data.search){
+				string+='<a href="#" onclick="searchUserCode(\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
+			}
+		}
+		else if(res.data.status == 'no_record'){
+			string = '<span class="margin-left-10">'+res.data.message+'</span>'
+		}
+		$("#search_user_dropdown").show()
+		$("#_member_search").html(string);
+	})
+	.fail(function() {
+		string = '<span class="margin-left-10">No records found!</span>'
+		$("#_member_search").html(string);
+	})
+});
+function searchUserCode(search_user_code, name){
+	$("#search_code_name").val('');
+	$("#_user_name").val(name);
+	$("#_user_code").val(search_user_code)
+	$("#search_user_dropdown").hide()
+}
+
+function getProductList(){
+	$.ajax({
+		url: base_url+'api/v1/product/_get_list',
+		type: 'GET',
+		dataType: 'JSOn',
+	})
+	.done(function(res) {
+		string = '<option disabled="" selected="">Select Product</option>';
+		if (res.data.length > 0) {
+			for(var i in res.data) {
+				string += '<option value="'+res.data[i].p_id+'">'+res.data[i].name+'</option>'
+			}
+			$("#_select_product").html(string)
+			$("#generate_code_modal").modal('show');
+		}
+		else{
+			$.NotificationApp.send("Oh, Snap!","Kindly add Product first","top-right","rgba(0,0,0,0.2)","error");
+		}
+	})
+	.fail(function() {
+		console.log("error");
+	})
+}
+$("#_send_product_code_btn").on('click', function(){
+	user_code = $("#_user_code").val(); /* user code, the receiver*/
+	qty = $("#qty").val(); /* user code, the receiver*/
+	p_id = $("#_select_product").val(); /* user code, the receiver*/
+
+	
+	if (!user_code || user_code == '') {
+		$.NotificationApp.send("Oh, snap!","User Code is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	$.ajax({
+		url: base_url+'api/v1/product/_process_walkin_tx',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {user_code:user_code, qty:qty, p_id:p_id},
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$("#search_code_name_form input").val('');
+			$("#walkin_buy_modal").modal('hide');
+		}
+		else{
+			$.NotificationApp.send("Oh, snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+		}
+	})
+	.fail(function() {
+		console.log("error");
+	})
+})
+function showWalkinTx(page_no){
+	$("#_walkin_tx_tbl").html('<tr class="text-center"><td colspan="6">Loading data...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/product/_get_product_tx_history',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$('#product_code_pagination').html(res.pagination);
+		string = '';
+		for(var i in res.result) {
+			if (res.count > 0) {
+				string +='<tr>'
+                 	+'<td>'
+	                    +'<div class="form-check">'
+	                        +'<input type="checkbox" class="form-check-input" id="customCheck2">'
+	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
+	                    +'</div>'
+                    +'</td>'
+                    +'<td>'+res.result[i].ref_no+'</td>'
+                    +'<td>'+res.result[i].user_code+'</td>'
+                    +'<td>'+res.result[i].name+'</td>'
+                    +'<td>'+res.result[i].status+'</td>'
+                    +'<td>'+res.result[i].created_at+'</td>'
+                    // +'<td class="take-action text-left">'
+                    // 	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'
+                    // +'</td>'
+       			+'</tr>'
+			}
+			else{
+				string = '<tr class="text-center"><td colspan="6">No records found!</td></tr>';
+			}
+			$('#_walkin_tx_tbl').html(string);
+		}
+	})
+	.fail(function() {
+		$("#_walkin_tx_tbl").html('<tr class="text-center"><td colspan="6">No records found!</td></tr>');
+	})
+}

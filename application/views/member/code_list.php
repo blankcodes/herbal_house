@@ -83,8 +83,8 @@
                                                                 <label class="form-check-label" for="customCheck1">&nbsp;</label>
                                                             </div>
                                                         </th>
-                                                        <th>Code</th>
                                                         <th>Package Name</th>
+                                                        <th>Code</th>
                                                         <th>Date Purchased</th>
                                                         <th>Action</th>
                                                     </tr>
@@ -131,8 +131,8 @@
                                                                 <label class="form-check-label" for="customCheck1">&nbsp;</label>
                                                             </div>
                                                         </th>
-                                                        <th>Code</th>
                                                         <th>Package Name</th>
+                                                        <th>Code</th>
                                                         <th>Date Purchased</th>
                                                         <th>Date Used</th>
                                                         <th>Used by</th>
@@ -173,13 +173,13 @@
                         <form id="search_code_name_form">
                             <div class="modal-body mb-3">
                                 <div class="alert alert-light bg-light text-dark border-0" role="alert">
-                                    Search using Member Name, Mobile Number or User Code and click "Transfer Code" button.
+                                    Search using Member Name, Mobile Number or User ID and click "Transfer Code" button.
                                     <div class="mt-2">
                                         Note that this action's cannot be undone once transfered, not unless the receiver send back the code to you
                                     </div>
                                 </div>
                                 <div class="dropdown">
-                                    <input type="text" class="form-control dropdown-toggle mt-2" id="search_code_name" name="code_name" placeholder="Search Name/User Code/Mobile number">
+                                    <input type="text" class="form-control dropdown-toggle mt-2" id="search_code_name" name="code_name" placeholder="Search Name/User ID/Mobile number">
                                         <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-user-dropdown" id="search_user_dropdown">
                                         <div id="_member_search" class="mb-1 mt-1">
                                                         <!-- item-->
@@ -194,8 +194,8 @@
                                 </div>
 
                                 <div class="mt-2">
-                                    <label>User Code</label>
-                                    <input type="text" class="form-control" id="_user_code" name="user_code" placeholder="User Code" readonly="">
+                                    <label>User ID</label>
+                                    <input type="text" class="form-control" id="_user_code" name="user_code" placeholder="User ID" readonly="">
                                 </div>
 
                                 <div class="mt-2">

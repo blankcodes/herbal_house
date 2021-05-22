@@ -56,6 +56,9 @@
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
                                     <li>
+                                        <a href="<?=base_url('ecom/walkin-buyers')?>">Walk-in Buyers</a>
+                                    </li>
+                                    <li>
                                         <a href="<?=base_url('product/code-list')?>">Product Code List</a>
                                     </li>
                                     <li>
@@ -97,6 +100,31 @@
                        
                         
                         <?php } else if ($this->session->user_type == 'member'){ ?>
+
+                        <li class="side-nav-item">
+                            <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
+                                <i class="uil-store"></i>
+                                <span> Ecommerce </span>
+                                <span class="menu-arrow"></span>
+                            </a>
+                            <div class="collapse" id="sidebarEcommerce">
+                                <ul class="side-nav-second-level">
+                                    <li>
+                                        <a href="<?=base_url('member/products')?>">Products</a>
+                                    </li>
+                                    
+                                    <li>
+                                        <a href="<?=base_url('member/customer-orders')?>">Customer Orders</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="<?=base_url('member/my-orders')?>">My Orders</a>
+                                    </li>
+                                    
+                                </ul>
+                            </div>
+                        </li>
+
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/direct-invites')?>" class="side-nav-link">
                                 <i class="uil-users-alt  "></i>
@@ -121,7 +149,12 @@
                                 <span> E-wallet</span>
                             </a>
                         </li>
-
+                        <li class="side-nav-item">
+                            <a href="<?=base_url('member/profit-sharing')?>" class="side-nav-link">
+                                <i class="uil-money-stack  "></i>
+                                <span> Profit Sharing</span>
+                            </a>
+                        </li>
                         <?php } ?>
                     </ul>
 

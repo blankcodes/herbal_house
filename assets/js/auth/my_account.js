@@ -43,6 +43,8 @@ function getUserDashboardOverview () {
 		$("#_cash_wallet").text(res.data.wallet)
 		$("#_left_side_monitor").text(res.data.left_side_monitor.pos_left)
 		$("#_right_side_monitor").text(res.data.right_side_monitor.pos_right)
+		$("#_total_pair").text(res.data.total_pair)
+		$("#_fifth_pair").text(res.data.fifth_pair)
 		$("#loader").attr('hidden','hidden');
 	})
 	.fail(function() {

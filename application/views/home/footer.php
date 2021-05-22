@@ -3,7 +3,7 @@
 	var base_url = '<?=base_url()?>';
 </script>
 <footer class="footer footer-alt">
-   &copy; <?=date('Y');?> HerbalHouse.com
+   &copy; <?=date('Y');?> HerbalHouseBHP.com
 </footer>
 
  <!-- bundle -->

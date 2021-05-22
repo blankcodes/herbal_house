@@ -9,7 +9,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6">
-                                &copy; <?=date('Y');?> HerbalHouse.com
+                                &copy; <?=date('Y');?> HerbalHouseBHP.com
                             </div>
                             <div class="col-md-6">
                                 <div class="text-md-end footer-links d-none d-md-block">
@@ -54,6 +54,7 @@
         <script src="<?=base_url()?>assets/js/auth/admin_orders.js"></script>
         <?php }else if($page == 'members_page') { ?><script src="<?=base_url()?>assets/js/auth/admin_members.js"></script>
         <?php }else if($page == 'admin_ledger') { ?><script src="<?=base_url()?>assets/js/auth/admin_ledger.js"></script>
+        <?php }else if($page == 'admin_walkin_buyers') { ?><script src="<?=base_url()?>assets/js/auth/admin_products.js"></script>
     <?php } ?>
 
 	</body>

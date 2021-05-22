@@ -14,7 +14,7 @@
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Dashboard</h4>
+                                    <h4 class="page-title">Welcome to Herbal House! </h4> 
                                 </div>
                             </div>
                         </div>     
@@ -22,6 +22,59 @@
                        
 
                        <div class="row">
+
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- Profile -->
+                                    <div class="card bg-success">
+                                        <div class="card-body profile-user-box">
+                                            <div class="row">
+                                                <div class="col-sm-8">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-auto col-12 col-lg-2 col-md-4">
+                                                            <div class="avatar-lg">
+                                                                <!-- <a href=""><img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail"></a> -->
+                                                                <?php if (!empty($userData['image'])){ ?>
+                                                                 <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                                                <?php } else{ ?>
+                                                                <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                                                <?php } ?>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>
+                                                                <h4 class="mt-1 mb-1 text-white"><?=$userData['fname'].' '.$userData['lname']?></h4>
+                                                                <!-- <p class="font-13 text-white-50"> Authorised Distributor</p> -->
+                                                                <p class="font-13 text-white-50"> Member</p>
+        
+                                                                <ul class="mb-0 list-inline text-light">
+                                                                    <li class="list-inline-item me-3">
+                                                                        <h5 class="mb-1">₱ 0.00</h5>
+                                                                        <p class="mb-0 font-13 text-white-50">Total Revenue</p>
+                                                                    </li>
+                                                                    <li class="list-inline-item">
+                                                                        <h5 class="mb-1">0</h5>
+                                                                        <p class="mb-0 font-13 text-white-50">Number of Orders</p>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> <!-- end col-->
+
+                                                <div class="col-sm-4">
+                                                    <div class="text-center mt-sm-0 mt-3 text-sm-end">
+                                                        <a href="<?=base_url()?>member/settings" class="btn btn-light btn-sm">
+                                                            <i class="mdi mdi-account-edit me-1"></i> Edit Profile
+                                                        </a>
+                                                    </div>
+                                                </div> <!-- end col-->
+                                            </div> <!-- end row -->
+
+                                        </div> <!-- end card-body/ profile-user-box-->
+                                    </div><!--end profile/ card -->
+                                </div> <!-- end col-->
+                            </div>
 
                             <div class="col-lg-4">
                                 <div class="card widget-flat">

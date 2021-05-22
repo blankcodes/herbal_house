@@ -48,6 +48,7 @@
                                                         <th>UniLvl Points</th>
                                                         <th>AM Points</th>
                                                         <th>PM Points</th>
+                                                        <th>Profit Sharing</th>
                                                         <th>Status</th>
                                                         <th>Added Date</th>
                                                         <th style="width: 85px;">Action</th>
@@ -116,6 +117,11 @@
                             <label for="" class="fw-400">Entry UniLevel Bonus</label>
                         </div>
 
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="profit_sharing_points" value=""  placeholder="Ex. Package 2498" required="required"/>
+                            <label for="" class="fw-400">Profit Sharing Points</label>
+                        </div>
+                        
                          <div class="form-floating mt-2">
                             <input type="number" class="form-control"  name="max_points_am"  id="" placeholder="Ex. Package 2498" required="required"/>
                             <label for="" class="fw-400">AM Sales Match Points</label>
@@ -127,6 +133,7 @@
                             <label for="" class="fw-400">PM Sales Match Points</label>
                             <small>Maximum Sales Match Bunos get in the PM period (12:00 - 23:59)</small>
                         </div>
+
 
                         <div class="mt-2">
                             <textarea class="form-control" name="description" id="" placeholder="Package Description" required="required"></textarea>
@@ -174,6 +181,11 @@
                        <div class="form-floating mt-2">
                             <input type="number" class="form-control"  name="match_points" value="" id="_edit_match_points" placeholder="Ex. Package 2498" required="required" />
                             <label for="_edit_match_points" class="fw-400">Sales Match Points</label>
+                        </div>
+
+                        <div class="form-floating mt-2">
+                            <input type="number" class="form-control"  name="profit_sharing_points" value="" id="_edit_profit_sharing_points" placeholder="Ex. Package 2498" required="required"/>
+                            <label for="_edit_profit_sharing_points" class="fw-400">Profit Sharing Points</label>
                         </div>
 
                         <div class="form-floating mt-2">

@@ -9,7 +9,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6">
-                                &copy; <?=date('Y');?> HerbalHouse.com
+                                &copy; <?=date('Y');?> HerbalHouseBHP.com
                             </div>
                             <div class="col-md-6">
                                 <div class="text-md-end footer-links d-none d-md-block">
@@ -36,6 +36,9 @@
 			var base_url = '<?=base_url()?>';
             var page = '<?=$page?>';
             var user_code = '<?=$userData['user_code']?>';
+            <?php if($page == 'member_products') { ?>
+            var nonce = '<?=$nonce['hash'];?>';
+        <?php } ?>
         </script>
 		 <!-- bundle -->
 		<script src="<?=base_url()?>assets/vendor/jquery-3.4.1.min.js"></script>
@@ -50,6 +53,10 @@
 <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
 <?php } else if($page == 'wallet') { ?>
 <script src="<?=base_url()?>assets/js/auth/_wallet.js"></script>
+<?php } else if($page == 'profit_sharing') { ?>
+<script src="<?=base_url()?>assets/js/auth/_profit_sharing.js"></script>
+<?php } else if($page == 'my_orders') { ?>
+<script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
 <?php } ?>
     <script>
         <?php if ($page == 'member_binary_list_uc' || $page == 'member_binary_list_direct') { ?>

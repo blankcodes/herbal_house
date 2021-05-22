@@ -2,17 +2,23 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Binary_model extends CI_Model {
+	/*
+	Sales_match_tbl = all points registered 
+	User_sales_match_monitor_tbl = all SUCCESS sales match recorded here
+	User_sales_match_tbl = right and left points recored here as monitored
+
+	*/ 
 	private function hash_password($password){
 	   return password_hash($password, PASSWORD_BCRYPT);
 	}
-	public function generateUserCode ($id, $length = 19) {
-	    $characters = '0123456789QWERTYUIOPASDFGHJKLZXCVBNM';
+	public function generateUserCode ($id, $length = 17) {
+	    $characters = '0123456789';
 	    $charactersLength = strlen($characters);
 	    $randomString = '';
 	    for ($i = 0; $i < $length; $i++) {
 	        $randomString .= $characters[rand(0, $charactersLength - 1)];
 	    }
-	    $u_code = 'HBH'.$randomString.$id;
+	    $u_code = '10000'.$randomString.$id;
 
 	    $check = $this->db->WHERE('user_code', $u_code)->GET('user_tbl')->num_rows();
 	    if ($check > 0) {
@@ -104,7 +110,11 @@ class Binary_model extends CI_Model {
 	        $checkSponsor = $this->checkSponsorCredit($user['package_code']);
 			$checkLinkID = $this->checkLinkID($user['linkID']);
 
-			if ($checkSponsor <= 0){
+			if(strlen($user['mobile_number']) < 11) {
+				$response['status'] = 'failed';
+				$response['message'] = "Please enter a correct mobile number!";
+			}
+			else if ($checkSponsor <= 0){
 				$response['status'] = 'failed';
 				$response['message'] = "You don't have enough code credit. Invite users and try again!";
 			}
@@ -199,7 +209,7 @@ class Binary_model extends CI_Model {
 			$referred_user = $this->db->SELECT('user_code, member_code')->WHERE('user_id', $referred_id)->GET('user_tbl')->row_array();
 
 			/* Get the points based on what package does the referred user purchased */
-			$packageData = $this->db->SELECT('pt.direct_points, pt.match_points, act.code')
+			$packageData = $this->db->SELECT('pt.direct_points, pt.match_points, act.code, pt.profit_sharing_points')
 				->FROM('package_tbl as pt')
 				->JOIN('activation_code_tbl as act','act.p_id = pt.p_id')
 				->WHERE('act.code', $package_code)
@@ -225,7 +235,7 @@ class Binary_model extends CI_Model {
 			/* INSERT new Notification */
 			$notif_log = array(
 				'user_id'=>$this->session->user_id, 
-				'message'=>'Congrats! You get ₱'.number_format($packageData['direct_points'], 2).' for direct referral.',
+				'message'=>'Congrats! You get ₱'.number_format($packageData['direct_points'], 2).' from direct referral.',
 				'created_at'=>date('Y-m-d H:i:s')
 			); 
 			$this->insertNewNotification($notif_log); 
@@ -258,13 +268,10 @@ class Binary_model extends CI_Model {
 	public function insertUniLvlData($sponsorID, $referred_user) {
 		/* UNILEVEL FEATURE FOR ENTRY LEVEL AND REPEAT PURCHASE*/ 
 		if (isset($this->session->user_id)) {
-		
 			
-			/* 1- 10th is for the entry unilevel detection points */ 
-
-
+			/* 1 - 10th is for the entry unilevel detection points */ 
 			/* LEVEL 1*/ 
-			$uniLvl1 = $this->db->SELECT('sponsor_id')
+			$uniLvl1 = $this->db->SELECT('sponsor_id, link_id')
 				->WHERE('sponsor_id', $sponsorID)
 				->WHERE('user_code',  $referred_user)
 				->GET('user_tbl')->row_array();
@@ -285,6 +292,8 @@ class Binary_model extends CI_Model {
 				->WHERE('referred_id', $sponsorID)
 				->WHERE('level', 1) /* previous lvl*/
 				->GET('unilevel_tbl')->row_array();
+
+			$linkData = $this->db->SELECT('link_id')->WHERE('user_code',  $referred_user)->GET('user_tbl')->row_array();
 			if (isset($uniLvl2)) {
 				$dataUniLvl2 = array(
 					'sponsor_id'=>$uniLvl2['sponsor_id'],
@@ -328,7 +337,7 @@ class Binary_model extends CI_Model {
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl4);
 				$this->insertUniLvlBonus($uniLvl4['sponsor_id'], $referred_user);
-				$this->insertSalesMatch($uniLvl4['sponsor_id'], $referred_user, 4);
+				$this->insertSalesMatch($uniLvl4['link_id'], $referred_user, 4);
 			}
 
 			/* LEVEL 5*/ 
@@ -344,7 +353,7 @@ class Binary_model extends CI_Model {
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl5);
 				$this->insertUniLvlBonus($uniLvl5['sponsor_id'], $referred_user);
-				$this->insertSalesMatch($uniLvl5['sponsor_id'], $referred_user, 5);
+				$this->insertSalesMatch($uniLvl5['link_id'], $referred_user, 5);
 			}
 
 			
@@ -444,7 +453,7 @@ class Binary_model extends CI_Model {
 					'level'=>11,
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl11);
-				$this->insertSalesMatch($uniLvl2['sponsor_id'], $referred_user, 2);
+				$this->insertSalesMatch($uniLvl11['sponsor_id'], $referred_user, 11);
 			}
 
 
@@ -460,7 +469,7 @@ class Binary_model extends CI_Model {
 					'level'=>12,
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl12);
-				$this->insertSalesMatch($uniLvl2['sponsor_id'], $referred_user, 2);
+				$this->insertSalesMatch($uniLvl12['sponsor_id'], $referred_user, 12);
 			}
 
 
@@ -476,7 +485,7 @@ class Binary_model extends CI_Model {
 					'level'=>13,
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl13);
-				$this->insertSalesMatch($uniLvl2['sponsor_id'], $referred_user, 2);
+				$this->insertSalesMatch($uniLvl13['sponsor_id'], $referred_user, 123);
 			}
 
 
@@ -492,7 +501,7 @@ class Binary_model extends CI_Model {
 					'level'=>14,
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl14);
-				$this->insertSalesMatch($uniLvl2['sponsor_id'], $referred_user, 2);
+				$this->insertSalesMatch($uniLvl14['sponsor_id'], $referred_user, 14);
 			}
 			
 	
@@ -508,7 +517,7 @@ class Binary_model extends CI_Model {
 					'level'=>15,
 				); 
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl15);
-				$this->insertSalesMatch($uniLvl2['sponsor_id'], $referred_user, 2);
+				$this->insertSalesMatch($uniLvl15['sponsor_id'], $referred_user, 15);
 			}
 		}
 	}
@@ -516,12 +525,85 @@ class Binary_model extends CI_Model {
 	public function insertSalesMatch($sponsor_id, $referred_user, $level) {
 		if (isset($this->session->user_id)) {
 
-			/*  GET USER'S LEVEL POSITION, RIGHT OR LEFT */ 
+			/* get sales match points of the referred user's package */ 
+			$packageData = $this->db->SELECT('pt.p_id, pt.match_points, pt.am_maximum_points, pt.pm_maximum_points')
+				->FROM('package_tbl as pt')
+				->JOIN('user_code_tbl as uct','uct.p_id = pt.p_id')
+				->JOIN('user_tbl as ut','ut.member_code = uct.code')
+				->WHERE('ut.user_code', $referred_user )
+				->GET()->row_array();
+
+			/* IDENTIFY IF ITS AM OR PM */ 
+			$dateNow = date('A');
+			$am_match_points = 0;
+			$pm_match_points = $packageData['match_points'];
+			if ($dateNow == 'AM') {
+				/* morning */ 
+				$am_match_points = $packageData['match_points'];
+				$pm_match_points = 0;
+			}
+
+
+
+			/*  GET USER'S LEVEL POSITION (RIGHT OR LEFT) TO IDENTIFY WHO IS MY LEFT SIDE AND RIGHT SIDE FOR SALES MATCH*/ 
 			if ($level == 1) {
-				$checkUser = $this->db->SELECT('position')
+				// $checkUserDirect = $this->db->WHERE('sponsor_id', $sponsor_id)->GET('user_tbl')->num_rows();
+				// if ($checkUserDirect == 1){
+				// 	$checkUser = $this->db->SELECT('position')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
+				// }
+				// else if ($checkUserDirect > 1) {
+				// 	$checkUser = $this->db->SELECT('position')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
+				// }
+
+				// $checkUserDirect = $this->db->WHERE('sponsor_id', $sponsor_id)->GET('user_tbl')->num_rows();
+
+				$userDirectLink = $this->db
+					->WHERE('sponsor_id', $sponsor_id)
+					->WHERE('link_id', $sponsor_id)
 					->WHERE('user_code', $referred_user)
 					->GET('user_tbl')->row_array();
+
+				$userDirectLinkRefer = $this->db
+					->WHERE('sponsor_id', $sponsor_id)
+					->WHERE('link_id !=', $sponsor_id)
+					->WHERE('user_code', $referred_user)
+					->GET('user_tbl')->row_array();
+
+
+				/* DIRECT REFERRAL WHICH IS LEVEL 1 RIGHT AND LEFT (ONLY 2 MEMBERS CAN BE HERE) */ 
+				if(isset($userDirectLink)) {
+					$checkUser = $this->db
+						->SELECT('position')
+						->WHERE('sponsor_id', $sponsor_id)
+						->WHERE('link_id', $sponsor_id)
+						->WHERE('user_code', $referred_user)
+						->GET('user_tbl')->row_array();
+				}
+
+				/* DIRECT REFERRAL WHICH CAN BE IN ANY OTHER LEVEL, INVITES WITH DIFFERENT LINK IDs */ 
+				else if (isset($userDirectLinkRefer)) {
+					$checkUser = $this->db
+						->SELECT('position, link_id')
+						->WHERE('user_code', $userDirectLinkRefer['link_id'])
+						->GET('user_tbl')->row_array();
+
+					/* 
+					*INSERT POINTS TO THE LINK ID OF INVITES	
+					*/ 
+					$this->insertPointsIndirectInvites($referred_user, $am_match_points, $pm_match_points, $packageData, $level);
+					// $dataArr = array(
+					// 	'user_code'=>$sponsor_id,
+					// 	'referred_id'=>$referred_user,
+					// 	'am_match_points'=>$am_match_points,
+					// 	'pm_match_points'=>$pm_match_points,
+					// 	'position'=>,
+					// 	'level'=>$level,
+					// 	'created_at'=>date('Y-m-d H:i:s'),
+					// ); 
+					// $this->db->INSERT('sales_match_tbl', $dataArr);
+				}
 			}
+
 			else {
 				$level = $level - 1; /* decrement level to get the sponsored id/ upline */
 				$checkUser = $this->db->SELECT('ut.position')
@@ -532,25 +614,8 @@ class Binary_model extends CI_Model {
 					->GET()->row_array();
 			}
 			
-			/* get sales match points of the referred user's package */ 
-			$getPoints = $this->db->SELECT('pt.match_points')
-				->FROM('package_tbl as pt')
-				->JOIN('user_code_tbl as uct','uct.p_id = pt.p_id')
-				->JOIN('user_tbl as ut','ut.member_code = uct.code')
-				->WHERE('ut.user_code', $referred_user )
-				->GET()->row_array();
-
-			/* IDENTIFY IF ITS AM OR PM */ 
-			$dateNow = date('A');
-			$am_match_points = 0;
-			$pm_match_points = $getPoints['match_points'];
-			if ($dateNow == 'AM') {
-				/* morning */ 
-				$am_match_points = $getPoints['match_points'];
-				$pm_match_points = 0;
-			}
-
-			/* INSERT SALES MATCH ON LEFT OR RIGHT*/ 
+			
+			/* START INSERT SALES MATCH ON LEFT OR RIGHT*/ 
 			$dataArr = array(
 				'user_code'=>$sponsor_id,
 				'referred_id'=>$referred_user,
@@ -561,13 +626,13 @@ class Binary_model extends CI_Model {
 				'created_at'=>date('Y-m-d H:i:s'),
 			); 
 			$this->db->INSERT('sales_match_tbl', $dataArr);
-
+			/* END INSERT SALES MATCH ON LEFT OR RIGHT*/ 
 
 			/* INSERT OR UPDATE SALES MATCH POINTS FOR MONITORING AND GETTING BONUS/CASH */ 
-			$this->insertUpdateSalesMatchMonitoring($checkUser['position'], $sponsor_id, $am_match_points, $pm_match_points);
+			$this->insertUpdateSalesMatchMonitoring($checkUser['position'], $sponsor_id, $am_match_points, $pm_match_points, $packageData);
 		}
 	}
-	public function insertUpdateSalesMatchMonitoring($user_position, $sponsor_id, $am_match_points, $pm_match_points){
+	public function insertUpdateSalesMatchMonitoring($user_position, $sponsor_id, $am_match_points, $pm_match_points, $packageData){
 		$position_col = ($user_position == 'left') ? 'pos_left' : 'pos_right';
 		$checkUserSalesMatch = $this->db->WHERE('user_code', $sponsor_id)->GET('user_sales_match_tbl')->row_array();
 
@@ -590,33 +655,130 @@ class Binary_model extends CI_Model {
 			$this->db->INSERT('user_sales_match_tbl', $dataSMArr);
 		}
 
+		// if ($level == 1){
+		// 	$referred_user_data = $this->db->SELECT('user_id, link_id')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
+
+		// 	$dataSMArr = array(
+		// 		'user_code'=>$referred_user_data['link_id'],
+		// 		$position_col => $time_points,
+		// 		'created_at'=>date('Y-m-d H:i:s'),
+		// 	);
+		// 	$this->db->INSERT('user_sales_match_tbl', $dataSMArr);
+		// }
+
 		/* MATCHING PROCESS OF POINTS RIGHT AND LEFT */
-		$this->subtractUserSalesMatchPoints($sponsor_id);
+		$this->userSalesMatchPointsReward($sponsor_id, $packageData);
 	}
-	public function subtractUserSalesMatchPoints ($sponsor_id) {
+	public function userSalesMatchPointsReward ($sponsor_id, $packageData) {
+		$dateNow = date('A');
+		if ($dateNow == 'AM') {
+			$am_maximum_points = $packageData['am_maximum_points'];
+		}
+		else if ($dateNow == 'PM'){
+			$pm_maximum_points = $packageData['pm_maximum_points'];
+		}
+
 		$userSMPoints = $this->db->WHERE('user_code', $sponsor_id)->GET('user_sales_match_tbl')->row_array();
 
-		/* if BOTH RIGHT and LEFT position have points */
+
+		/* SALES MATCH WILL OCCUR if BOTH RIGHT and LEFT position have points */
 		if ($userSMPoints['pos_right'] > 0 && $userSMPoints['pos_left'] > 0) {
 			
 			if ($userSMPoints['pos_right'] > $userSMPoints['pos_left']) { /* if POS_Right is higher than POS_Left */
 				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_left'];
 				$left_diff = $userSMPoints['pos_left'] - $userSMPoints['pos_left'];
+				$this->updateSalesMatchPoints($sponsor_id, $right_diff, $left_diff);
+				$this->insertSaleMatchBonus($sponsor_id, $packageData['match_points']);
 			}
-			else if($userSMPoints['pos_left'] > $userSMPoints['pos_right']){  /* if POS_Left is higher than POS_Right */
+
+			else if($userSMPoints['pos_left'] > $userSMPoints['pos_right']){ /* if POS_Left is higher than POS_Right */
 				$left_diff = $userSMPoints['pos_left'] - $userSMPoints['pos_right'];
 				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_right'];
+				$this->updateSalesMatchPoints($sponsor_id, $right_diff, $left_diff);
+				$this->insertSaleMatchBonus($sponsor_id, $packageData['match_points']);
 			}
-			else if($userSMPoints['pos_right'] == $userSMPoints['pos_left']){  /* if POS_Left and POS_Right are equal */
+			else if($userSMPoints['pos_right'] == $userSMPoints['pos_left']){ /* if POS_Left and POS_Right are equal */
 				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_right'];
 				$left_diff = $right_diff;
+				$this->updateSalesMatchPoints($sponsor_id, $right_diff, $left_diff);
+				$this->insertSaleMatchBonus($sponsor_id, $packageData['match_points']);
 			}
-			$data_smp = array(
-				'pos_right'=>$right_diff,
-				'pos_left'=>$left_diff,
-				'updated_at'=>date('Y-m-d H:i:s'),
+			else{
+
+			}
+		}
+	}
+	public function updateSalesMatchPoints($sponsor_id, $right_diff, $left_diff){
+		$data_smp = array(
+			'pos_right'=>$right_diff,
+			'pos_left'=>$left_diff,
+			'updated_at'=>date('Y-m-d H:i:s'),
+		);
+		$this->db->WHERE('user_code', $sponsor_id)->UPDATE('user_sales_match_tbl', $data_smp);
+	}
+	public function insertSaleMatchBonus($sponsor_id, $match_points){
+		/* INSERT NEW SALES MATCH ON THE RECORD */ 
+
+		if (isset($this->session->user_id)) {
+			$userData = $this->db->SELECT('user_id')->WHERE('user_code',$sponsor_id)->GET('user_tbl')->row_array();
+
+			/* START INSERT sales match monitor */
+			$cSMCount = $this->db->WHERE('user_id', $userData['user_id'])->GET('user_sales_match_monitor_tbl')->num_rows(); /* check sales match count*/
+
+			if (
+				$cSMCount == 4 ||  $cSMCount == 9 ||  $cSMCount == 14 || $cSMCount == 19 ||  
+				$cSMCount == 24 || $cSMCount == 29 || $cSMCount == 34 ||  $cSMCount == 39 || 
+				$cSMCount == 44 || $cSMCount == 49 || $cSMCount == 54 ||  $cSMCount == 59 || 
+				$cSMCount == 64 ||  $cSMCount == 69 ||  $cSMCount == 74 ||  $cSMCount == 79 ||
+				$cSMCount == 84 ||  $cSMCount == 89 || $cSMCount == 94 ||  $cSMCount == 99 ||
+				$cSMCount == 104 ||  $cSMCount == 109 || $cSMCount == 114 || $cSMCount == 119 ||
+				$cSMCount == 124 ||  $cSMCount == 129 || $cSMCount == 134 || $cSMCount == 139 ||
+				$cSMCount == 144 ||  $cSMCount == 149 || $cSMCount == 154 || $cSMCount == 159 ||
+				$cSMCount == 164 ||  $cSMCount == 169 || $cSMCount == 174 || $cSMCount == 179 
+			) {
+				$status = '5th_pair';
+				$this->insertWalletSalesMatch($sponsor_id, $match_points, $status);
+			}
+			else{
+				$status = 'default';
+				$this->insertWalletSalesMatch($sponsor_id, $match_points, $status);
+			}
+
+			/* INSERT POINTS FOR MONITORING */ 
+			$dataArr = array(
+				'user_id'=>$userData['user_id'],
+				'points'=>$match_points,
+				'status'=>$status,
+				'created_at'=>date('Y-m-d H:i:s')
 			);
-			$this->db->WHERE('user_code', $sponsor_id)->UPDATE('user_sales_match_tbl', $data_smp);
+			$this->db->INSERT('user_sales_match_monitor_tbl',$dataArr);
+			/* END INSERT sales match monitor */
+			
+			/* INSERT new Notification */
+			$notif_log = array(
+				'user_id'=>$userData['user_id'], 
+				'message'=>'Congrats! You get ₱'.number_format($match_points, 2).' from Sales Match Bonus!',
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertNewNotification($notif_log);
+		}
+	}
+	public function insertWalletSalesMatch($sponsor_id, $match_points, $status){
+		if (isset($this->session->user_id)) {
+			if ($status == '5th_pair') {
+				$status = '5th_pair';
+				$match_points = 0;
+			}
+			else{
+				$status = 'sales_match';
+			}
+			$dataArr = array(
+				'user_code'=>$sponsor_id,
+				'amount'=>$match_points,
+				'status'=>$status,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('wallet_tbl',$dataArr);
 		}
 	}
 	public function insertDirectReferralCashBonus($sponsorID, $packageData){
@@ -628,6 +790,20 @@ class Binary_model extends CI_Model {
 				'created_at'=>date('Y-m-d H:i:s')
 			);
 			$this->db->INSERT('wallet_tbl',$dataArr);
+
+			$this->accumulateProfitSharing($packageData);
+		}
+	}
+	public function accumulateProfitSharing($packageData){
+		if (isset($this->session->user_id)) {
+			$dataArr = array(
+				'type'=>'New Registered Account',
+				'amount'=>$packageData['profit_sharing_points'],
+				'status'=>'active',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('profit_sharing_tbl',$dataArr);
+
 		}
 	}
 	public function insertUniLvlBonus($sponsor_id, $referred_user) {
@@ -654,5 +830,182 @@ class Binary_model extends CI_Model {
 	}
 
 
+
+
+	/* indirect invites */ 
+	public function insertPointsIndirectInvites($referred_user, $am_match_points, $pm_match_points, $packageData, $level) {
+		$referredData = $this->db->SELECT('link_id')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
+
+		/* level 1*/ 
+		if ($level == 1) {
+
+			$userDirectLink = $this->db
+				->WHERE('sponsor_id', $sponsor_id)
+				->WHERE('link_id', $sponsor_id)
+				->WHERE('user_code', $referred_user)
+				->GET('user_tbl')->row_array();
+
+			$userDirectLinkRefer = $this->db
+				->WHERE('sponsor_id', $sponsor_id)
+				->WHERE('link_id !=', $sponsor_id)
+				->WHERE('user_code', $referred_user)
+				->GET('user_tbl')->row_array();
+
+
+			/* DIRECT REFERRAL WHICH IS LEVEL 1 RIGHT AND LEFT (ONLY 2 MEMBERS CAN BE HERE) */ 
+			if(isset($userDirectLink)) {
+				$checkUser = $this->db
+					->SELECT('position')
+					->WHERE('sponsor_id', $sponsor_id)
+					->WHERE('link_id', $sponsor_id)
+					->WHERE('user_code', $referred_user)
+					->GET('user_tbl')->row_array();
+			}
+
+			/* DIRECT REFERRAL WHICH CAN BE IN ANY OTHER LEVEL, INVITES WITH DIFFERENT LINK IDs */ 
+			else if (isset($userDirectLinkRefer)) {
+				$checkUser = $this->db
+					->SELECT('position, link_id')
+					->WHERE('user_code', $userDirectLinkRefer['link_id'])
+					->GET('user_tbl')->row_array();
+			}
+
+			$level1 = $this->db->WHERE('referred_id', $referredData['link_id'])
+				->WHERE('level', 1)
+				->GET('sales_match_tbl')->row_array();
+			// $level1Pos = $this->db->SELECT('position')->WHERE('user_code', $level1['referred_id'])->GET('user_tbl')->row_array();
+
+			$dataArr = array(
+				'user_code'=>$level1['referred_id'],
+				'referred_id'=>$referred_user,
+				'am_match_points'=>$am_match_points,
+				'pm_match_points'=>$pm_match_points,
+				'position'=>$level1Pos['position'],
+				'level'=>1,
+				'created_at'=>date('Y-m-d H:i:s'),
+			); 
+			$this->db->INSERT('sales_match_tbl', $dataArr);
+
+			/* insert User Sales Match tbl */ 
+			$position_col = ($level1Pos['position'] == 'left') ? 'pos_left' : 'pos_right';
+			$checkUserSalesMatch = $this->db->WHERE('user_code', $level1['referred_id'])->GET('user_sales_match_tbl')->row_array();
+
+			$time_points = ($am_match_points !== 0) ? $am_match_points : $pm_match_points;
+			$total_points = $time_points + $checkUserSalesMatch[$position_col];
+			if (isset($checkUserSalesMatch)) {
+				$dataSMArr = array(
+					'user_code'=>$level1['referred_id'],
+					$position_col => $total_points ,
+					'updated_at'=>date('Y-m-d H:i:s'),
+				);
+				$this->db->WHERE('user_code', $level1['referred_id'])->UPDATE('user_sales_match_tbl', $dataSMArr);
+			}
+			else{
+				$dataSMArr = array(
+					'user_code'=>$level1['referred_id'],
+					$position_col => $time_points,
+					'created_at'=>date('Y-m-d H:i:s'),
+				);
+				$this->db->INSERT('user_sales_match_tbl', $dataSMArr);
+			}
+
+			$this->indirectUserSalesMatchPointsReward ($level1['referred_id'], $packageData);
+		}
+	}
+
+	public function indirectUserSalesMatchPointsReward ($referred_id, $packageData) {
+		$dateNow = date('A');
+		if ($dateNow == 'AM') {
+			$am_maximum_points = $packageData['am_maximum_points'];
+		}
+		else if ($dateNow == 'PM'){
+			$pm_maximum_points = $packageData['pm_maximum_points'];
+		}
+
+		$userSMPoints = $this->db->WHERE('user_code', $referred_id)->GET('user_sales_match_tbl')->row_array();
+
+
+		/* SALES MATCH WILL OCCUR if BOTH RIGHT and LEFT position have points */
+		if ($userSMPoints['pos_right'] > 0 && $userSMPoints['pos_left'] > 0) {
+			
+			if ($userSMPoints['pos_right'] > $userSMPoints['pos_left']) { /* if POS_Right is higher than POS_Left */
+				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_left'];
+				$left_diff = $userSMPoints['pos_left'] - $userSMPoints['pos_left'];
+				$this->indirectUpdateSalesMatchPoints($referred_id, $right_diff, $left_diff);
+				$this->indirectInsertSaleMatchBonus($referred_id, $packageData['match_points']);
+			}
+
+			else if($userSMPoints['pos_left'] > $userSMPoints['pos_right']){ /* if POS_Left is higher than POS_Right */
+				$left_diff = $userSMPoints['pos_left'] - $userSMPoints['pos_right'];
+				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_right'];
+				$this->indirectUpdateSalesMatchPoints($referred_id, $right_diff, $left_diff);
+				$this->indirectInsertSaleMatchBonus($referred_id, $packageData['match_points']);
+			}
+			else if($userSMPoints['pos_right'] == $userSMPoints['pos_left']){ /* if POS_Left and POS_Right are equal */
+				$right_diff = $userSMPoints['pos_right'] - $userSMPoints['pos_right'];
+				$left_diff = $right_diff;
+				$this->indirectUpdateSalesMatchPoints($referred_id, $right_diff, $left_diff);
+				$this->indirectInsertSaleMatchBonus($referred_id, $packageData['match_points']);
+			}
+			else{
+
+			}
+		}
+	}
+	public function indirectUpdateSalesMatchPoints($referred_id, $right_diff, $left_diff){
+		$data_smp = array(
+			'pos_right'=>$right_diff,
+			'pos_left'=>$left_diff,
+			'updated_at'=>date('Y-m-d H:i:s'),
+		);
+		$this->db->WHERE('user_code', $referred_id)->UPDATE('user_sales_match_tbl', $data_smp);
+	}
+	public function indirectInsertSaleMatchBonus($referred_id, $match_points){
+		/* INSERT NEW SALES MATCH ON THE RECORD */ 
+
+		if (isset($this->session->user_id)) {
+			$userData = $this->db->SELECT('user_id')->WHERE('user_code',$referred_id)->GET('user_tbl')->row_array();
+
+			/* START INSERT sales match monitor */
+			$cSMCount = $this->db->WHERE('user_id', $userData['user_id'])->GET('user_sales_match_monitor_tbl')->num_rows(); /* check sales match count*/
+
+			if (
+				$cSMCount == 4 ||  $cSMCount == 9 ||  $cSMCount == 14 || $cSMCount == 19 ||  
+				$cSMCount == 24 || $cSMCount == 29 || $cSMCount == 34 ||  $cSMCount == 39 || 
+				$cSMCount == 44 || $cSMCount == 49 || $cSMCount == 54 ||  $cSMCount == 59 || 
+				$cSMCount == 64 ||  $cSMCount == 69 ||  $cSMCount == 74 ||  $cSMCount == 79 ||
+				$cSMCount == 84 ||  $cSMCount == 89 || $cSMCount == 94 ||  $cSMCount == 99 ||
+				$cSMCount == 104 ||  $cSMCount == 109 || $cSMCount == 114 || $cSMCount == 119 ||
+				$cSMCount == 124 ||  $cSMCount == 129 || $cSMCount == 134 || $cSMCount == 139 ||
+				$cSMCount == 144 ||  $cSMCount == 149 || $cSMCount == 154 || $cSMCount == 159 ||
+				$cSMCount == 164 ||  $cSMCount == 169 || $cSMCount == 174 || $cSMCount == 179 
+			) {
+				$status = '5th_pair';
+				$this->insertWalletSalesMatch($referred_id, $match_points, $status);
+			}
+			else{
+				$status = 'default';
+				$this->insertWalletSalesMatch($referred_id, $match_points, $status);
+			}
+
+			/* INSERT POINTS FOR MONITORING */ 
+			$dataArr = array(
+				'user_id'=>$userData['user_id'],
+				'points'=>$match_points,
+				'status'=>$status,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('user_sales_match_monitor_tbl',$dataArr);
+			/* END INSERT sales match monitor */
+			
+			/* INSERT new Notification */
+			$notif_log = array(
+				'user_id'=>$userData['user_id'], 
+				'message'=>'Congrats! You get ₱'.number_format($match_points, 2).' from Sales Match Bonus!',
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertNewNotification($notif_log);
+		}
+	}
 
 }

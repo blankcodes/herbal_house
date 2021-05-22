@@ -7,7 +7,12 @@ if (page == 'member_code_list') {
 else if (page == 'direct_invites') {
 	showDirectList(user_code, 1)
 }
-
+else if (page == 'member_products') {
+	showProductData(1, nonce)
+}
+else if (page == 'my_orders') {
+	showMyOrders(1)
+}
 $("#show_password").on('click', function() {
 	$("#_account_password_form input[type=password]").attr('type','text');
 	$(this).attr('hidden','hidden');
@@ -72,8 +77,8 @@ function showMemberCodes(page_no, user_code){
                                 +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
                             +'</div>'
                         +'</td>'
-                        +'<td>'+res.result[i].code+'</td>'
                         +'<td>'+res.result[i].package_name+'</td>'
+                        +'<td>'+res.result[i].code+'</td>'
                         +'<td>'+res.result[i].date_purchased+'</td>'
                         +'<td width="150">'
                             +'<button id="code_'+res.result[i].uc_id+'_btn" onclick="copyCode(\''+res.result[i].uc_id+'\',\''+res.result[i].code+'\')" class="font-12 text-left btn btn-light btn-sm mt-1"><i class="dripicons-copy"></i> </button>&nbsp;'
@@ -165,8 +170,8 @@ function showCodeHistory(page_no) {
                                 +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
                             +'</div>'
                         +'</td>'
-                        +'<td>'+res.result[i].code+'</td>'
                         +'<td>'+res.result[i].package_name+'</td>'
+                        +'<td>'+res.result[i].code+'</td>'
                         +'<td>'+res.result[i].date_purchased+'</td>'
                         +'<td>'+res.result[i].date_used+'</td>'
                         +'<td>'+res.result[i].used_by+'</td>'
@@ -174,12 +179,14 @@ function showCodeHistory(page_no) {
 			}
 		}
 		else{
-			string = '<tr class="text-center"><td colspan="6">No Records Found...</td></tr>';
+			string = '<tr class="text-center"><td colspan="6">No Records Found!</td></tr>';
 		}
 		$("#_code_history_tbl").html(string);
 	})
+	.fail(function() {
+		$("#_code_history_tbl").html('<tr class="text-center"><td colspan="6">No Records Found!</td></tr>');
+	})
 }
-
 $("#_account_password_form").on('submit', function(e){
 	$("#_change_pass_btn").attr('disabled','disabled').text('Changing Password...');
 	e.preventDefault();
@@ -319,3 +326,147 @@ $("#_send_member_code_btn").on('click', function(){
 		console.log("error");
 	})
 })
+function readURL(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            $('#profile_image_thumbnail')
+                .attr('src', e.target.result)
+                .width(150)
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+$("#_account_profile_form").on('submit', function(e) {
+	e.preventDefault();
+	var formData = new FormData(this);
+	var prof_img = $("#profile_image").val();
+	if (!prof_img) {
+		$.NotificationApp.send("Oh Snap!","Image is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	$("#loader").removeAttr('hidden');
+
+	$.ajax({
+		url: base_url+'api/v1/user/_update_profile_img',
+		type: 'POST',
+		dataType: 'JSON',
+		data: formData,
+		cache       : false,
+	    contentType : false,
+	    processData : false,
+	    statusCode: {
+			403: function() {
+				$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+			}
+		}
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+		}
+		else{
+			$.NotificationApp.send("Oh Snap!!",res.data.message,"top-right","rgba(0,0,0,0.2)","warning");
+		}
+		newCsrfData();
+		$("#loader").attr('hidden','hidden');
+
+	})
+	.fail(function() {
+		$("#loader").attr('hidden','hidden');
+
+	});
+});
+
+function showProductData(page_no, nonce) {
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/product/_get_products',
+		type: 'GET',
+		dataType: 'JSON',
+        data: {page_no:page_no,nonce:nonce}
+	})
+	.done(function(res) {
+		$('#products_pagination').html(res.pagination);
+		mob_string = '';
+		string = '';
+		if (parseInt(res.count) > 0) {
+			for(var i in res.result) {
+				string += '<div class="col-md-4 col-lg-3 col-6">'
+                       +'<div class="card">'
+                           	+'<a href="'+res.result[i].url+'"><img src="'+res.result[i].product_image+'" class="card-img-top" alt="'+res.result[i].product_name+'"></a>'
+                           	+'<div class="card-body card-title-div">'
+                                +'<a href="'+res.result[i].url+'"><h2 class="card-title text-secondary product-name">'+res.result[i].product_name+'<br>'
+                                	+'<small class="product-category">'+res.result[i].category+'</small></h2>'
+                                +'</a>'
+                                +'<h3 class="card-title text-success">₱ '+res.result[i].price+'</h3>'
+                               	+'<div class="d-grid">'
+                                +'<button href="#add_to_cart" class="btn btn-success rounded pt-1 pb-1 btn-sm mt-2" onclick="addToCart(\''+res.result[i].p_pub_id+'\')"><i class="uil-shopping-cart-alt me-1"></i> Buy Now</button>'
+                               	+'</div>'
+                            	
+                            +'</div> '
+                        +'</div> '
+                +'</div> '
+			}
+		}
+        else{
+            $('#err_title').text('Error Getting Products!')
+            $('#err_message').html("There's an error getting Products! Please refresh the page or click the <b>Refresh</b> button below.")
+            $("#_product_warning_modal").modal('show');
+            string = "<div class='text-center text-secondary'>Seems there's an error. Please try again!</div>"
+            mob_string = "<div class='text-center text-secondary'>Seems there's an error. Please try again!</div>"
+        }
+        $("#products_wrapper").html(string);
+	})
+	.fail(function() {
+		
+	})
+	.always(function() {
+		$("#loader").attr('hidden','hidden');
+	});
+	
+}
+function showMyOrders(page_no){
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/order/_get_my_orders',
+		type: 'GET',
+		dataType: 'JSON',
+        data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$('#products_pagination').html(res.pagination);
+		mob_string = '';
+		string = '';
+		if (parseInt(res.count) > 0) {
+			for(var i in res.result) {
+				string +='<tr>'
+                 	+'<td>'
+	                    +'<div class="form-check">'
+	                        +'<input type="checkbox" class="form-check-input" id="customCheck2">'
+	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
+	                    +'</div>'
+                    +'</td>'
+                    +'<td>'+res.result[i].ref_no+'</td>'
+                    +'<td>'+res.result[i].status+'</td>'
+                    +'<td>'+res.result[i].name+'</td>'
+                    +'<td>'+res.result[i].created_at+'</td>'
+                    // +'<td class="take-action text-left">'
+                    // 	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'
+                    // +'</td>'
+       			+'</tr>'
+			}
+		}
+        else{
+            
+        }
+        $("#my_orders_tbl").html(string);
+	})
+	.fail(function() {
+		
+	})
+	.always(function() {
+		$("#loader").attr('hidden','hidden');
+	});
+}

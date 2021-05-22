@@ -191,8 +191,7 @@ class Member_model extends CI_Model {
     		$query = $this->db->SELECT('ac_id, code, act.status, act.created_at, pt.name, pt.cost, act.updated_at')
 	    		->FROM('activation_code_tbl as act')
 	    		->JOIN('package_tbl as pt', 'pt.p_id = act.p_id')
-				->ORDER_BY('act.status', 'DESC')
-				->ORDER_BY('act.created_at', 'ASC')
+				->ORDER_BY('act.created_at', 'DESC')
 				->LIMIT($row_per_page, $row_no)
 				->GET()->result_array();
 			$result = array();
@@ -223,6 +222,7 @@ class Member_model extends CI_Model {
 			$query = $this->db->SELECT('fname, lname, user_code')
 				->LIKE('fname', $search)
 				->OR_LIKE('lname', $search)
+				->OR_LIKE('username', $search)
 				->OR_LIKE('user_code', $search)
 				->OR_LIKE('mobile_number', $search)
 				->WHERE('user_type','member')
@@ -496,5 +496,43 @@ class Member_model extends CI_Model {
     			return 'existing';
     		}
     	}
+    }
+    public function updateProfileImg(){
+    	$path = "assets/images/users/"; // upload directory
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif'); // valid image extnsion
+
+		if (isset($_FILES['profile_image'])) {
+			$img = str_replace(' ', '-', $_FILES['profile_image']['name']);
+			$tmp = $_FILES['profile_image']['tmp_name'];
+
+			// get uploaded file's extension
+			$ext = pathinfo($img, PATHINFO_EXTENSION);
+
+			// can upload same image using rand functions
+			$final_image = rand(1000,1000000).'-'.$img;
+
+			// check's valid format
+			if(in_array($ext, $valid_extensions)) { 
+				$path = $path.strtolower($final_image); 
+
+				if(move_uploaded_file($tmp, $path)) {
+					$data = array (
+						'image'=>$path,
+					);
+    				$this->db->WHERE('user_id', $this->session->user_id)->UPDATE('user_tbl',$data);
+					$response['status'] = 'success';
+					$response['message'] = 'Profile Image Uploaded!';
+				}
+			}
+			else {
+				$response['status'] = 'not_img';
+				$response['message'] = 'File not an image!';
+			}
+		}
+		else {
+			$response['status'] = 'failed';
+			$response['message'] = 'Something went wrong!';
+		}
+		return $response;
     }
 }

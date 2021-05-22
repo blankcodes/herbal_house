@@ -53,7 +53,7 @@
         <!-- end page -->
 
         <footer class="footer footer-alt">
-            <?=date('Y')?> &copy; HerbalHouse.com
+            <?=date('Y')?> &copy; HerbalHouseBHP.com
         </footer>
 
         <!-- bundle -->

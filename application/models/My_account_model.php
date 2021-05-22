@@ -9,6 +9,13 @@ class My_account_model extends CI_Model {
 				->GET('user_tbl')->row_array();
 		}
 	}
+	public function getTotalProfitShare() { /* one time checking */
+		if (isset($this->session->user_id)) {
+			$query = $this->db->SELECT_SUM('amount')->GET('profit_sharing_tbl')->row_array();
+			$amount = number_format($query['amount'], 2);
+			return array('amount'=>$amount);
+		}
+	}
 	public function getUserStatus() { /* one time checking */
 		if (isset($this->session->user_id)) {
 			return $this->db->SELECT('user_code, status')->WHERE('user_id', $this->session->user_id)
@@ -85,7 +92,12 @@ class My_account_model extends CI_Model {
 			$query = $this->db->SELECT('pos_left')
 				->WHERE('user_code ',$this->session->user_code)
 				->GET('user_sales_match_tbl')->row_array();
-			return $query;
+			if (isset($query)) {
+				return $query;
+			}
+			else{
+				return '0';
+			}
 		}
 	}
 	public function getRightSidePoints() {
@@ -93,7 +105,60 @@ class My_account_model extends CI_Model {
 			$query = $this->db->SELECT('pos_right')
 				->WHERE('user_code ',$this->session->user_code)
 				->GET('user_sales_match_tbl')->row_array();
+			if (isset($query)) {
+				return $query;
+			}
+			else{
+				return '0';
+			}
+		}
+	}
+	public function getTotalPair() {
+		if (isset($this->session->user_id)) {
+			$query = $this->db->WHERE('user_id', $this->session->user_id)
+				->GET('user_sales_match_monitor_tbl')->num_rows();
 			return $query;
 		}
+	}
+	public function getFifthPair() {
+		if (isset($this->session->user_id)) {
+			$query = $this->db->WHERE('user_id', $this->session->user_id)
+				->WHERE('status','5th_pair')
+				->GET('user_sales_match_monitor_tbl')->num_rows();
+			return $query;
+		}
+	}
+	public function getMyOrdersCount() {
+		if (isset($this->session->user_id)) {
+			return $this->db->SELECT('rpt.*, pt.name')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->WHERE('rpt.user_code', $this->session->user_code)
+				->GET()->num_rows();
+		}
+	}
+	public function getMyOrdersData($row_per_page, $row_no) {
+		if (isset($this->session->user_id)) {
+    		$query = $this->db->SELECT('rpt.*, pt.name')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->ORDER_BY('pt.created_at', 'DESC')
+				->WHERE('rpt.user_code', $this->session->user_code)
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'ref_no'=>$q['ref_no'],
+					'user_code'=>$q['user_code'],
+					'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
+					'status'=>$q['status'],
+					'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
 	}
 }

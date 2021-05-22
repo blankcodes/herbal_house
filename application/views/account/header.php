@@ -16,6 +16,9 @@
         <script src="<?=base_url()?>assets/js/sweetalert2.all.min.js"></script>
         <link href="<?=base_url()?>assets/css/default.css" rel="stylesheet" type="text/css" />
         <?php if ($page == 'member_binary_list' || $page == 'member_binary_list_uc' || $page == 'member_binary_list_direct'){ echo'<link href="'.base_url().'assets/css/binary.css" rel="stylesheet" type="text/css" />'; }?>
+        <?php if ($page == 'member_products'){ ?>
+        <link href="<?=base_url()?>assets/css/product.css" rel="stylesheet" type="text/css" />
+        <?php } ?>
     </head>
 
     <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false}'>

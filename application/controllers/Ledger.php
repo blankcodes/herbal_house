@@ -20,6 +20,7 @@ class Ledger extends CI_Controller {
         $unilvl_points = $this->input->post('unilvl_points');
         $max_points_am = $this->input->post('max_points_am');
         $max_points_pm = $this->input->post('max_points_pm');
+        $profit_sharing_points = $this->input->post('profit_sharing_points');
 
     	$dataArr = array(
     		'name'=>$package,
@@ -31,6 +32,7 @@ class Ledger extends CI_Controller {
             'unilvl_points'=>$unilvl_points,
             'am_maximum_points'=>$max_points_am,
             'pm_maximum_points'=>$max_points_pm,
+            'profit_sharing_points'=>$profit_sharing_points,
     		'created_at'=>date('Y-m-d H:i:s')
     	);
     	$checkPackage = $this->db->WHERE('name', $package)->GET('package_tbl')->num_rows();
@@ -110,6 +112,7 @@ class Ledger extends CI_Controller {
         $unilvl_points = $this->input->post('unilvl_points');
         $max_points_am = $this->input->post('max_points_am');
         $max_points_pm = $this->input->post('max_points_pm');
+        $profit_sharing_points = $this->input->post('profit_sharing_points');
 
     	$dataArr = array(
     		'name'=>$package,
@@ -119,7 +122,8 @@ class Ledger extends CI_Controller {
             'unilvl_points'=>$unilvl_points,
             'description'=>$description,
             'am_maximum_points'=>$max_points_am,
-    		'pm_maximum_points'=>$max_points_pm,
+            'pm_maximum_points'=>$max_points_pm,
+    		'profit_sharing_points'=>$profit_sharing_points,
     		'updated_at'=>date('Y-m-d H:i:s')
     	);
     	$this->ledger_model->updatePackageData($dataArr);

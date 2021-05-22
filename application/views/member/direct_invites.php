@@ -45,7 +45,7 @@
                                                                 <label class="form-check-label" for="customCheck1">&nbsp;</label>
                                                             </div>
                                                         </th>
-                                                        <th>ID</th>
+                                                        <th>User ID</th>
                                                         <th>Name</th>
                                                         <th>Mobile Number</th>
                                                         <th>Package Name</th>

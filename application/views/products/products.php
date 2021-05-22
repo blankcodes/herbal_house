@@ -132,6 +132,11 @@
                                                 <label for="qty" class="form-label">Points Earned</label>
                                                 <input class="form-control" type="number" id="points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
+
+                                            <div class="mb-3 col-lg-6">
+                                                <label for="qty" class="form-label">Profit Sharing Points</label>
+                                                <input class="form-control" type="number" id="profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
+                                            </div>
                                         </div>
 
 
@@ -217,6 +222,12 @@
                                                 <label for="qty" class="form-label">Points Earned</label>
                                                 <input class="form-control" type="number" id="_edit_points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
+
+                                            <div class="mb-3 col-lg-6">
+                                                <label for="qty" class="form-label">Profit Sharing Points</label>
+                                                <input class="form-control" type="number" id="_edit_profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
+                                            </div>
+
                                         </div>
 
 

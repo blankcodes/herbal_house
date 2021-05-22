@@ -20,8 +20,11 @@ function getNotifications(){
                    +' </p>'
                 +'</a>'
 			}
-			$("#notif_pannel").html(string)
 		}
+		else{
+			string = "<div class='text-center pt-1 pb-1'>Nothing here yet...</div>"
+		}
+		$("#notif_pannel").html(string)
 	})
 	.fail(function() {
 		console.log("error");

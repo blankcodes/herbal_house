@@ -26,7 +26,6 @@ $("#_add_code_btn").on('click', function(){
 	.fail(function() {
 		console.log("error");
 	})
-	
 })
 $('#_code_pagination').on('click','a',function(e){
     e.preventDefault(); 
@@ -104,7 +103,7 @@ function showMemberCodes(page_no){
                         +'<td width="200">'
                             +'<button id="code_'+res.result[i].ac_id+'_btn" onclick="copyCode(\''+res.result[i].ac_id+'\',\''+res.result[i].code+'\')" class="font-12 text-left btn btn-light btn-sm "><i class="dripicons-copy"></i> </button>&nbsp;'
                             +'<button '+btn_disabled+' onclick="deleteCode('+res.result[i].ac_id+')" class="font-12 text-left btn btn-light btn-sm"><i class="dripicons-trash"></i> </button>&nbsp;'
-                            +'<button '+btn_disabled+' onclick="sendTo(\''+res.result[i].ac_id+'\',\''+res.result[i].code+'\',\''+res.result[i].cost+'\')" class="font-12 text-left btn btn-light btn-sm"><i class=" uil-message"></i>  </button>'
+                            +'<button '+btn_disabled+' onclick="sendTo(\''+res.result[i].ac_id+'\',\''+res.result[i].code+'\',\''+res.result[i].cost+'\',\''+page_no+'\')" class="font-12 text-left btn btn-light btn-sm"><i class=" uil-message"></i>  </button>'
                         +'</td>'
 				+'</tr>'
 			}
@@ -161,7 +160,7 @@ function copyCode(ac_id, code) {
    	}); 
    	$.NotificationApp.send("Success!","Copied "+code+"! ","top-right","rgba(0,0,0,0.2)","success")
 }
-function sendTo(ac_id, code, cost){
+function sendTo(ac_id, code, cost, page_no){
 	$("#_user_code").val(''); /* user code, the receiver*/
 	$("#_activation_code").val(code);
 	$("#send_to_modal").modal('show');

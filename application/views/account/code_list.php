@@ -69,7 +69,7 @@
                         <!-- end row -->
 
                         <div id="generate_code_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-md ">
+                            <div class="modal-dialog modal-lg ">
                                 <div class="modal-content">
                                     <div class="modal-header bg-success">
                                         <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-edit"></i> <span id="_modal_title">Generate Activation Codes</span></h4>
@@ -110,10 +110,10 @@
                                     <form id="search_code_name_form">
                                         <div class="modal-body mb-3">
                                             <div class="alert alert-light bg-light text-dark border-0" role="alert">
-                                                Send this code to a member for their direct referral. Search using Member name or User Code and click "Send".
+                                                Send this code to a member for their direct referral. Search using Member name or User ID and click "Send".
                                             </div>
                                             <div class="dropdown">
-                                                <input type="text" class="form-control dropdown-toggle mt-2" id="search_code_name" name="code_name" placeholder="Search Name/User Code/Mobile number">
+                                                <input type="text" class="form-control dropdown-toggle mt-2" id="search_code_name" name="code_name" placeholder="Search Name/User ID/Mobile number">
                                                  <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-user-dropdown" id="search_user_dropdown">
                                                     <div id="_member_search" class="mb-1 mt-1">
                                                         <!-- item-->
@@ -128,8 +128,8 @@
                                             </div>
 
                                             <div class="mt-2">
-                                                <label>User Code</label>
-                                                <input type="text" class="form-control" id="_user_code" name="user_code" placeholder="User Code" readonly="">
+                                                <label>User ID</label>
+                                                <input type="text" class="form-control" id="_user_code" name="user_code" placeholder="User ID" readonly="">
                                             </div>
 
                                             <div class="mt-2">

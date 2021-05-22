@@ -364,5 +364,8 @@ class Members extends CI_Controller {
        
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
     }
-
+    public function updateProfileImg(){
+        $data = $this->member_model->updateProfileImg();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
 }

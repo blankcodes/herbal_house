@@ -3,7 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Products_model extends CI_Model {
 
-	
+	public function sitemapProducts(){
+		return $this->db->SELECT('url')->GET('products_tbl')->result_array();
+	}
 	public function addProduct(){
 	   	$path = "assets/images/products/"; // upload directory
 		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif'); // valid image extnsion
@@ -32,6 +34,7 @@ class Products_model extends CI_Model {
 						'qty'=>$this->input->post('qty'),
 						'description'=>$this->input->post('description'),
 						'p_pub_id'=>$this->productPublicID(),
+						'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 						'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_name'), 0, 35) )).'-'.$this->productUrlGenerator(),
 						'sku'=>$this->skuGenerator(),
 					);
@@ -83,6 +86,7 @@ class Products_model extends CI_Model {
 							'priority'=>$this->input->post('priority'),
 							'points'=>$this->input->post('points'),
 							'description'=>$this->input->post('description'),
+							'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 							'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 							'updated_at'=>date('Y-m-d H:i:s'),
 						);
@@ -107,6 +111,7 @@ class Products_model extends CI_Model {
 					'description'=>$this->input->post('description'),
 					'priority'=>$this->input->post('priority'),
 					'points'=>$this->input->post('points'),
+					'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 					'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 					'updated_at'=>date('Y-m-d H:i:s'),
 				);
@@ -235,6 +240,7 @@ class Products_model extends CI_Model {
 			$data['priority'] = $q['priority'];
 			$data['points'] = $q['points'];
 			$data['sku'] = $q['sku'];
+			$data['profit_sharing_points'] = $q['profit_sharing_points'];
 			$data['url'] = $q['url'];
 			$data['created_at'] = date('m/d/Y', strtotime($q['created_at']));
 
@@ -420,4 +426,207 @@ class Products_model extends CI_Model {
 			->OR_LIKE('pct.name', $search)
     		->GET()->num_rows();
     }
+     public function getProductList(){
+    	return $this->db->SELECT('p_id, name')
+			->ORDER_BY('name', 'ASC')
+			->WHERE('status', 'active')
+			->GET('products_tbl')->result_array();
+	}
+	public function generateProductCode() {
+		$input_num = $this->input->post('number');
+
+		for($x = 0; $x < $input_num; $x++){
+			$this->generateBulkProductCodes();
+		}
+
+	   	$activity_log = array('user_id'=>$this->session->user_id, 'message_log'=>'Generated '.$input_num.' Product Codes', 'ip_address'=>$this->input->ip_address(), 'platform'=>$this->agent->platform(), 'browser'=>$this->agent->browser(),'created_at'=>date('Y-m-d H:i:s')); 
+		$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+		$response['status'] = 'success';
+		$response['message'] = 'Successfully generated '.$input_num.' product codes';
+		return $response;
+	}
+	public function generateBulkProductCodes($length = 15){
+		$characters = '0123456789ABCDEF';
+	    $charactersLength = strlen($characters);
+	    $product_code = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $product_code .= $characters[rand(0, $charactersLength - 1)];
+	    }
+
+	    $check = $this->db->WHERE('product_code', $product_code)->GET('product_code_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateBulkProductCodes();
+	    }
+	    else{
+	    	$product = $this->input->post('product');
+		    $data = array(
+	    		'product_code'=>$product_code,
+	    		'p_id'=>$product
+	    	);
+	    	$this->db->INSERT('product_code_tbl', $data); /* insert member code*/
+	    }
+	}
+	public function insertActivityLog ($activity_log) {
+		$this->db->INSERT('activity_logs_tbl', $activity_log);
+	}
+	public function getProductCodesCount () {
+		if ($this->session->user_type == 'admin') {
+    		$query = $this->db->SELECT('pt.*, pct.product_code')
+	    		->FROM('products_tbl as pt')
+	    		->JOIN('product_code_tbl as pct', 'pct.p_id=pt.p_id')
+				->GET()->num_rows();
+			
+			return $query;
+    	}
+	}
+	public function getProductCodes ($row_per_page, $row_no) {
+		if ($this->session->user_type == 'admin') {
+    		$query = $this->db->SELECT('pt.*, pct.product_code')
+	    		->FROM('products_tbl as pt')
+	    		->JOIN('product_code_tbl as pct', 'pct.p_id=pt.p_id')
+				->ORDER_BY('pt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'p_id'=>$q['p_id'],
+					'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
+					'product_code'=>$q['product_code'],
+					'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+	}
+
+	public function processWalkinTx () {
+		if ($this->session->user_type == 'admin') {
+			$qty = $this->input->get('qty');
+			$p_id = $this->input->get('p_id');
+			$user_code = $this->input->get('user_code');
+
+			for ($x = 0; $x < $qty; $x++) {
+				$dataArr = array('status'=>'used');
+				$this->db->WHERE('p_id', $p_id)
+					->UPDATE('product_code_tbl', $dataArr);
+
+				$this->insertNewProductWalkinTransaction($p_id, $user_code);
+				$this->accumulateProfitSharing($p_id);
+			}
+			$response['status'] = 'success';
+			$response['message'] = 'Successfully Processed!';
+			return $response;
+			// $user_code = $this->input->get('user_code');
+
+			// /* check if there's existing code sent to the user_code (user) AND if the user_code(user) is existing */ 
+			// $checkUserCode = $this->db->WHERE('user_code', $user_code)->WHERE('product_code', $code)->WHERE('')->GET('product_code_tbl')->num_rows();
+
+			// $getUserCode = $this->db->SELECT('act.p_id')
+			// 	->FROM('activation_code_tbl as act')
+			// 	->JOIN('package_tbl as pt', 'pt.p_id = act.p_id')
+			// 	->WHERE('act.code', $code)
+			// 	->GET()->row_array();
+
+			// if ($checkCode <= 0 && $checkUserCode <= 0) {
+			// 	$data = array(
+			// 		'p_id'=>$getUserCode['p_id'], 
+			// 		'user_code'=>$user_code, 
+			// 		'code'=>$code, 
+			// 	);
+			// 	$this->db->INSERT('user_code_tbl', $data); 
+
+			// 	$mData = array('status'=>'sent');
+			// 	$this->db->WHERE('code',$code)->UPDATE('activation_code_tbl',$mData);
+
+			// 	$response['status'] = 'success';
+			// 	$response['message'] = 'Code Successfully sent!';
+			// }
+			// else{
+			// 	$response['status'] = 'failed';
+			// 	$response['message'] = 'Something went wrong. Please try again!';
+			// }
+			// return $response;
+    	}
+	}
+	public function accumulateProfitSharing($p_id){
+		if (isset($this->session->user_id)) {
+			$getProductPoints = $this->db->SELECT('profit_sharing_points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				'type'=>'Repeat Purchase',
+				'amount'=>$getProductPoints['profit_sharing_points'],
+				'status'=>'active',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('profit_sharing_tbl',$dataArr);
+
+		}
+	}
+	public function insertNewProductWalkinTransaction($p_id, $user_code){
+		if (isset($this->session->user_id)) {
+			$getProductPoints = $this->db->SELECT('profit_sharing_points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				'p_id'=>$p_id,
+				'ref_no'=>$this->generateProductPurchaseRefNo(),
+				'status'=>'complete',
+				'user_code'=>$user_code,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('repeat_purchase_history_tbl',$dataArr);
+
+		}
+	}
+	public function generateProductPurchaseRefNo($length = 9){
+		$characters = '0123456789ABCDEF';
+	    $charactersLength = strlen($characters);
+	    $ref_no = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $ref_no .= $characters[rand(0, $charactersLength - 1)];
+	    }
+
+	    $check = $this->db->WHERE('ref_no', $ref_no)->GET('repeat_purchase_history_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateProductPurchaseRefNo();
+	    }
+	    else{
+	    	return $ref_no;
+	    }
+	}
+	public function productRepeatPurchaseHistoryCount(){
+		if (isset($this->session->user_id)) {
+			return $this->db->SELECT('rpt.*, pt.name')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->GET()->num_rows();
+		}
+	}
+	public function productRepeatPurchaseHistory($row_per_page, $row_no){
+		if ($this->session->user_type == 'admin') {
+
+    		$query = $this->db->SELECT('rpt.*, pt.name')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->ORDER_BY('pt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'ref_no'=>$q['ref_no'],
+					'user_code'=>$q['user_code'],
+					'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
+					'status'=>$q['status'],
+					'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+	}
 }

@@ -15,8 +15,8 @@
         <meta property="og:title" content="Herbal House - Business Helping Porgram" />
         <meta property="og:description" content="Your partner for good health." />
         <meta property="og:url" content="<?=base_url()?>" />
-        <meta property="og:site_name" content="Herbal House" />
-        <meta property="og:image" content="<?=base_url()?>" />
+        <meta property="og:site_name" content="Herbal House - Business Helping Porgram" />
+        <meta property="og:image" content="<?=base_url('assets/images/bg2.jpg')?>" />
         <meta property="og:image:width" content="800" />
         <meta property="og:image:height" content="800" />
         <meta property="og:image:alt" content="Herbal House - Business Helping Program" />

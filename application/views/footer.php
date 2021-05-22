@@ -72,7 +72,7 @@
 
                 <div class="row footer-bt mt-3">
                     <div class="col-md-6 mt-4">
-                        <span class="text-muted font-13">&copy; All rights reserved. HerbalHouse.com</span>
+                        <span class="text-muted font-13">&copy; All rights reserved. HerbalHouseBHP.com</span>
                     </div>
                     <div class="col-md-6 mt-4 web-view">
                         <div class="text-md-end footer-links d-none d-md-block">
