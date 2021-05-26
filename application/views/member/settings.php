@@ -27,9 +27,9 @@
                                     <div class="col-md-12 col-xs-12 mb-2 profile-image-upload">
                                         <label for="profile_image">
                                             <?php if (!empty($userData['image'])){ ?>
-                                            <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                            <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail pointer-cursor"/>
                                             <?php } else{ ?>
-                                            <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                            <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail pointer-cursor"/>
                                             <?php } ?>
                                         </label>
                                         <input onchange="readURL(this)" type="file" id="profile_image" name="profile_image"  />

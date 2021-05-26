@@ -11,7 +11,7 @@ class Binary_model extends CI_Model {
 	private function hash_password($password){
 	   return password_hash($password, PASSWORD_BCRYPT);
 	}
-	public function generateUserCode ($id, $length = 17) {
+	public function generateUserCode ($id, $length = 13) {
 	    $characters = '0123456789';
 	    $charactersLength = strlen($characters);
 	    $randomString = '';
@@ -31,15 +31,14 @@ class Binary_model extends CI_Model {
 	    }
 	}
 	public function getBinaryTree() {
-		$data = $this->db->SELECT('fname, lname, user_code')
+		$data = $this->db->SELECT('fname, lname, user_code, image')
 			->WHERE('user_code', $this->input->get('user_code'))
 			->GET('user_tbl')->row_array();
-
 		$data['direct'] = $this->getDownlineUsers($data['user_code']);
 		return $data;
 	}
 	public function getDownlineUsers($user_code) {
-		$downline = $this->db->SELECT('fname, lname, user_code, sponsor_id, position')
+		$downline = $this->db->SELECT('fname, lname, user_code, sponsor_id, position, image')
 			->WHERE('link_id', $user_code)
 			->GET('user_tbl')->result_array();
 		$result = array();
@@ -50,6 +49,7 @@ class Binary_model extends CI_Model {
 				'user_code'=>$r['user_code'],
 				'sponsor_id'=>$r['sponsor_id'],
 				'position'=>$r['position'],
+				'image' => $r['image'],
 				'dLvl2'=>$this->get2ndLvlDownlineUser($r['user_code']),
 			);
 			array_push($result, $arr);
@@ -57,7 +57,7 @@ class Binary_model extends CI_Model {
 		return $result;
 	}
 	public function get2ndLvlDownlineUser($user_code) {
-		$query = $this->db->SELECT('fname, lname, user_code, sponsor_id, position')
+		$query = $this->db->SELECT('fname, lname, user_code, sponsor_id, position, image')
 			->WHERE('link_id', $user_code)
 			->GET('user_tbl')->result_array();
 		return $query;
@@ -519,6 +519,66 @@ class Binary_model extends CI_Model {
 				$this->db->INSERT('unilevel_tbl', $dataUniLvl15);
 				$this->insertSalesMatch($uniLvl15['sponsor_id'], $referred_user, 15);
 			}
+
+			/* LEVEL 16*/ 
+			$uniLvl16 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 15) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl16)) {
+				$dataUniLvl16 = array(
+					'sponsor_id'=>$uniLvl16['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>16,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl16);
+				$this->insertSalesMatch($uniLvl16['sponsor_id'], $referred_user, 16);
+			}
+
+			/* LEVEL 17*/ 
+			$uniLvl17 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 16) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl17)) {
+				$dataUniLvl17 = array(
+					'sponsor_id'=>$uniLvl17['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>17,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl17);
+				$this->insertSalesMatch($uniLvl17['sponsor_id'], $referred_user, 17);
+			}
+
+			/* LEVEL 18*/ 
+			$uniLvl18 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 17) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl18)) {
+				$dataUniLvl18 = array(
+					'sponsor_id'=>$uniLvl18['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>18,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl18);
+				$this->insertSalesMatch($uniLvl18['sponsor_id'], $referred_user, 18);
+			}
+
+			/* LEVEL 18*/ 
+			$uniLvl18 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 17) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl18)) {
+				$dataUniLvl18 = array(
+					'sponsor_id'=>$uniLvl18['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>18,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl18);
+				$this->insertSalesMatch($uniLvl18['sponsor_id'], $referred_user, 18);
+			}
 		}
 	}
 
@@ -588,9 +648,9 @@ class Binary_model extends CI_Model {
 						->GET('user_tbl')->row_array();
 
 					/* 
-					*INSERT POINTS TO THE LINK ID OF INVITES	
+					*INSERT POINTS TO THE LINK ID OF INDIRECT INVITES	
 					*/ 
-					$this->insertPointsIndirectInvites($referred_user, $am_match_points, $pm_match_points, $packageData, $level);
+					$this->insertPointsIndirectInvites($sponsor_id, $referred_user, $am_match_points, $pm_match_points, $packageData, $level);
 					// $dataArr = array(
 					// 	'user_code'=>$sponsor_id,
 					// 	'referred_id'=>$referred_user,
@@ -832,84 +892,65 @@ class Binary_model extends CI_Model {
 
 
 
-	/* indirect invites */ 
-	public function insertPointsIndirectInvites($referred_user, $am_match_points, $pm_match_points, $packageData, $level) {
-		$referredData = $this->db->SELECT('link_id')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
+	/* INDIRECT INVITES */ 
+	public function insertPointsIndirectInvites($sponsor_id, $referred_user, $am_match_points, $pm_match_points, $packageData, $level) {
+		$referredData = $this->db->SELECT('link_id, position')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
 
 		/* level 1*/ 
 		if ($level == 1) {
+			$getPosition = $this->db
+				->SELECT('position')
+				->WHERE('sponsor_id', $referredData['link_id'])
+				->WHERE('link_id', $referredData['link_id'])
+				->WHERE('position', 'right')
+				->GET('user_tbl')->num_rows();
 
-			$userDirectLink = $this->db
-				->WHERE('sponsor_id', $sponsor_id)
-				->WHERE('link_id', $sponsor_id)
-				->WHERE('user_code', $referred_user)
-				->GET('user_tbl')->row_array();
-
-			$userDirectLinkRefer = $this->db
-				->WHERE('sponsor_id', $sponsor_id)
-				->WHERE('link_id !=', $sponsor_id)
-				->WHERE('user_code', $referred_user)
-				->GET('user_tbl')->row_array();
-
-
-			/* DIRECT REFERRAL WHICH IS LEVEL 1 RIGHT AND LEFT (ONLY 2 MEMBERS CAN BE HERE) */ 
-			if(isset($userDirectLink)) {
-				$checkUser = $this->db
-					->SELECT('position')
-					->WHERE('sponsor_id', $sponsor_id)
-					->WHERE('link_id', $sponsor_id)
-					->WHERE('user_code', $referred_user)
-					->GET('user_tbl')->row_array();
+			if($getPosition['position'] == 'left') {
+				$indirectPositon = 'right';
 			}
-
-			/* DIRECT REFERRAL WHICH CAN BE IN ANY OTHER LEVEL, INVITES WITH DIFFERENT LINK IDs */ 
-			else if (isset($userDirectLinkRefer)) {
-				$checkUser = $this->db
-					->SELECT('position, link_id')
-					->WHERE('user_code', $userDirectLinkRefer['link_id'])
-					->GET('user_tbl')->row_array();
+			else if($getPosition['position'] == 'right'){
+				$indirectPositon = 'left';
 			}
-
-			$level1 = $this->db->WHERE('referred_id', $referredData['link_id'])
-				->WHERE('level', 1)
-				->GET('sales_match_tbl')->row_array();
-			// $level1Pos = $this->db->SELECT('position')->WHERE('user_code', $level1['referred_id'])->GET('user_tbl')->row_array();
+			else{
+				$indirectPositon = $referredData['position'];
+			}
 
 			$dataArr = array(
-				'user_code'=>$level1['referred_id'],
+				'user_code'=>$referredData['link_id'],
 				'referred_id'=>$referred_user,
 				'am_match_points'=>$am_match_points,
 				'pm_match_points'=>$pm_match_points,
-				'position'=>$level1Pos['position'],
+				'position'=>$indirectPositon,
 				'level'=>1,
 				'created_at'=>date('Y-m-d H:i:s'),
 			); 
 			$this->db->INSERT('sales_match_tbl', $dataArr);
 
-			/* insert User Sales Match tbl */ 
-			$position_col = ($level1Pos['position'] == 'left') ? 'pos_left' : 'pos_right';
-			$checkUserSalesMatch = $this->db->WHERE('user_code', $level1['referred_id'])->GET('user_sales_match_tbl')->row_array();
+			/*********************** insert User Sales Match tbl */ 
+			$position_col = ($indirectPositon == 'left') ? 'pos_left' : 'pos_right';
+			$checkUserSalesMatch = $this->db->WHERE('user_code', $referredData['link_id'])->GET('user_sales_match_tbl')->row_array();
 
 			$time_points = ($am_match_points !== 0) ? $am_match_points : $pm_match_points;
 			$total_points = $time_points + $checkUserSalesMatch[$position_col];
+
 			if (isset($checkUserSalesMatch)) {
 				$dataSMArr = array(
-					'user_code'=>$level1['referred_id'],
+					'user_code'=>$referredData['link_id'],
 					$position_col => $total_points ,
 					'updated_at'=>date('Y-m-d H:i:s'),
 				);
-				$this->db->WHERE('user_code', $level1['referred_id'])->UPDATE('user_sales_match_tbl', $dataSMArr);
+				$this->db->WHERE('user_code', $referredData['link_id'])->UPDATE('user_sales_match_tbl', $dataSMArr);
 			}
 			else{
 				$dataSMArr = array(
-					'user_code'=>$level1['referred_id'],
+					'user_code'=>$referredData['link_id'],
 					$position_col => $time_points,
 					'created_at'=>date('Y-m-d H:i:s'),
 				);
 				$this->db->INSERT('user_sales_match_tbl', $dataSMArr);
 			}
 
-			$this->indirectUserSalesMatchPointsReward ($level1['referred_id'], $packageData);
+			$this->indirectUserSalesMatchPointsReward ($referredData['link_id'], $packageData);
 		}
 	}
 

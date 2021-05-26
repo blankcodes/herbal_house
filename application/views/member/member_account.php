@@ -23,7 +23,7 @@
 
                        <div class="row">
 
-                            <div class="row">
+                            <div class="">
                                 <div class="col-sm-12">
                                     <!-- Profile -->
                                     <div class="card bg-success">
@@ -43,7 +43,8 @@
                                                         </div>
                                                         <div class="col">
                                                             <div>
-                                                                <h4 class="mt-1 mb-1 text-white"><?=$userData['fname'].' '.$userData['lname']?></h4>
+                                                                <h4 class="mt-1 mb-1 text-white text-capitalize"><?=$userData['fname'].' '.$userData['lname']?> <br>
+                                                                    <span class="font-13 fw-300"><?= (isset($this->session->user_code)) ? '#'.$this->session->user_code : ''?></span></h4>
                                                                 <!-- <p class="font-13 text-white-50"> Authorised Distributor</p> -->
                                                                 <p class="font-13 text-white-50"> Member</p>
         
@@ -163,7 +164,7 @@
 
 
                        <div class="mt-4">
-                            <h4>Product Purchase Activity</h4>
+                            <h4>Product Unilevel Activity</h4>
                             <div class="table-responsive">
                                 <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap" id="products-datatable">
                                     <thead class="table-light">

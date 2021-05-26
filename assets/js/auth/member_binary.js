@@ -78,14 +78,26 @@ function showBinaryTree(code_id) {
 	})
 	.done(function(res) {
 		string = '';
+        head_img = '<h2 class="uil-user-circle font-40"></h2>';
+        if (res.data.image !== '') {
+            head_img = '<h2 class="font-40 "><img src="'+base_url+''+res.data.image+'" class="avatar-sm rounded-circle"></h2>'
+        }
+
 		tbl_node_left = '<a class="register-name" href="'+base_url+'register/sponsor/'+user_code+'/'+res.data.user_code+'/left">Register</a>';
 		tbl_node_right = '<a class="register-name" href="'+base_url+'register/sponsor/'+user_code+'/'+res.data.user_code+'/right">Register</a>';
+        tbl_node_l_img = '<h2 class="uil-user-circle font-40"></h2>';
+        tbl_node_r_img = '<h2 class="uil-user-circle font-40"></h2>';
+
 
 		tbl_node_l_left_lvl2 = '';
 		tbl_node_l_right_lvl2 = '';
+        tbl_node_l_left_lvl2_img = '<h2 class="uil-user-circle font-40"></h2>';
+        tbl_node_l_right_lvl2_img = '<h2 class="uil-user-circle font-40"></h2>';
 
 		tbl_node_r_right_lvl2 = '';
 		tbl_node_r_left_lvl2 = '';
+        tbl_node_r_left_lvl2_img = '<h2 class="uil-user-circle font-40"></h2>';
+        tbl_node_r_right_lvl2_img = '<h2 class="uil-user-circle font-40"></h2>';
 
 		direct = res.data.direct;
 
@@ -93,18 +105,30 @@ function showBinaryTree(code_id) {
 		if (direct.length > 0) {
 			// direct | level 1 left and right
 			if (direct[0] != undefined && direct[0].position == 'left') {
-				tbl_node_left = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].fname+' '+direct[0].lname+'" onclick="showBinaryTree(\''+direct[0].user_code+'\')">'+direct[0].fname+' '+direct[0].lname+'</a>';
-			}
+                tbl_node_left = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].fname+' '+direct[0].lname+'" onclick="showBinaryTree(\''+direct[0].user_code+'\')">'+direct[0].fname+' '+direct[0].lname+'</a>';
+                if (direct[0].image !== '') {
+                    tbl_node_l_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                }
+            }
 			else if(direct[0] != undefined && direct[0].position == 'right') {
 				tbl_node_right = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].fname+' '+direct[0].lname+'" onclick="showBinaryTree(\''+direct[0].user_code+'\')"">'+direct[0].fname+' '+direct[0].lname+'</a>';
-			}
+                if (direct[0].image !== '') {
+                    tbl_node_r_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                }
+            }
 
 			if (direct[1] != undefined && direct[1].position == 'right') {
 				tbl_node_right = '<a data-position="direct_direct" class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[1].fname+' '+direct[1].lname+'" onclick="showBinaryTree(\''+direct[1].user_code+'\')">'+direct[1].fname+' '+direct[1].lname+'</a>';
-			}
+                if (direct[1].image !== '') {
+                    tbl_node_r_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                }
+            }
 			else if(direct[1] != undefined && direct[1].position == 'left') {
 				tbl_node_left = '<a data-position="left_direct" class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[1].fname+' '+direct[1].lname+'" onclick="showBinaryTree(\''+direct[1].user_code+'\')">'+direct[1].fname+' '+direct[1].lname+'</a>';
-			}
+                if (direct[1].image !== '') {
+                    tbl_node_l_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                }
+            }
 
 
 			// level 2 LEFT (left and right)
@@ -115,18 +139,30 @@ function showBinaryTree(code_id) {
 
 				if (direct[0].dLvl2[0] != undefined && direct[0].dLvl2[0].position == 'left') {
 					tbl_node_l_left_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[0].user_code+'\')">'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'</a>';
-				}
+				    if (direct[0].dLvl2[0].image !== '') {
+                        tbl_node_l_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
+                }
 				else if(direct[0].dLvl2[0] != undefined && direct[0].dLvl2[0].position == 'right') {
 					tbl_node_l_right_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[0].user_code+'\')">'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'</a>';
-				}
+				    if (direct[0].dLvl2[0].image !== '') {
+                        tbl_node_l_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
+                }
 				
 				
 				if (direct[0].dLvl2[1] != undefined && direct[0].dLvl2[1].position == 'left') {
 					tbl_node_l_left_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[1].user_code+'\')">'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'</a>';
-				}
+				    if (direct[0].dLvl2[1].image !== '') {
+                        tbl_node_l_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
+                }
 				else if(direct[0].dLvl2[1] != undefined && direct[0].dLvl2[1].position == 'right') {
 					tbl_node_l_right_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[1].user_code+'\')">'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'</a>';
-				}
+				    if (direct[0].dLvl2[1].image !== '') {
+                        tbl_node_l_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
+                }
 			}
 
             if (direct[0].position == 'right') {
@@ -135,16 +171,28 @@ function showBinaryTree(code_id) {
 
                 if (direct[0].dLvl2[0] != undefined && direct[0].dLvl2[0].position == 'left') {
                     tbl_node_r_left_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[0].user_code+'\')">'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'</a>';
+                    if (direct[0].dLvl2[0].image !== '') {
+                        tbl_node_r_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
                 }
                 else if(direct[0].dLvl2[0] != undefined && direct[0].dLvl2[0].position == 'right') {
                     tbl_node_r_right_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[0].user_code+'\')">'+direct[0].dLvl2[0].fname+' '+direct[0].dLvl2[0].lname+'</a>';
+                    if (direct[0].dLvl2[0].image !== '') {
+                        tbl_node_r_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
                 }
 
                 if (direct[0].dLvl2[1] != undefined && direct[0].dLvl2[1].position == 'left') {
                     tbl_node_r_left_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[1].user_code+'\')">'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'</a>';
+                    if (direct[0].dLvl2[1].image !== '') {
+                        tbl_node_r_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
                 }
                 else if(direct[0].dLvl2[1] != undefined && direct[0].dLvl2[1].position == 'right') {
                     tbl_node_r_right_lvl2 = '<a class="name-direct-invite text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'" onclick="showBinaryTree(\''+direct[0].dLvl2[1].user_code+'\')">'+direct[0].dLvl2[1].fname+' '+direct[0].dLvl2[1].lname+'</a>';
+                    if (direct[0].dLvl2[1].image !== '') {
+                        tbl_node_r_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                    }
                 }
             }
 
@@ -157,17 +205,29 @@ function showBinaryTree(code_id) {
                     
                     if (direct[1].dLvl2[0] != undefined && direct[1].dLvl2[0].position == 'left') {
                         tbl_node_r_left_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[0].user_code+'\')">'+direct[1].dLvl2[0].fname+' '+direct[1].dLvl2[0].lname+'</a>';
+                        if (direct[1].dLvl2[0].image !== '') {
+                            tbl_node_r_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[0].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                     else if(direct[1].dLvl2[0] != undefined && direct[1].dLvl2[0].position == 'right') {
                         tbl_node_r_right_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[0].user_code+'\')">'+direct[1].dLvl2[0].fname+' '+direct[1].dLvl2[0].lname+'</a>';
+                        if (direct[1].dLvl2[0].image !== '') {
+                            tbl_node_r_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                     
                     
                     if (direct[1].dLvl2[1] != undefined && direct[1].dLvl2[1].position == 'left') {
                         tbl_node_r_left_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[1].user_code+'\')">'+direct[1].dLvl2[1].fname+' '+direct[1].dLvl2[1].lname+'</a>';
-                    }
+                        if (direct[1].dLvl2[1].image !== '') {
+                            tbl_node_r_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
+                   }
                     else if(direct[1].dLvl2[1] != undefined && direct[1].dLvl2[1].position == 'right') {
                         tbl_node_r_right_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[1].user_code+'\')">'+direct[1].dLvl2[1].fname+' '+direct[1].dLvl2[1].lname+'</a>';
+                        if (direct[1].dLvl2[1].image !== '') {
+                            tbl_node_r_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                 }
 
@@ -177,17 +237,29 @@ function showBinaryTree(code_id) {
                     
                     if (direct[1].dLvl2[0] != undefined && direct[1].dLvl2[0].position == 'left') {
                         tbl_node_l_left_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[0].user_code+'\')">'+direct[1].dLvl2[0].fname+' '+direct[1].dLvl2[0].lname+'</a>';
+                        if (direct[1].dLvl2[0].image !== '') {
+                            tbl_node_l_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                     else if(direct[1].dLvl2[0] != undefined && direct[1].dLvl2[0].position == 'right') {
                         tbl_node_l_right_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[0].user_code+'\')">'+direct[1].dLvl2[0].fname+' '+direct[1].dLvl2[0].lname+'</a>';
+                        if (direct[1].dLvl2[0].image !== '') {
+                            tbl_node_l_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[0].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                     
                     
                     if (direct[1].dLvl2[1] != undefined && direct[1].dLvl2[1].position == 'left') {
                         tbl_node_l_left_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[1].user_code+'\')">'+direct[1].dLvl2[1].fname+' '+direct[1].dLvl2[1].lname+'</a>';
+                        if (direct[1].dLvl2[1].image !== '') {
+                            tbl_node_l_left_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                     else if(direct[1].dLvl2[1] != undefined && direct[1].dLvl2[1].position == 'right') {
                         tbl_node_l_right_lvl2 = '<a class="name-direct-invite text-capitalize" onclick="showBinaryTree(\''+direct[1].dLvl2[1].user_code+'\')">'+direct[1].dLvl2[1].fname+' '+direct[1].dLvl2[1].lname+'</a>';
+                        if (direct[1].dLvl2[1].image !== '') {
+                            tbl_node_l_right_lvl2_img = '<h2 class="font-40 "><img src="'+base_url+''+direct[1].dLvl2[1].image+'" class="avatar-sm rounded-circle"></h2>'
+                        }
                     }
                 }
             }
@@ -199,7 +271,7 @@ function showBinaryTree(code_id) {
                        	+'<tr>'
                            	+'<td colspan="4">'
                                	+'<div class="node" node-id="1">'
-                                   	+'<h2 class="uil-user-circle font-40"></h2>'
+                                   	+head_img
                                    	+'<a class="user-name text-capitalize" data-bs-container="#tooltip-container2" data-bs-toggle="tooltip" data-bs-placement="top" title="'+res.data.fname+' '+res.data.lname+'">'+res.data.fname+' '+res.data.lname+'</a>'
                                	+'</div>'
                            	+'</td>'
@@ -237,7 +309,7 @@ function showBinaryTree(code_id) {
                                         +'<tr>'
                                             +'<td colspan="4">'
                                                 +'<div class="node" node-id="2">'
-                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                    +tbl_node_l_img
                                                    	+tbl_node_left
                                                 +'</div>'
                                             +'</td>'
@@ -268,7 +340,7 @@ function showBinaryTree(code_id) {
                                                         +'<tr>'
                                                             +'<td colspan="4">'
                                                                 +'<div class="node" node-id="4">'
-                                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                                    +tbl_node_l_left_lvl2_img
                                                                     +tbl_node_l_left_lvl2
                                                                 +'</div>'
                                                             +'</td>'
@@ -283,7 +355,7 @@ function showBinaryTree(code_id) {
                                                         +'<tr>'
                                                             +'<td colspan="4">'
                                                                 +'<div class="node" node-id="5">'
-                                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                                    +tbl_node_l_right_lvl2_img
                                                                     +tbl_node_l_right_lvl2
                                                                 +'</div>'
                                                             +'</td>'
@@ -302,7 +374,7 @@ function showBinaryTree(code_id) {
                                         +'<tr>'
                                             +'<td colspan="4">'
                                                 +'<div class="node" node-id="3">'
-                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                    +tbl_node_r_img
                                                 	+tbl_node_right
                                                 +'</div>'
                                             +'</td>'
@@ -335,7 +407,7 @@ function showBinaryTree(code_id) {
                                                         +'<tr>'
                                                             +'<td colspan="4">'
                                                                 +'<div class="node" node-id="6">'
-                                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                                    +tbl_node_r_left_lvl2_img
                                                                     +tbl_node_r_left_lvl2
                                                                 +'</div>'
                                                             +'</td>'
@@ -350,7 +422,7 @@ function showBinaryTree(code_id) {
                                                         +'<tr>'
                                                             +'<td colspan="4">'
                                                                 +'<div class="node" node-id="7">'
-                                                                    +'<h2 class="uil-user-circle font-40"></h2>'
+                                                                    +tbl_node_r_right_lvl2_img
                                                                     +tbl_node_r_right_lvl2 
                                                                 +'</div>'
                                                             +'</td>'

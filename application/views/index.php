@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <title>Herbal House - Business Helping Porgram</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta content="Herbal House - Business Helping Porgram. Your partner for good health." name="description" />
+        <meta name="description" content="Explore Herbal House - Business Helping Porgram Herbal and Healthy products. Your partner for good health."/>
         <meta name="theme-color" content="#0acf67" />
         <meta name="mobile-web-app-capable" content="yes">
 

@@ -46,9 +46,13 @@ function getUserDashboardOverview () {
 		$("#_total_pair").text(res.data.total_pair)
 		$("#_fifth_pair").text(res.data.fifth_pair)
 		$("#loader").attr('hidden','hidden');
+
+		setTimeout(function() {
+			getUserDashboardOverview()
+		}, 30000)
 	})
 	.fail(function() {
-		console.log("error");
+		
 	})
 }
 function getHerbalHouseOverview() {
