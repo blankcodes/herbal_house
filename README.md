@@ -2,8 +2,6 @@
 Ecommerce and MLM system of Herbal House | Business Helping Program
 
 ### Features:
-* Ecommerce with drop shipping feature
-* Binary System
-* Entry Unilevel
+* Ecommerce and dropshipping feature
 * Product Unilevel
-* Profit Sharing
+* Unlimited Referral and Affiliate program
