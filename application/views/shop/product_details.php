@@ -8,8 +8,8 @@
                                     <div class="page-title-left">
                                         <ol class="breadcrumb mt-2">
                                             <li class="breadcrumb-item"><a href="<?=base_url();?>">Herbal House</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Shop</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);"><?=$product['category']?></a></li>
+                                            <li class="breadcrumb-item"><a href="<?=base_url('#shop_now')?>">Shop</a></li>
+                                            <li class="breadcrumb-item"><a href="<?=$product['category_url']?>"><?=$product['category']?></a></li>
                                             <li class="breadcrumb-item active"><?=$product['name']?></li>
                                         </ol>
                                     </div>
@@ -22,7 +22,7 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <div class="row">
+                                        <div class="row mt-2">
                                             <div class="col-lg-5">
                                                 <!-- Product image -->
                                                 <a href="javascript: void(0);" class="text-center d-block mb-4">
@@ -30,7 +30,7 @@
                                                 </a>
 
                                             </div> <!-- end col -->
-                                            <div class="col-lg-6 product--details">
+                                            <div class="col-lg-7 product--details">
                                                 <!-- Product title -->
                                                 <h1 class="mt-0 font-24" id="_view_prod_name"><a href="javascript: void(0);" class=""></a> <?=$product['name']?></h1>
 
@@ -41,9 +41,9 @@
 
                                                 <!-- Product price -->
                                                 <div class="row mt-1">
-                                                        <div class="col-lg-6">
-                                                            <h2 id="_view_dc_price" class="text-success font-35"> ₱  <?=number_format($product['price'], 2)?></h2>
-                                                        </div>
+                                                    <div class="col-lg-6">
+                                                        <h2 id="_view_dc_price" class="text-success font-35"> ₱  <?=number_format($product['price'], 2)?></h2>
+                                                     </div>
                                                 </div>
 
                                                 <!-- Quantity -->
@@ -78,7 +78,7 @@
                                                     <a href="https://www.pinterest.com/pin/create/button/?url=<?=$product['product_url'];?>&media=<?=$product['image_url'];?>&description=<?=$product['category'];?>&title=<?=$product['name'];?>" target="_blank" rel="noopener nofollow"><span class="pinterest-color font-25 mdi mdi-pinterest "></span></a>
                                                     <!-- <a href="" target="_blank" rel="noopener nofollow"><span class="facebook-color font-25 uil-link-alt  "></span></a> -->
                                                     <a id="mobile-view" href="fb-messenger://share/?link=<?=$product['product_url'];?>&app_id=576747789395855" target="_blank" rel="noopener nofollow"><span class="fb-messenger-color font-25 uil-facebook-messenger  "></span></a>
-                                                    <a href="https://twitter.com/intent/tweet?original_referer=<?=$product['product_url'];?>&text=Buy <?=$product['name'];?>&url=<?=$product['product_url'];?>&hashtags=HerbalHouse" target="_blank" rel="noopener nofollow"><span class="twitter-color font-25 uil-twitter "></span></a>
+                                                    <a href="https://twitter.com/intent/tweet?original_referer=<?=$product['product_url'];?>&text=Buy <?=$product['name'];?>&url=<?=$product['product_url'];?>&hashtags=HerbalHousePH" target="_blank" rel="noopener nofollow"><span class="twitter-color font-25 uil-twitter "></span></a>
                                                     <a href="<?=$product['product_url'];?>" target="_blank" rel="noopener nofollow"><span class="facebook-color font-25 uil-link-alt  "></span></a>
                                                  </div>
 
@@ -113,7 +113,16 @@
                                                <?=$product['description'];?>
                                             </div>
                                         </div>
-                                       
+                                        
+                                        <div class="card tilebox-one mt-3 border-success border br-15">
+                                            <div class="card-body">
+                                                <i class="mdi mdi-cash-multiple float-end text-success"></i>
+                                                <h5 class="text-success mt-0">Earn and Get Rewarded.</h5>
+                                                <p class="mb-0 ">
+                                                    Earn and get points for this product! <br>Join Herbal House Philippines today and get rewarded for your purchases. <a class="text-success" href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=product_desc_anchor&utm_campaign=anchor_text')?>">Sign up now</a>.
+                                                </p>
+                                            </div> <!-- end card-body-->
+                                        </div>
                                     </div> <!-- end card-body-->
                                 </div> <!-- end card-->
                             </div> <!-- end col-->
@@ -155,6 +164,15 @@
                                             <div class="font-15">
                                                 <?=$product['description']?>
                                             </div>
+                                        </div>
+
+                                        <div class="card tilebox-one mt-4 border-success border br-15">
+                                            <div class="card-body">
+                                                <h5 class="text-success mt-0">Earn and Get Rewarded.</h5>
+                                                <p class="mb-0 ">
+                                                    Earn and get points for this product! <br>Join Herbal House Philippines today and get rewarded for your purchases. <a class="text-success" href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=product_desc_anchor&utm_campaign=anchor_text')?>">Sign up now</a>.
+                                                </p>
+                                            </div> <!-- end card-body-->
                                         </div>
 
                                         <!-- Share  -->
@@ -236,5 +254,12 @@
                         </div>
                     </div>
                     <input type="hidden" id="_product_nonce" name="<?=$nonce['name'];?>" value="<?=$nonce['hash'];?>" />
+
+                    <?php if (isset($_GET['ref'])){
+                        $user = $this->db->WHERE('username', $_GET['ref'])->GET('user_tbl')->row_array();
+                        if (isset($user) && !isset($this->session->username)) {
+                            $this->session->set_userdata('referrer', $user['username']);
+                        }
+                    }?>
 
                    

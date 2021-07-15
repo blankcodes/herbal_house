@@ -19,29 +19,29 @@
                         </div>     
                         <!-- end page title --> 
 
-                        <div class="table-responsive">
-                            <table class="table table-centered mb-0 font-13" >
-                                <thead class="table-light">
-                                    <tr>
-                                        <th style="width: 20px;">
-                                            <div class="form-check">
-                                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                                            </div>
-                                        </th>
-                                        <th>Order Ref No.</th>
-                                        <th>Order Status</th>
-                                        <th>Product Item</th>
-                                        <th>Ordered Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="my_orders_tbl">
-                                                    
-                                </tbody>
-                            </table>
-                            <div class="mt-1" id="order_pagination">
-                                                
-                             </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-centered mb-0 font-13">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Order Ref No.</th>
+                                                <th>Order Status</th>
+                                                <th>Sales</th>
+                                                <th>Payment Method</th>
+                                                <th>Payment Status</th>
+                                                <th>Ordered Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="my_orders_tbl">
+                                                            
+                                        </tbody>
+                                    </table>
+                                    <div class="mt-1" id="my_order_pagination">
+                                                        
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <!-- end row -->
                     </div> <!-- container -->

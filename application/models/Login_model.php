@@ -19,4 +19,14 @@ class Login_model extends CI_Model {
 		$this->db->WHERE('user_id', $this->session->user_id)
 			->UPDATE('user_tbl', $data);
 	}
+	public function checkCookie($cookie){
+		if ($this->agent->is_mobile()) {
+			return $this->db->WHERE('mobile_rm_token', $cookie)
+			->GET('user_tbl')->row_array();
+		}
+		else{
+			return $this->db->WHERE('web_rm_token', $cookie)
+			->GET('user_tbl')->row_array();
+		}
+	}
 }

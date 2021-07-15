@@ -19,8 +19,8 @@
                         </div>     
                         <!-- end page title --> 
 
-                        <div class="row">
-                            <div class="col-lg-6">
+                        <div class="row mb-5">
+                            <div class="col-lg-6 mt-3">
                                 <form id="_account_profile_form">
                                     <h2 class="font-22 fw-600"><i class="uil-image"></i> Update Profile</h2>
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
@@ -39,43 +39,30 @@
                                         <button class="btn btn-lg btn-primary rounded font-15 k-btn" type="submit" id="_update_profile">Upload Profile</button>
                                     </div>
                                 </form>
+                            </div>
 
-                                <form id="_account_settings_form" class="mt-5">
-                                    <h2 class="font-22 fw-600"><i class="uil-edit"></i> Update Account Info</h2>
+
+
+                            <div class="col-lg-6 mt-3">
+                                <form id="_account_username_form">
+                                    <h2 class="font-22 fw-600"><i class="uil-edit"></i> Update Username</h2>
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                    <div class="alert bg-white fade show c-black" role="alert">
+                                        Note that updating your Username will affect your Shop's URL. Your previous product URLs will not work due to this change. <br>
 
-                                    <div class="form-floating mb-2">
-                                        <input type="text" class="form-control" name="" value="<?=$userData['user_code']?>" id="floatingInput" placeholder="User ID" readonly />
-                                        <label for="floatingInput" class="fw-400">User ID</label>
+                                        After this change, make sure you share the new <a href="<?=base_url('member/products')?>" target="_blank" rel="noopener">product URL</a> to your previous buyers and update your existing marketing materials posted on various social media websites. . 
                                     </div>
-
                                     <div class="form-floating mb-2">
-                                        <input type="text" class="form-control" name="fname" value="<?=$userData['fname']?>" id="floatingInput" placeholder="First Name" />
-                                        <label for="floatingInput" class="fw-400">First Name</label>
+                                        <input type="text" class="form-control" name="username" value="<?=$userData['username']?>" id="floatingInput" placeholder="User ID"  />
+                                        <label for="floatingInput" class="fw-400">Username</label>
                                     </div>
-
-                                    <div class="form-floating mb-2">
-                                        <input type="text" class="form-control"  name="lname" value="<?=$userData['lname']?>" id="floatingPassword" placeholder="Last Name" />
-                                        <label for="floatingPassword" class="fw-400">Last Name</label>
-                                    </div>
-
-                                    <div class="form-floating mb-2">
-                                        <input type="email" class="form-control"  name="email_address" value="<?=$userData['email_address']?>" id="floatingPassword" placeholder="Email Address" />
-                                        <label for="floatingPassword" class="fw-400">Email Address</label>
-                                    </div>
-
-                                    <div class="form-floating mb-2">
-                                        <input type="number" class="form-control" name="mobile_number" value="<?=$userData['mobile_number']?>" id="floatingPassword" placeholder="Mobile Number" />
-                                        <label for="floatingPassword" class="fw-400">Mobile Number</label>
-                                    </div>
-
                                     <div class="mt-2">
-                                        <button class="btn btn-lg btn-primary rounded font-17 k-btn" type="submit" id="_update_acct_btn">Update</button>
+                                        <button class="btn btn-lg btn-primary rounded font-15 k-btn" type="submit" id="_update_username_btn">Update</button>
                                     </div>
                                 </form>
                             </div>
 
-                            <div class="col-lg-6">
+                            <div class="col-lg-6 mt-3">
                                 <form id="_account_password_form">
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                     <h2 class="font-22 fw-600"><i class="uil-lock"></i> Update Password</h2>
@@ -101,11 +88,41 @@
                                     </div>
 
                                     <div class="mt-2">
-                                        <button class="btn btn-lg btn-primary rounded font-17 k-btn" type="submit" id="_change_pass_btn">Change Password</button>
+                                        <button class="btn btn-lg btn-primary rounded font-15 k-btn" type="submit" id="_change_pass_btn">Change Password</button>
                                     </div>
                                 </form>
                             </div>
 
+
+                            <div class="col-lg-6 mt-3">
+                                <form id="_account_settings_form">
+                                    <h2 class="font-22 fw-600"><i class="uil-edit"></i> Update Account Info</h2>
+                                    <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+
+                                    <div class="form-floating mb-2">
+                                        <input type="text" class="form-control" name="" value="<?=$userData['user_code']?>" id="floatingInput" placeholder="User ID" readonly />
+                                        <label for="floatingInput" class="fw-400">User ID</label>
+                                    </div>
+
+                                    
+
+                                    <div class="form-floating mb-2">
+                                        <input type="email" class="form-control"  name="email_address" value="<?=$userData['email_address']?>" id="floatingPassword" placeholder="Email Address" />
+                                        <label for="floatingPassword" class="fw-400">Email Address</label>
+                                    </div>
+
+                                    <div class="form-floating mb-2">
+                                        <input type="number" class="form-control" name="mobile_number" value="<?=$userData['mobile_number']?>" id="floatingPassword" placeholder="Mobile Number" />
+                                        <label for="floatingPassword" class="fw-400">Mobile Number</label>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <button class="btn btn-lg btn-primary rounded font-15 k-btn" type="submit" id="_update_acct_btn">Update</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                          
                             <div id="mobile-view" class="margin-top-40"></div>
                             
                         </div>

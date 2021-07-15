@@ -71,17 +71,17 @@
                         <!-- end row -->
 
 
-                    <div id="walkin_buy_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+                        <div id="walkin_buy_modal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-lg ">
                                 <div class="modal-content">
                                     <div class="modal-header bg-success">
-                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-message"></i> <span id="_modal_title">Process Product Purchase</span></h4>
+                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-shopping-trolley"></i> <span id="_modal_title">Walk-in Product Purchase</span></h4>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                                     </div>
                                     <form id="search_code_name_form">
                                         <div class="modal-body mb-3">
                                             <div class="alert alert-light bg-light text-dark border-0" role="alert">
-                                                <!-- Send this code to a member for their direct referral. Search using Member name or User ID and click "Send". -->
+                                               Walk-in product repeat purchase. Choose what product to purchase, input the quantity, and search or scan the QR code of the user.
                                             </div>
 
                                             <div class="mt-2">
@@ -104,7 +104,8 @@
                                                         <!-- item-->
                                                     </div>
                                                 </div>
-                                                <button type="submit" class="btn btn-success rounded mt-1 float-right">Search</button>
+                                                <button type="submit" class="btn btn-success rounded mt-1 float-right"><i class="uil-search"></i> Search</button>
+                                                <button type="submit" class="btn btn-success rounded mt-1 float-right"><i class="mdi mdi-qrcode"></i> Scan QR Code</button>
                                             </div>
                                             <hr>
                                             <div class="mt-3">

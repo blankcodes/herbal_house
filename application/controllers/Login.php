@@ -18,14 +18,14 @@ class Login extends CI_Controller {
         $password = $this->input->post('password');
         $remember_login = $this->input->post('remember_login');
         $last_url = $this->input->post('last_url');
-
+        
         if (isset($remember_login) ) {
             $cookie_name = 'remember_login';
             $cookie_value = $remember_login;
             setcookie($cookie_name, $cookie_value, time() + (86400 * 30), "/"); // 86400 = 30 days
         }
         else{
-            $remember_me = '';
+            $remember_login = '';
         }
 
         $checkUser = $this->login_model->checkUserData($username);
@@ -33,7 +33,8 @@ class Login extends CI_Controller {
             if (password_verify($password, $checkUser['password'])) {
                 $this->session->set_userdata('user_id', $checkUser['user_id']);
                 $this->session->set_userdata('user_type', $checkUser['user_type']);
-              	$this->session->set_userdata('user_code', $checkUser['user_code']);
+                $this->session->set_userdata('user_code', $checkUser['user_code']);
+              	$this->session->set_userdata('username', $checkUser['username']);
 
                 if ($checkUser['user_type'] == 'admin') {
                     $this->session->set_userdata('admin', $checkUser['username']);

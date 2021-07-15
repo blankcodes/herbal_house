@@ -15,24 +15,16 @@ class Ledger extends CI_Controller {
     	$package = $this->input->post('package');
     	$cost = $this->input->post('cost');
     	$description = $this->input->post('description');
-        $match_points = $this->input->post('match_points');
-    	$direct_points = $this->input->post('direct_points');
-        $unilvl_points = $this->input->post('unilvl_points');
-        $max_points_am = $this->input->post('max_points_am');
-        $max_points_pm = $this->input->post('max_points_pm');
-        $profit_sharing_points = $this->input->post('profit_sharing_points');
+        $direct_points = $this->input->post('direct_points');
+    	$indirect_points = $this->input->post('indirect_points');
 
     	$dataArr = array(
     		'name'=>$package,
     		'cost'=>$cost,
     		'description'=>$description,
     		'status'=>'disabled',
-    		'match_points'=>$match_points,
             'direct_points'=>$direct_points,
-            'unilvl_points'=>$unilvl_points,
-            'am_maximum_points'=>$max_points_am,
-            'pm_maximum_points'=>$max_points_pm,
-            'profit_sharing_points'=>$profit_sharing_points,
+            'indirect_points'=>$indirect_points,
     		'created_at'=>date('Y-m-d H:i:s')
     	);
     	$checkPackage = $this->db->WHERE('name', $package)->GET('package_tbl')->num_rows();
@@ -107,23 +99,20 @@ class Ledger extends CI_Controller {
     	$package = $this->input->post('package');
     	$cost = $this->input->post('cost');
     	$description = $this->input->post('description');
-    	$match_points = $this->input->post('match_points');
         $direct_points = $this->input->post('direct_points');
-        $unilvl_points = $this->input->post('unilvl_points');
-        $max_points_am = $this->input->post('max_points_am');
-        $max_points_pm = $this->input->post('max_points_pm');
-        $profit_sharing_points = $this->input->post('profit_sharing_points');
+        $indirect_points = $this->input->post('indirect_points');
+        // $match_points = $this->input->post('match_points');
+        // $unilvl_points = $this->input->post('unilvl_points');
+        // $max_points_am = $this->input->post('max_points_am');
+        // $max_points_pm = $this->input->post('max_points_pm');
+        // $profit_sharing_points = $this->input->post('profit_sharing_points');
 
     	$dataArr = array(
     		'name'=>$package,
     		'cost'=>$cost,
-    		'match_points'=>$match_points,
             'direct_points'=>$direct_points,
-            'unilvl_points'=>$unilvl_points,
+            'indirect_points'=>$indirect_points,
             'description'=>$description,
-            'am_maximum_points'=>$max_points_am,
-            'pm_maximum_points'=>$max_points_pm,
-    		'profit_sharing_points'=>$profit_sharing_points,
     		'updated_at'=>date('Y-m-d H:i:s')
     	);
     	$this->ledger_model->updatePackageData($dataArr);
@@ -153,6 +142,15 @@ class Ledger extends CI_Controller {
     }
     public function getWalletBalance(){
         $data = $this->ledger_model->getWalletBalance();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+
+    public function getIndirectWalletBalance(){
+        $data = $this->ledger_model->getIndirectWalletBalance();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function getUnilevelWalletBalance(){
+        $data = $this->ledger_model->getUnilevelWalletBalance();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
     public function getWalletRecentActivity(){
@@ -208,5 +206,218 @@ class Ledger extends CI_Controller {
         $data['row'] = $row_no;
         $data['count'] = $all_count;
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    public function getWalletRecentActivityAdmin(){
+        $row_no = $this->input->get('page_no');
+        
+        // Row per page
+        $row_per_page = 10;
+
+        // Row position
+        if($row_no != 0){
+          $row_no = ($row_no-1) * $row_per_page;
+        }
+
+        // All records count
+        $all_count = $this->ledger_model->getWalletRecentActivityCountAdmin();
+
+        // Get records
+        $products = $this->ledger_model->getWalletRecentActivityAdmin($row_per_page, $row_no);
+
+        // Pagination Configuration
+        $config['base_url'] = base_url('api/v1/wallet/_get_wallet_recent_activity/');
+        $config['use_page_numbers'] = TRUE;
+        $config['total_rows'] = $all_count;
+        $config['per_page'] = $row_per_page;
+
+        // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
+        $config['full_tag_open'] = '<ul class="pagination btn-xs">';
+        $config['full_tag_close'] = '</ul>';
+        $config['num_tag_open'] = '<li class="page-item ">';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['next_tag_open'] = '<li class="page-item">';
+        $config['next_tagl_close'] = '</a></li>';
+        $config['prev_tag_open'] = '<li class="page-item">';
+        $config['prev_tagl_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-item disabled">';
+        $config['first_tagl_close'] = '</li>';
+        $config['last_tag_open'] = '<li class="page-item">';
+        $config['last_tagl_close'] = '</a></li>';
+        $config['attributes'] = array('class' => 'page-link');
+        $config['next_link'] = 'Next'; // change > to 'Next' link
+        $config['prev_link'] = 'Previous'; // change < to 'Previous' link
+
+        // Initialize
+        $this->pagination->initialize($config);
+
+        // Initialize $data Array
+        $data['pagination'] = $this->pagination->create_links();
+        $data['result'] = $products;
+        $data['row'] = $row_no;
+        $data['count'] = $all_count;
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    public function getrequestWithdraw(){
+        $row_no = $this->input->get('page_no');
+        
+        // Row per page
+        $row_per_page = 10;
+
+        // Row position
+        if($row_no != 0){
+          $row_no = ($row_no-1) * $row_per_page;
+        }
+
+        // All records count
+        $all_count = $this->ledger_model->getRequestWithdrawAdminCount();
+
+        // Get records
+        $products = $this->ledger_model->getRequestWithdrawAdmin($row_per_page, $row_no);
+
+        // Pagination Configuration
+        $config['base_url'] = base_url('api/v1/wallet/_withdraw_request');
+        $config['use_page_numbers'] = TRUE;
+        $config['total_rows'] = $all_count;
+        $config['per_page'] = $row_per_page;
+
+        // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
+        $config['full_tag_open'] = '<ul class="pagination btn-xs">';
+        $config['full_tag_close'] = '</ul>';
+        $config['num_tag_open'] = '<li class="page-item ">';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['next_tag_open'] = '<li class="page-item">';
+        $config['next_tagl_close'] = '</a></li>';
+        $config['prev_tag_open'] = '<li class="page-item">';
+        $config['prev_tagl_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-item disabled">';
+        $config['first_tagl_close'] = '</li>';
+        $config['last_tag_open'] = '<li class="page-item">';
+        $config['last_tagl_close'] = '</a></li>';
+        $config['attributes'] = array('class' => 'page-link');
+        $config['next_link'] = 'Next'; // change > to 'Next' link
+        $config['prev_link'] = 'Previous'; // change < to 'Previous' link
+
+        // Initialize
+        $this->pagination->initialize($config);
+
+        // Initialize $data Array
+        $data['pagination'] = $this->pagination->create_links();
+        $data['result'] = $products;
+        $data['row'] = $row_no;
+        $data['count'] = $all_count;
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    public function getWithdrawRequestData() {
+        $data = $this->ledger_model->getWithdrawRequestData();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function updateWithdrawRequestStatus() {
+        $data = $this->ledger_model->updateWithdrawRequestStatus();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function getWalletBalanceTransfer() {
+        $data = $this->ledger_model->getWalletBalanceTransfer();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function reviewWithdrawRequest() {
+        if (isset($this->session->user_id)) {
+            $amount = $this->input->get('amount');
+
+            $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
+            if(is_float($amount)) {
+                $response['status'] = 'failed';
+                $response['message'] = 'Amount is not a whole number!';
+            }
+
+            else if($amount <= 50) { /* cant be process below the process fee*/ 
+                $response['status'] = 'failed';
+                $response['message'] = 'Amount lower than the Processing fee.';
+            }
+            
+            else if ($amount > $check['balance']) {
+                $response['status'] = 'failed';
+                $response['message'] = 'Request amount is greater than what you have!';
+            }
+            else if ($check['balance'] >= $amount) {
+                $total_amnt = $amount - 50;
+                $response['total_amount'] = '₱ '.number_format($total_amnt, 2); /* 50 for withdrawal processing fee */
+                $response['total'] = $amount; /* 50 for withdrawal processing fee */
+                $response['processing_fee'] = 50; /* 50 for withdrawal processing fee */
+                $response['status'] = 'success';
+            }
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+        }
+    }
+    public function requestWithdraw(){
+        if (isset($this->session->user_id)) {
+            $amount = $this->input->post('amount');
+
+            $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
+            if(is_float($amount)) {
+                $response['status'] = 'failed';
+                $response['message'] = 'Amount is not a whole number!';
+            }
+            // else if ($check['balance'] < 1000) { /* MINIMUM AMOUNT TO WITHDRAW*/
+            //     $response['status'] = 'failed';
+            //     $response['message'] = "You don't have enough balance to withdraw!";
+            // }
+            else if($amount <= 50) { /* cant be process below the process fee*/ 
+                $response['status'] = 'failed';
+                $response['message'] = 'Amount lower than the Processing fee.';
+            }
+            else if ($amount > $check['balance']) {
+                $response['status'] = 'failed';
+                $response['message'] = 'Request amount is greater than what you have!';
+            }
+            else if ($check['balance'] >= $amount) {
+                $this->ledger_model->requestWitdraw();
+                
+                $notif_log = array('user_id'=>$this->session->user_id, 'message'=>'Withdrawal Request of ₱'.number_format($amount, 2).'','created_at'=>date('Y-m-d H:i:s')); 
+                $this->insertNewNotification($notif_log); /* INSERT new Notification */
+
+                $response['status'] = 'success';
+                $response['message'] = 'Withdrawal request has been submitted!';
+            }
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+        }
+    }
+    public function tranferWalletBalance() {
+        $tranfer_amt = $this->input->post('transfer_amnt');
+        $walletBalance = $this->ledger_model->checkWalletBalance();
+
+       if(is_float($tranfer_amt)) {
+            $response['status'] = 'failed';
+            $response['message'] = 'Amount is not a whole number!';
+        }
+        else if ($walletBalance['balance'] < 300) { /* MINIMUM AMOUNT TO TRANSFER */
+            $response['status'] = 'failed';
+            $response['message'] = "You don't have enough balance to transfer!";
+        }
+        else if ($tranfer_amt > $walletBalance['balance']) {
+            $response['status'] = 'failed';
+            $response['message'] = 'Request amount is greater than what you have!';
+        }
+        else if ($walletBalance['balance'] >= $tranfer_amt) {
+            $this->ledger_model->transferWalletBalance();
+            $response['status'] = 'success';
+            $reponse['message'] = 'Amount transfered successfully!';
+        }
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+
+    }
+    public function updateUserPackage() {
+        $data = $this->ledger_model->updateUserPackage();        
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function insertNewNotification ($notif_log) {
+        $this->db->INSERT('notification_tbl', $notif_log);
     }
 }

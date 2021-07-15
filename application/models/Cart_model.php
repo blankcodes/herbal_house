@@ -138,11 +138,13 @@ class Cart_model extends CI_Model {
 			->GET()->result_array();
 
 		$result = array();
-    	$grand_total = 0;
+    	$subtotal = 0;
     	$total = 0;
+    	$shipping_fee = 170; /* FIXED SHIPPING CHARGE */
     	foreach($query as $q){
     		$total_price_per_product = $q['price'] * $q['qty'];
-    		$grand_total += $total_price_per_product;
+    		$subtotal += $total_price_per_product;
+    		$total = $subtotal + $shipping_fee;
 			$array = array(
 				'c_pub_id'=>$q['c_pub_id'],
 				'c_pub_id'=>$q['c_pub_id'],
@@ -156,10 +158,10 @@ class Cart_model extends CI_Model {
 			);
 			array_push($result, $array);
 		}
-		$data['grand_total'] = number_format( $grand_total, 2);
-		$data['total'] = number_format( $grand_total, 2);
+		$data['subtotal'] = number_format( $subtotal, 2);
+		$data['total'] = number_format( $total, 2);
 		$data['discount'] = '0';
-		$data['shipping_charge'] = '0';
+		$data['shipping_charge'] = number_format( $shipping_fee, 2); 
 		$data['count'] = $this->db->WHERE('user_id', $user_id)->GET('cart_tbl')->num_rows();
 		$data['cart'] = $result;
 		return $data;

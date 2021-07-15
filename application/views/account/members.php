@@ -25,10 +25,20 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row mb-2">
-                                            <div class="col-sm-4">
-                                                <a href="javascript:void(0);" id="_add_member" class="btn btn-success mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Member</a>
+                                            <div class="col-sm-6 mb-2">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <a href="javascript:void(0);" id="_add_member" class="btn btn-success mb-2"><i class="mdi mdi-plus-circle me-2"></i> Add Member</a>
+                                                    </div>
+                                                    <form id="_search_user_form">
+                                                        <div class="input-group col-sm-6">
+                                                            <input type="text" class="form-control" name="query" id="_search_query" placeholder="Search Username, User ID, Name" aria-label="Recipient's username">
+                                                            <button class="btn btn-success" id="_search_user_btn" type="submit"><i class="uil-search"></i> Search</button>
+                                                        </div>
+                                                   </form>
+                                                </div>
                                             </div>
-                                            <div class="col-sm-8">
+                                            <div class="col-sm-6 mb-2">
                                                 <div class="text-sm-end">
                                                     <button type="button" class="btn btn-light mb-2" onclick="showMemberList(1)">Refresh</button>
                                                     <button type="button" class="btn btn-light mb-2">Export</button>
@@ -36,22 +46,18 @@
                                             </div><!-- end col-->
                                         </div>
                 
-                                        <div class="table-responsive">
-                                            <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap" id="products-datatable">
+                                        <div class="table-responsive mt-2">
+                                            <table class="table table-centered table-borderless table-hover w-100 dt-responsive nowrap font-12" id="products-datatable">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th style="width: 20px;">
-                                                            <div class="form-check">
-                                                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                                                <label class="form-check-label" for="customCheck1">&nbsp;</label>
-                                                            </div>
-                                                        </th>
-                                                        <th>ID</th>
-                                                        <th>Name</th>
+                                                        <th>User ID</th>
+                                                        <th>Username</th>
+                                                        <th>Referrer</th>
+                                                        <th>Credits</th>
                                                         <th>Mobile Number</th>
-                                                        <th>User Type</th>
+                                                        <th>Status</th>
                                                         <th>Date Registered</th>
-                                                        <th style="width: 75px;">Action</th>
+                                                        <th>Action</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="_member_list_tbl">
@@ -61,6 +67,13 @@
                                             </table>
                                             <div id="member_list_pagination" class="mt-2">
                                                 
+                                            </div>
+                                            <div hidden id="_search_member_list_pagination" class="mt-2">
+                                                
+                                            </div>
+
+                                            <div id="" class="text-sm-end">
+                                                Total Count: <span id="_member_count"></span>
                                             </div>
                                         </div>
                                     </div> <!-- end card-body-->
@@ -88,10 +101,7 @@
 
                                             <div class="mb-2 mt-2" id="package_id" hidden="hidden">
                                                 <select class="form-control select2" name="package" data-toggle="select2" id="_select_package">
-                                                    <!-- <option disabled="" selected="">Select Package</option>
-                                                    <?php foreach ($package as $p ){ ?>
-                                                    <option value="<?=$p['p_id']?>"><?=$p['name']?></option>
-                                                    <?php } ?> -->
+                                                    
                                                 </select>
                                             </div>
 
@@ -133,6 +143,98 @@
 
                                     </div>
                                    
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+
+                        <div id="change_user_package_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="success-header-modalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header modal-colored-header bg-success">
+                                        <h4 class="modal-title" id="success-header-modalLabel"><i class="uil-user-plus"></i> Change Package</h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="_change_package_form">
+                                          
+                                            <div class="alert alert-light bg-light text-dark border-0" role="alert">
+                                               This will effect when this user refer someone, he will get the amount declared on the package.
+                                            </div>
+                                            <div class="form-floating" class="mb-2 mt-2" >
+                                                <select class="form-select" id="__select_package" name="package" required="">
+                                                          
+                                                </select>
+                                                <label for="__select_package">Select Package</label>
+                                            </div>
+
+                                            <input type="hidden" name="user_code" id="_user_code" >
+                                            <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+
+                                            <div class="modal-footer mt-3">
+                                                <button type="submit" class="btn btn-success btn-rounded" id="add_new_member">Change package</button>
+                                                <button type="button" class="btn btn-light btn-rounded" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                   
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+
+
+
+                        <div id="user_info_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success">
+                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-user font-23"></i> <span id="_modal_title"></span></h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div id="">
+                                        <div class="modal-body mb-3">
+                                            <form id="_user_payment_status_form">
+                                                <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                                <div id="_status_wrapper">
+                                                
+                                                </div>
+
+                                            </form>
+                                            
+                                            <div id="_package_wrapper">
+                                                
+                                            </div>
+
+                                            <label class="font-18">Personal Information</label>
+                                            <div class="mt-2">
+                                                User ID: <br><span id="_user_id" class="font-23 fw-600"> </span>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                Full Name: <br><span id="_full_name" class="font-23 fw-600"> </span>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                Mobile Number: <br><span id="_mobile_number" class="font-23 fw-600"> </span>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                Email Address: <br><span id="_email_address" class="font-23 fw-600"> </span>
+                                            </div>
+
+                                            <div class="mt-2">
+                                                Address: <br><span id="_address" class="font-23 fw-600"> </span>
+                                            </div>
+
+                                            <div id="_referrer_wrapper">
+                                                
+                                            </div>
+
+                                        </div>
+                                        <div class="modal-footer mb-2">
+                                            <button type="button" class="btn btn-rounded btn-lg rounded font-15 btn-light" id="" data-bs-dismiss="modal" >Close</button>
+                                        </div>
+                                    </div>
                                 </div><!-- /.modal-content -->
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->

@@ -19,7 +19,14 @@
         <?php if ($page == 'member_products'){ ?>
         <link href="<?=base_url()?>assets/css/product.css" rel="stylesheet" type="text/css" />
         <?php } ?>
+        <?php if($page == 'admin_dashboard') { ?><script src="<?=base_url('assets/js/vendor/apexcharts.js')?>"></script> <?php } ?>
+
+        <?= $analyticSrc; ?>
+        
+        <?= $analyticData; ?>
+
     </head>
 
     <body class="loading" data-layout-config='{"leftSideBarTheme":"dark","layoutBoxed":false, "leftSidebarCondensed":false, "leftSidebarScrollable":false,"darkMode":false}'>
-        <!-- Begin page -->
+    
+    <!-- Begin page -->

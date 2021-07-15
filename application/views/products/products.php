@@ -129,14 +129,14 @@
                                             </div>
 
                                             <div class="mb-3 col-lg-6">
-                                                <label for="qty" class="form-label">Points Earned</label>
+                                                <label for="qty" class="form-label">Unilevel Points</label>
                                                 <input class="form-control" type="number" id="points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
 
-                                            <div class="mb-3 col-lg-6">
+                                            <!-- <div class="mb-3 col-lg-6">
                                                 <label for="qty" class="form-label">Profit Sharing Points</label>
                                                 <input class="form-control" type="number" id="profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
-                                            </div>
+                                            </div> -->
                                         </div>
 
 
@@ -219,17 +219,14 @@
                                             </div>
 
                                             <div class="mb-3 col-lg-6">
-                                                <label for="qty" class="form-label">Points Earned</label>
+                                                <label for="qty" class="form-label">Unilevel Points</label>
                                                 <input class="form-control" type="number" id="_edit_points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
-
-                                            <div class="mb-3 col-lg-6">
+                                            <!-- <div class="mb-3 col-lg-6">
                                                 <label for="qty" class="form-label">Profit Sharing Points</label>
                                                 <input class="form-control" type="number" id="_edit_profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
-                                            </div>
-
+                                            </div> -->
                                         </div>
-
 
                                         <div class="mb-3" >
                                             <label for="editor_description" class="form-label">Description</label>
@@ -316,12 +313,12 @@
 
                                                                 <!-- Product price -->
                                                                 <div class="row mt-1">
-                                                                    <div class="col-lg-4">
+                                                                    <div class="col-lg-6">
                                                                         <h6 class="font-14">Retail Price:</h6>
                                                                         <h3 id="_view_srp_price"> </h3>
                                                                     </div>
 
-                                                                    <div class="col-lg-4">
+                                                                    <div class="col-lg-6">
                                                                         <h6 class="font-14">Discounted Price:</h6>
                                                                         <h3 id="_view_dc_price"> </h3>
                                                                     </div>

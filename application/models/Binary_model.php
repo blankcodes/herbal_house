@@ -11,14 +11,115 @@ class Binary_model extends CI_Model {
 	private function hash_password($password){
 	   return password_hash($password, PASSWORD_BCRYPT);
 	}
-	public function generateUserCode ($id, $length = 13) {
+	public function registerUser() {
+		if (isset($this->session->user_id)) {
+			$user['sponsorID'] = $this->input->post('sponsorID');
+	        $user['linkID'] = $this->input->post('linkID');
+			$user['username'] = $this->input->post('username');
+			$user['fname'] = $this->input->post('fname');
+	        $user['lname'] = $this->input->post('lname');
+	        $user['position'] = $this->input->post('position');
+	        $user['mobile_number'] = $this->input->post('mobile_number');
+	        $user['password'] = $this->input->post('password');
+	        $user['package_code'] = $this->input->post('package_code');
+	        
+	        $checkSponsor = $this->checkSponsorCredit($user['package_code']);
+			$checkLinkID = $this->checkLinkID($user['linkID']);
+
+			if(strlen($user['mobile_number']) < 11) {
+				$response['status'] = 'failed';
+				$response['message'] = "Please enter a correct mobile number!";
+			}
+			else if ($checkSponsor <= 0){
+				$response['status'] = 'failed';
+				$response['message'] = "You don't have enough code credit. Invite users and try again!";
+			}
+
+			else if($checkLinkID <= 0) {
+				$response['status'] = 'failed';
+				$response['message'] = "No Link user detected. Please try again!";
+			}
+
+			else if($checkSponsor > 0 && $checkLinkID > 0) {
+				$this->form_validation->set_rules('password', 'Password', 'required',
+					array('required' => 'Password is Required!')
+				);
+
+				$this->form_validation->set_rules('mobile_number', 'Mobile Number', 'is_unique[user_tbl.mobile_number]',
+					array('is_unique' => 'Mobile Number Already Exist!')
+				);
+
+				$this->form_validation->set_rules('username', 'Username', 'is_unique[user_tbl.username]',
+					array('is_unique' => 'Username Already Exist!')
+				);
+
+				if ($this->form_validation->run() == FALSE) {
+					$response['status'] = 'failed';
+					$response['message'] = $this->form_validation->error_array();
+				}
+				else{
+					$referred_id = $this->insertNewAccountData($user, $user['package_code']);
+
+					$this->insertDirectReferralBonus($user['sponsorID'], $referred_id, $user['package_code']);
+					// $this->insertSalesMatchPoints();
+					$response['status'] = 'success';
+					$response['message'] = 'User successfully registered!';
+				}
+			}
+			else{
+				$response['status'] = 'failed';
+				$response['message'] = 'Something went wrong. Please try again!';
+			}
+			return $response;
+		}
+	}
+	public function insertNewAccountData ($user, $package_code) {
+		if (isset($this->session->user_id)) {
+			$user_type = 'member';
+			$data = array(
+				'sponsor_id'=>$user['sponsorID'],
+				'link_id'=>$user['linkID'],
+				'member_code'=>$package_code,
+				'position'=>$user['position'],
+				'username'=>$user['username'],
+				'fname'=>$user['fname'],
+				'lname'=>$user['lname'],
+				'mobile_number'=>$user['mobile_number'],
+				'password'=>$this->hash_password($user['password']),
+				'status'=>'inactive',
+				'user_type'=>$user_type,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('user_tbl', $data);
+			$id = $this->db->insert_id();
+
+			$this->generateUserCode($id, $user); /* INSERT user unique USER_CODE*/
+			
+			$notif_log = array('user_id'=>$id, 'message'=>'Welcome to Herbal House!','created_at'=>date('Y-m-d H:i:s')); 
+			$this->insertNewNotification($notif_log); /* INSERT new Notification */
+
+			$activity_log = array('user_id'=>$id, 'message_log'=>'Created account','ip_address'=>$this->input->ip_address(), 'platform'=>$this->agent->platform(), 'browser'=>$this->agent->browser(),'created_at'=>date('Y-m-d H:i:s')); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+			/* Update activation code*/
+			$newCodeStatus = array('status'=>'used', 'updated_at'=>date('Y-m-d H:i:s'));
+			$this->db->WHERE('code', $package_code) 
+				->UPDATE('user_code_tbl', $newCodeStatus);
+
+			$this->db->WHERE('code', $package_code) 
+				->UPDATE('activation_code_tbl', $newCodeStatus);
+
+			return $id;
+		}
+	}
+	public function generateUserCode ($id, $userData, $length = 5) {
 	    $characters = '0123456789';
 	    $charactersLength = strlen($characters);
 	    $randomString = '';
 	    for ($i = 0; $i < $length; $i++) {
 	        $randomString .= $characters[rand(0, $charactersLength - 1)];
 	    }
-	    $u_code = '10000'.$randomString.$id;
+	    $u_code = '10000'.$id.$randomString;
 
 	    $check = $this->db->WHERE('user_code', $u_code)->GET('user_tbl')->num_rows();
 	    if ($check > 0) {
@@ -28,7 +129,56 @@ class Binary_model extends CI_Model {
 	    	$data = array('user_code' => $u_code);
 		    $this->db->WHERE('user_id', $id)
 		    	->UPDATE('user_tbl', $data); /* INSERT user user_code used for invites for selling */
+
+		    /* INSERT NEW DOWNLINE */ 
+		    // $this->insertNewDownline($u_code, $userData);
 	    }
+	}
+	// public function insertNewDownline($referred_id, $userData){
+	// 	// $dataArr = array(
+	// 	//     'user_code'=>$userData['linkID'],
+	// 	//     'downline'=>$u_code,
+	// 	//     'position'=>$userData['position'],
+	// 	// );
+
+	// 	$level1 = $this->db->SELECT('sponsor_id, link_id')
+	// 		->WHERE('sponsor_id', $userData['sponsorID'])
+	// 		->WHERE('user_code',  $referred_id)
+	// 		->GET('user_tbl')->row_array();
+
+	// 	if ($userData['linkID'] == $userData['sponsorID']) {
+
+	// 		/* insert sponsor data */
+	// 		$dataArr1 = array(
+	// 			'user_code'=>$userData['sponsorID'],
+	// 			'downline'=>$referred_id,
+	// 			'position'=>$userData['position'],
+	// 		); 
+	// 		$this->insertDownline($dataArr1);
+	// 	}
+
+	// 	else{
+	// 		/* insert sponsor data */
+	// 		$dataArr1 = array(
+	// 			'user_code'=>$userData['sponsorID'],
+	// 			'downline'=>$referred_id,
+	// 			'position'=>$userData['position'],
+	// 		); 
+	// 		$this->insertDownline($dataArr1);
+
+	// 		$under_id = $this->db->SELECT('user_code, link_id, position')->WHERE('user_code', $userData['linkID'])->GET('user_tbl')->row_array();
+	// 		/* insert sponsor data */
+	// 		$dataArr2 = array(
+	// 			'user_code'=>$under_id['user_code'],
+	// 			'downline'=>$referred_id,
+	// 			'position'=>$under_id['position'],
+	// 		); 
+	// 		$this->insertDownline($dataArr2);
+
+	// 	}
+	// }
+	public function insertDownline($dataArr){
+		$this->db->INSERT('downlines_tbl', $dataArr);
 	}
 	public function getBinaryTree() {
 		$data = $this->db->SELECT('fname, lname, user_code, image')
@@ -95,150 +245,12 @@ class Binary_model extends CI_Model {
 			return $query;
 		}
 	}
-	public function registerUser() {
-		if (isset($this->session->user_id)) {
-			$user['sponsorID'] = $this->input->post('sponsorID');
-	        $user['linkID'] = $this->input->post('linkID');
-			$user['username'] = $this->input->post('username');
-			$user['fname'] = $this->input->post('fname');
-	        $user['lname'] = $this->input->post('lname');
-	        $user['position'] = $this->input->post('position');
-	        $user['mobile_number'] = $this->input->post('mobile_number');
-	        $user['password'] = $this->input->post('password');
-	        $user['package_code'] = $this->input->post('package_code');
-	        
-	        $checkSponsor = $this->checkSponsorCredit($user['package_code']);
-			$checkLinkID = $this->checkLinkID($user['linkID']);
-
-			if(strlen($user['mobile_number']) < 11) {
-				$response['status'] = 'failed';
-				$response['message'] = "Please enter a correct mobile number!";
-			}
-			else if ($checkSponsor <= 0){
-				$response['status'] = 'failed';
-				$response['message'] = "You don't have enough code credit. Invite users and try again!";
-			}
-
-			else if($checkLinkID <= 0) {
-				$response['status'] = 'failed';
-				$response['message'] = "No Link user detected. Please try again!";
-			}
-
-			else if($checkSponsor > 0 && $checkLinkID > 0) {
-				$this->form_validation->set_rules('password', 'Password', 'required',
-					array('required' => 'Password is Required!')
-				);
-
-				$this->form_validation->set_rules('mobile_number', 'Mobile Number', 'is_unique[user_tbl.mobile_number]',
-					array('is_unique' => 'Mobile Number Already Exist!')
-				);
-
-				$this->form_validation->set_rules('username', 'Username', 'is_unique[user_tbl.username]',
-					array('is_unique' => 'Username Already Exist!')
-				);
-
-				if ($this->form_validation->run() == FALSE) {
-					$response['status'] = 'failed';
-					$response['message'] = $this->form_validation->error_array();
-				}
-				else{
-					$referred_id = $this->insertNewAccountData($user, $user['package_code']);
-					$this->insertDirectReferralBonus($user['sponsorID'], $referred_id, $user['package_code']);
-					// $this->insertSalesMatchPoints();
-					$response['status'] = 'success';
-					$response['message'] = 'User successfully registered!';
-				}
-			}
-			else{
-				$response['status'] = 'failed';
-				$response['message'] = 'Something went wrong. Please try again!';
-			}
-			return $response;
-		}
-	}
-
-	public function insertNewAccountData ($user, $package_code) {
-		if (isset($this->session->user_id)) {
-			$user_type = 'member';
-			$data = array(
-				'sponsor_id'=>$user['sponsorID'],
-				'link_id'=>$user['linkID'],
-				'member_code'=>$package_code,
-				'position'=>$user['position'],
-				'username'=>$user['username'],
-				'fname'=>$user['fname'],
-				'lname'=>$user['lname'],
-				'mobile_number'=>$user['mobile_number'],
-				'password'=>$this->hash_password($user['password']),
-				'status'=>'inactive',
-				'user_type'=>$user_type,
-				'created_at'=>date('Y-m-d H:i:s')
-			);
-			$this->db->INSERT('user_tbl', $data);
-			$id = $this->db->insert_id();
-
-			$this->generateUserCode($id); /* INSERT user unique USER_CODE*/
-			
-			$notif_log = array('user_id'=>$id, 'message'=>'Welcome to Herbal House!','created_at'=>date('Y-m-d H:i:s')); 
-			$this->insertNewNotification($notif_log); /* INSERT new Notification */
-
-			$activity_log = array('user_id'=>$id, 'message_log'=>'Created account','ip_address'=>$this->input->ip_address(), 'platform'=>$this->agent->platform(), 'browser'=>$this->agent->browser(),'created_at'=>date('Y-m-d H:i:s')); 
-			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
-
-			/* Update activation code*/
-			$newCodeStatus = array('status'=>'used', 'updated_at'=>date('Y-m-d H:i:s'));
-			$this->db->WHERE('code', $package_code) 
-				->UPDATE('user_code_tbl', $newCodeStatus);
-
-			$this->db->WHERE('code', $package_code) 
-				->UPDATE('activation_code_tbl', $newCodeStatus);
-
-			return $id;
-		}
-	}
 	public function insertNewNotification ($notif_log) {
 		$this->db->INSERT('notification_tbl', $notif_log);
 	}
 	public function insertActivityLog ($activity_log) {
 		if (isset($this->session->user_id)) {
 			$this->db->INSERT('activity_logs_tbl', $activity_log);
-		}
-	}
-	public function insertDirectReferralBonus ($sponsorID, $referred_id, $package_code) {
-		if (isset($this->session->user_id)) {
-			$referred_user = $this->db->SELECT('user_code, member_code')->WHERE('user_id', $referred_id)->GET('user_tbl')->row_array();
-
-			/* Get the points based on what package does the referred user purchased */
-			$packageData = $this->db->SELECT('pt.direct_points, pt.match_points, act.code, pt.profit_sharing_points')
-				->FROM('package_tbl as pt')
-				->JOIN('activation_code_tbl as act','act.p_id = pt.p_id')
-				->WHERE('act.code', $package_code)
-				->GET()->row_array();
-
-			/* EARNED FOR DIRECT REFERRAL */ 
-			$this->insertDirectReferralCashBonus($sponsorID, $packageData);
-
-			/* INSERT UNILEVEL DATA */
-			$this->insertUniLvlData($sponsorID, $referred_user['user_code']);
-
-			/* INSERT new ACIVITY LOG */
-			$activity_log = array(
-				'user_id'=>$this->session->user_id, 
-				'message_log'=>'Earned ₱'.number_format($packageData['direct_points'], 2).' from direct referral from user #'.$referred_user['user_code'].'.',
-				'ip_address'=>$this->input->ip_address(), 
-				'platform'=>$this->agent->platform(), 
-				'browser'=>$this->agent->browser(),
-				'created_at'=>date('Y-m-d H:i:s')
-			); 
-			$this->insertActivityLog($activity_log); 
-
-			/* INSERT new Notification */
-			$notif_log = array(
-				'user_id'=>$this->session->user_id, 
-				'message'=>'Congrats! You get ₱'.number_format($packageData['direct_points'], 2).' from direct referral.',
-				'created_at'=>date('Y-m-d H:i:s')
-			); 
-			$this->insertNewNotification($notif_log); 
 		}
 	}
 	public function getPackageCredit () {
@@ -265,6 +277,46 @@ class Binary_model extends CI_Model {
 			return $result;
 		}
 	}
+	public function insertDirectReferralBonus ($sponsorID, $referred_id, $package_code) {
+		if (isset($this->session->user_id)) {
+			$referred_user = $this->db->SELECT('user_code, member_code')->WHERE('user_id', $referred_id)->GET('user_tbl')->row_array();
+
+			/* Get the points based on what package does the referred user purchased */
+			$packageData = $this->db->SELECT('pt.direct_points, pt.match_points, act.code, pt.profit_sharing_points')
+				->FROM('package_tbl as pt')
+				->JOIN('activation_code_tbl as act','act.p_id = pt.p_id')
+				->WHERE('act.code', $package_code)
+				->GET()->row_array();
+
+			/* EARNED FOR DIRECT REFERRAL */ 
+			$this->insertDirectReferralCashBonus($sponsorID, $packageData);
+
+			/* INSERT UNILEVEL DATA */
+			$this->insertUniLvlData($sponsorID, $referred_user['user_code']);
+
+
+
+			/* INSERT new ACIVITY LOG */
+			$activity_log = array(
+				'user_id'=>$this->session->user_id, 
+				'message_log'=>'Earned ₱'.number_format($packageData['direct_points'], 2).' from direct referral from user #'.$referred_user['user_code'].'.',
+				'ip_address'=>$this->input->ip_address(), 
+				'platform'=>$this->agent->platform(), 
+				'browser'=>$this->agent->browser(),
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertActivityLog($activity_log); 
+
+			/* INSERT new Notification */
+			$notif_log = array(
+				'user_id'=>$this->session->user_id, 
+				'message'=>'Congrats! You get ₱'.number_format($packageData['direct_points'], 2).' from direct referral.',
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertNewNotification($notif_log); 
+		}
+	}
+	
 	public function insertUniLvlData($sponsorID, $referred_user) {
 		/* UNILEVEL FEATURE FOR ENTRY LEVEL AND REPEAT PURCHASE*/ 
 		if (isset($this->session->user_id)) {
@@ -565,19 +617,64 @@ class Binary_model extends CI_Model {
 				$this->insertSalesMatch($uniLvl18['sponsor_id'], $referred_user, 18);
 			}
 
-			/* LEVEL 18*/ 
-			$uniLvl18 = $this->db->SELECT('sponsor_id, referred_id, level')
+			/* LEVEL 19*/ 
+			$uniLvl19 = $this->db->SELECT('sponsor_id, referred_id, level')
 				->WHERE('referred_id', $sponsorID)
-				->WHERE('level', 17) /* previous lvl*/
+				->WHERE('level', 18) /* previous lvl*/
 				->GET('unilevel_tbl')->row_array();
-			if (isset($uniLvl18)) {
-				$dataUniLvl18 = array(
-					'sponsor_id'=>$uniLvl18['sponsor_id'],
+			if (isset($uniLvl19)) {
+				$dataUniLvl19 = array(
+					'sponsor_id'=>$uniLvl19['sponsor_id'],
 					'referred_id'=>$referred_user,
-					'level'=>18,
+					'level'=>19,
 				); 
-				$this->db->INSERT('unilevel_tbl', $dataUniLvl18);
-				$this->insertSalesMatch($uniLvl18['sponsor_id'], $referred_user, 18);
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl19);
+				$this->insertSalesMatch($uniLvl19['sponsor_id'], $referred_user, 19);
+			}
+
+			/* LEVEL 20*/ 
+			$uniLvl20 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 19) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl20)) {
+				$dataUniLvl20 = array(
+					'sponsor_id'=>$uniLvl20['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>20,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl20);
+				$this->insertSalesMatch($uniLvl20['sponsor_id'], $referred_user, 20);
+			}
+
+			/* LEVEL 21*/ 
+			$uniLvl21 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 20) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl21)) {
+				$dataUniLvl21 = array(
+					'sponsor_id'=>$uniLvl21['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>21,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl21);
+				$this->insertSalesMatch($uniLvl21['sponsor_id'], $referred_user, 21);
+			}
+
+			/* LEVEL 22*/ 
+			$uniLvl22 = $this->db->SELECT('sponsor_id, referred_id, level')
+				->WHERE('referred_id', $sponsorID)
+				->WHERE('level', 21) /* previous lvl*/
+				->GET('unilevel_tbl')->row_array();
+			if (isset($uniLvl22)) {
+				$dataUniLvl22 = array(
+					'sponsor_id'=>$uniLvl22['sponsor_id'],
+					'referred_id'=>$referred_user,
+					'level'=>22,
+				); 
+				$this->db->INSERT('unilevel_tbl', $dataUniLvl22);
+				$this->insertSalesMatch($uniLvl22['sponsor_id'], $referred_user, 22);
 			}
 		}
 	}
@@ -603,20 +700,9 @@ class Binary_model extends CI_Model {
 				$pm_match_points = 0;
 			}
 
-
-
 			/*  GET USER'S LEVEL POSITION (RIGHT OR LEFT) TO IDENTIFY WHO IS MY LEFT SIDE AND RIGHT SIDE FOR SALES MATCH*/ 
 			if ($level == 1) {
-				// $checkUserDirect = $this->db->WHERE('sponsor_id', $sponsor_id)->GET('user_tbl')->num_rows();
-				// if ($checkUserDirect == 1){
-				// 	$checkUser = $this->db->SELECT('position')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
-				// }
-				// else if ($checkUserDirect > 1) {
-				// 	$checkUser = $this->db->SELECT('position')->WHERE('user_code', $referred_user)->GET('user_tbl')->row_array();
-				// }
-
-				// $checkUserDirect = $this->db->WHERE('sponsor_id', $sponsor_id)->GET('user_tbl')->num_rows();
-
+				
 				$userDirectLink = $this->db
 					->WHERE('sponsor_id', $sponsor_id)
 					->WHERE('link_id', $sponsor_id)
@@ -628,7 +714,6 @@ class Binary_model extends CI_Model {
 					->WHERE('link_id !=', $sponsor_id)
 					->WHERE('user_code', $referred_user)
 					->GET('user_tbl')->row_array();
-
 
 				/* DIRECT REFERRAL WHICH IS LEVEL 1 RIGHT AND LEFT (ONLY 2 MEMBERS CAN BE HERE) */ 
 				if(isset($userDirectLink)) {
@@ -642,27 +727,26 @@ class Binary_model extends CI_Model {
 
 				/* DIRECT REFERRAL WHICH CAN BE IN ANY OTHER LEVEL, INVITES WITH DIFFERENT LINK IDs */ 
 				else if (isset($userDirectLinkRefer)) {
-					$checkUser = $this->db
-						->SELECT('position, link_id')
+					$link_data = $this->db
+						->SELECT('user_code, position, link_id')
 						->WHERE('user_code', $userDirectLinkRefer['link_id'])
 						->GET('user_tbl')->row_array();
 
-					/* 
-					*INSERT POINTS TO THE LINK ID OF INDIRECT INVITES	
-					*/ 
+					if ($link_data['link_id'] !== $sponsor_id) {
+						$checkUser = $this->checkLinkUserData($link_data['link_id'], $sponsor_id);
+					}
+					else if($link_data['link_id'] == $sponsor_id) {
+						$checkUser = $this->db
+							->SELECT('position, link_id')
+							->WHERE('user_code', $link_data['user_code'])
+							->GET('user_tbl')->row_array();
+					}
+
+					/**INSERT POINTS TO THE LINK ID OF INDIRECT INVITES	*/ 
 					$this->insertPointsIndirectInvites($sponsor_id, $referred_user, $am_match_points, $pm_match_points, $packageData, $level);
-					// $dataArr = array(
-					// 	'user_code'=>$sponsor_id,
-					// 	'referred_id'=>$referred_user,
-					// 	'am_match_points'=>$am_match_points,
-					// 	'pm_match_points'=>$pm_match_points,
-					// 	'position'=>,
-					// 	'level'=>$level,
-					// 	'created_at'=>date('Y-m-d H:i:s'),
-					// ); 
-					// $this->db->INSERT('sales_match_tbl', $dataArr);
 				}
 			}
+
 
 			else {
 				$level = $level - 1; /* decrement level to get the sponsored id/ upline */
@@ -674,7 +758,6 @@ class Binary_model extends CI_Model {
 					->GET()->row_array();
 			}
 			
-			
 			/* START INSERT SALES MATCH ON LEFT OR RIGHT*/ 
 			$dataArr = array(
 				'user_code'=>$sponsor_id,
@@ -685,11 +768,25 @@ class Binary_model extends CI_Model {
 				'level'=>$level,
 				'created_at'=>date('Y-m-d H:i:s'),
 			); 
-			$this->db->INSERT('sales_match_tbl', $dataArr);
+			$this->db->INSERT('invite_points_tbl', $dataArr);
 			/* END INSERT SALES MATCH ON LEFT OR RIGHT*/ 
 
 			/* INSERT OR UPDATE SALES MATCH POINTS FOR MONITORING AND GETTING BONUS/CASH */ 
 			$this->insertUpdateSalesMatchMonitoring($checkUser['position'], $sponsor_id, $am_match_points, $pm_match_points, $packageData);
+		}
+	}
+	public function checkLinkUserData($link_id, $sponsor_id){
+		$link_data = $this->db
+			->SELECT('user_code, position, link_id')
+			->WHERE('user_code', $link_id)
+			->GET('user_tbl')->row_array();
+
+		/* level 3 */ 
+		if ($link_data['link_id'] == $sponsor_id) {
+			return $link_data;
+		}
+		else{
+
 		}
 	}
 	public function insertUpdateSalesMatchMonitoring($user_position, $sponsor_id, $am_match_points, $pm_match_points, $packageData){
@@ -924,7 +1021,7 @@ class Binary_model extends CI_Model {
 				'level'=>1,
 				'created_at'=>date('Y-m-d H:i:s'),
 			); 
-			$this->db->INSERT('sales_match_tbl', $dataArr);
+			$this->db->INSERT('invite_points_tbl', $dataArr);
 
 			/*********************** insert User Sales Match tbl */ 
 			$position_col = ($indirectPositon == 'left') ? 'pos_left' : 'pos_right';
@@ -949,8 +1046,8 @@ class Binary_model extends CI_Model {
 				);
 				$this->db->INSERT('user_sales_match_tbl', $dataSMArr);
 			}
-
 			$this->indirectUserSalesMatchPointsReward ($referredData['link_id'], $packageData);
+			$this->linkUserSalesMatchPointsReward ($referredData['link_id'], $packageData);
 		}
 	}
 
@@ -1047,6 +1144,9 @@ class Binary_model extends CI_Model {
 			); 
 			$this->insertNewNotification($notif_log);
 		}
+	}
+	public function linkUserSalesMatchPointsReward($link_id, $packageData) {
+		// $link_id_data = $this->db->SELECT('link_id, position')->WHERE('user_code', $link_id)
 	}
 
 }

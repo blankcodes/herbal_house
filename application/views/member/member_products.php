@@ -19,7 +19,12 @@
                         </div>     
                         <!-- end page title --> 
 
-                        <div id="" class="mt-2">
+                        <div id="" class="mt-2 mb-5">
+                            <div class="mb-3">
+                                <div class="alert bg-white fade show c-black" role="alert">
+                                    <i class="uil-exclamation-circle "></i> Get Unilevel Points whenever someone use your Product link to buy products. Choose products and Click the "Copy URL" and share to someone you knew or any social media websites.
+                                </div>
+                            </div>
                             <div class="row" id="products_wrapper">
                                 
                             </div>

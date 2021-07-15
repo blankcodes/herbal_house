@@ -146,8 +146,8 @@ function getCartData(){
 	})
 }
 function getShoppingCartData(){
-	$("#_shopping_cart_tbl").html('<tr class="text-center mt-1"><td colspan="4">Getting your cart.!</td></tr>');
-	$(".mobile_cart_wrapper").html('<div class="text-center">Getting your cart.!</div>');
+	$("#_shopping_cart_tbl").html('<tr class="text-center mt-1 mb-3"><td colspan="4">Getting your cart...</td></tr>');
+	$(".mobile_cart_wrapper").html('<div class="text-center mb-3">Getting your cart...</div>');
 	$.ajax({
 		url: base_url+'api/v1/cart/_get_shopping_cart_data', type: 'GET', dataType: 'JSON',
 	})
@@ -171,11 +171,9 @@ function getShoppingCartData(){
                        	+'<td>₱ '+res.data.cart[i].total_price+'</td>'
                         +'<td><a href="#delete_cart" onclick="deleteCart(\''+res.data.cart[i].c_pub_id+'\')" class="action-icon"> <i class="mdi mdi-delete"></i></a></td>'
                     +'</tr>'
-                $("#_grand_total").text('₱ '+res.data.grand_total);
-                $("#_total").text('₱ '+res.data.total);
+                $("#_sub_total").text('₱ '+res.data.subtotal);
+                $("#_total").text('₱ '+res.data.subtotal);
 
-                $("#_grand_total_mob").text('₱ '+res.data.grand_total);
-                $("#_total_mob").text('₱ '+res.data.total);
 			}
 
 			for(var i in res.data.cart) {
@@ -198,23 +196,33 @@ function getShoppingCartData(){
                             +'</div>'
                        +'</div> '
                     +'</div>'
+
+                $("#_sub_total_mob").text('₱ '+res.data.subtotal);
+                $("#_total_mob").text('₱ '+res.data.subtotal);
             }
 		}
 		else{
-			string= '<tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr>'
-			mob_string= '<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr></div>'
-			
-			$("#_grand_total").text('₱ 0.00');
-            $("#_total").text('₱ 0.00');
+			string = '<tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr>'
+			mob_string = '<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr></div>'
 
-			$("#_grand_total_mob").text('₱ 0.00');
+			$("#_sub_total_mob").text('₱ 0.00');
             $("#_total_mob").text('₱ 0.00');
+
+            $("#_sub_total").text('₱ 0.00');
+            $("#_total").text('₱ 0.00');
 		}
-		$("#_shopping_cart_tbl").html(string)
-		$(".mobile_cart_wrapper").html(mob_string)
+
+		$("#_shopping_cart_tbl").html(string);
+		$(".mobile_cart_wrapper").html(mob_string);
 	})
 	.fail(function() {
-		console.log("error");
+		$("#_shopping_cart_tbl").html('<tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr>');
+		$(".mobile_cart_wrapper").html('<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr></div>');
+		
+		$("#_sub_total_mob").text('₱ 0.00');
+        $("#_total_mob").text('₱ 0.00');
+        $("#_sub_total").text('₱ 0.00');
+        $("#_total").text('₱ 0.00');
 	})
 }
 
@@ -338,16 +346,22 @@ function recommendedProducts(p_pub_id, nonce) {
 	})
 	.done(function(res) {
 		string = '';
-		if (res.data.length > 0) {
-			for(var i in res.data) {
+		referrer = '';
+		if (res.data.products.length > 0) {
+			products = res.data.products;
+			for(var i in products) {
+				if (res.data.referrer == 'TRUE') {
+					referrer = '<button href="#add_to_cart" class="btn btn-success rounded btn-sm mt-1 prod-cat-btn" onclick="addToCart(\''+products[i].p_pub_id+'\')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>'
+				}
 				string += '<div class="col-md-3 col-lg-3 col-6">'
                        +'<div class="card">'
-                           	+'<a href="'+res.data[i].url+'"><img src="'+res.data[i].product_image+'" class="card-img-top" alt="'+res.data[i].product_name+'"></a>'
+                           	+'<a href="'+products[i].url+'"><img src="'+products[i].product_image+'" class="card-img-top" alt="'+products[i].product_name+'"></a>'
                            	+'<div class="card-body">'
-                                +'<a href="'+res.data[i].url+'"><h5 class="card-title text-secondary">'+res.data[i].product_name+'<br>'
-                                	+'<small class="product-category">'+res.data[i].category+'</small></h5>'
+                                +'<a href="'+products[i].url+'"><h5 class="card-title text-secondary">'+products[i].product_name+'<br>'
+                                	+'<small class="product-category">'+products[i].category+'</small></h5>'
                                 +'</a>'
-                                +'<h3 class="card-title text-success">₱ '+res.data[i].price+'</h3>'
+                                +'<h3 class="card-title text-success">₱ '+products[i].price+'</h3>'
+                                +referrer
                             +'</div> '
                         +'</div> '
                 +'</div> '
@@ -359,10 +373,11 @@ function recommendedProducts(p_pub_id, nonce) {
 
 $("#search_product_form").on('submit', function(e) {
 	keyword = $("#top-search").val();
-	if (!keyword || keyword == '') {
+	if (!keyword || keyword == '' || keyword == ' ') {
+		$.NotificationApp.send("Oh Snap!","Type a keyword to search products!","top-right","rgba(0,0,0,0.2)","warning");
 		return false;
 	}
-	$("#search_product_form button").attr('disabled','disabled');
+	$("#search_product_form button").attr('disabled','disabled').text('Searching...');
 	string = '';
 	e.preventDefault();
 	$.ajax({
@@ -372,7 +387,7 @@ $("#search_product_form").on('submit', function(e) {
 		data: $(this).serialize(),
 	})
 	.done(function(res) {
-		if (res.data.count > 0) {
+		if (parseInt(res.data.count) > 0) {
 			$("#search_fund_title").html('Found <span class="text-success">'+res.data.count+'</span> results')
 			for(var i in res.data.result) {
 				string+='<a href="'+res.data.result[i].product_url+'" class="dropdown-item notify-item">'
@@ -385,18 +400,33 @@ $("#search_product_form").on('submit', function(e) {
 			string = '<div><a href="#result" class="dropdown-item notify-item"><span id="product_name_url"></span></a></div>'
 		}
 		$("#_product_search_result").html(string);
-		$("#search_product_form button").removeAttr('disabled');
+		$("#search_product_form button").removeAttr('disabled').text('Search');
+		$("#_search_dropdown").removeAttr('hidden').addClass('d-block');
 	})
 	.fail(function() {
 		console.log("error");
+		$("#_search_dropdown").removeAttr('hidden').addClass('d-block');
 	})
 })
-$("#top-search").on('focus', function(){
+$("#top-search").on('focusin', function(){
 	$("#search_fund_title").html('<div class="col-12">Start searching...</div>')
+	$("#_search_dropdown").removeAttr('hidden').addClass('d-block')
+	$('#_product_search_result').html('')
 })
-$("#_mobile_search_product").on('focus', function(){
+$("#top-search").on('focusout', function(){
+	$("#search_fund_title").html('<div class="col-12">Start searching...</div>')
+	$("#_search_dropdown").attr('hidden','hidden').removeClass('d-block')
+	$('#_product_search_result').html('')
+})
+$("#_mobile_search_product").on('focusin', function(){
 	$("#search_result_panel").removeAttr('hidden');
 	$("#search_header__").text('Start Searching...')
+	$('#_search_result_wrapper').html('')
+})
+$("#_mobile_search_product").on('focusout', function(){
+	$("#search_result_panel").attr('hidden','hidden');
+	$("#search_header__").text('Start Searching...')
+	$('#_search_result_wrapper').html('')
 })
 
 if (screen.width <= 768) {

@@ -128,8 +128,8 @@ class Checkout_model extends CI_Model {
 			$user_id = $this->userIDGenerator();
 		}
 
-		$checkBillInfo = $this->checkShippingInfo($user_id);		
-		if (isset($checkBillInfo)) {
+		$checkShipInfo = $this->checkShippingInfo($user_id);		
+		if (isset($checkShipInfo)) {
 			$response['status'] = 'already_exist';
 			$response['message'] = 'Shipping info already exists';
 			return $response;
@@ -224,7 +224,7 @@ class Checkout_model extends CI_Model {
 	    	);
 	    	$this->db->WHERE('order_id', $order_id)->UPDATE('order_tbl', $data); /* insert reference no*/
 
-	    	$logs = array('order_id'=>$order_id, 'activity'=>'Generating new order reference no. '.$reference_no );
+	    	$logs = array('order_id'=>$order_id, 'activity'=>'Generating new Order reference no. '.$reference_no );
 	    	$this->insertOrderEventLogs($logs);
 	    }
     	return $reference_no;
@@ -284,37 +284,58 @@ class Checkout_model extends CI_Model {
 		}
 		
 		if ($payment_method == 'Cash On Delivery') {
-			$reference_no = $this->insertNewOrder($user_id);
-
-			$response['status'] = 'success';
-			$response['message'] = 'Order has been created!';
-			$response['order_url'] = base_url('order/').$reference_no;
+			$revenue = $this->getTotalRevenue($user_id);
+			if ($revenue['total'] > 0) {
+				$reference_no = $this->insertNewOrder($user_id);
+				$response['status'] = 'success';
+				$response['message'] = 'Order has been created!';
+				$response['order_url'] = base_url('order/').$reference_no;
+			}
+			else{
+				$response['status'] = 'failed';
+				$response['message'] = "Something went wrong. Please refresh the page and try again!";
+				$response['order_url'] = '';
+				return $response;
+			}
+			
 		}
 		else if($payment_method == 'Paypal') {
-			$response['status'] = 'success';
-			$response['message'] = 'Order has been created with Paypal';
+			$response['status'] = 'failed';
+			$response['message'] = "There's something wrong on your Payment option. Kindly choose other Payment method!";
 			$response['order_url'] = '';
 		}
 		return $response;
     }
     public function insertNewOrder($user_id) {
+    	$referrer = '';
     	$getShipInfo = $this->getShippingInfoByID($user_id);
     	$getBillInfo = $this->getBillingInfoByID($user_id);
     	$order_note = $this->input->post('order_notes');
     	$payment_method = $this->input->post('payment_method');
     	$revenue = $this->getTotalRevenue($user_id);
+
+    	if (isset($this->session->referrer) && isset($this->session->username)) {
+    		$referrer = '';
+    	}
+    	else if(isset($this->session->referrer)){
+    		$referrer = $this->session->referrer;
+    	}
+
     	$data = array(
 	    	'bi_id'=>$getBillInfo['bi_id'],
 	    	'si_id'=>$getShipInfo['si_id'],
 	    	'user_id'=>$user_id,
 	    	'status'=>'created',
+	    	'shipping_fee'=> '170', /* fixed shipping fee*/
 	    	'total_revenue'=>$revenue['total'],
 	    	'note'=>$order_note,
+	    	'referrer'=>$referrer,
 	    	'payment_method'=>$payment_method,
 	    	'created_at'=>date('Y-m-d H:i:s'),
 	    );
 	    $this->db->INSERT('order_tbl', $data);
 	    $order_id = $this->db->insert_id();
+
 	    $reference_no = $this->generateReferenceNo($order_id);  /* insert order ref no */
 	    $moveCartToSales = $this->moveCartToSales($user_id, $order_id);  /* move cart items to sales */
 	    $this->paymentDetails($order_id, $payment_method ); /* insert payment details*/
@@ -322,9 +343,10 @@ class Checkout_model extends CI_Model {
 	    $activity = 'Order Placed';
 	    $this->shipmentTracking($order_id, $activity); /* insert shipment track details*/
 
-	    $notif_log = array('user_id'=>$user_id, 'message'=>'New Order Placed #'.$reference_no,'created_at'=>date('Y-m-d H:i:s')); 
+	    $notif_log = array('user_id'=>$user_id, 'message'=>'New Order Placed. Order #'.$reference_no,'created_at'=>date('Y-m-d H:i:s')); 
 		$this->insertNewNotification($notif_log); /* INSERT new Notification */
-		$this->sendOrderConfirmationEmail($order_id);
+		$this->sendOrderConfirmationEmail($order_id); /* SEND EMAIL TO THE USER FOR PLACE ORDER ORDER */
+		$this->sendOrderEmailNotificationToAdmin($order_id); /* SEND EMAIL TO THE ADMIN FOR NOTIFICATION */
 
 		return $reference_no;
     }
@@ -409,19 +431,22 @@ class Checkout_model extends CI_Model {
 			'charset'  => 'utf-8',
 			'priority' => '1'
 		);
+		$total = $orderData['total_amount'] + $orderData['shipping_fee'];
 		$order_date = date('F d, Y, h:i A', strtotime($orderData['ordered_date']));
 		$data['header_image'] = base_url().'assets/images/herbal-house-logo.png';
 		$data['header_image_url'] = base_url().'?utm_source=herbalhouse&utm_medium=order_confirmation&utm_campaign=email';
 		$data['name'] = $orderData['fname'].' '.$orderData['lname'];
 		$data['email_address'] = $orderData['email_address'];
 		$data['reference_no'] = $orderData['reference_no'];
-		$data['total_amount'] = number_format( $orderData['total_amount'], 2);
+		$data['subtotal'] = number_format( $orderData['total_amount'], 2) ;
+		$data['shipping_fee'] = number_format( $orderData['shipping_fee'], 2);
+		$data['total'] = number_format($total, 2);
 		$data['payment_method'] = $orderData['payment_method'] ;
 		$data['order_details'] = base_url('order/').$orderData['reference_no'];
 		$data['ordered_date'] =  $order_date;
 
 		$this->email->initialize($config);
-		$this->email->from('no-reply@kenkarlo.com', 'Herbal House');
+		$this->email->from('no-reply@herbalhouseph.com', 'Herbal House Philippines');
 		$this->email->to($orderData['email_address']);
 		$this->email->subject('Thank you for your order');
 		$body = $this->load->view('email/order_confirmation', $data, TRUE);
@@ -431,8 +456,39 @@ class Checkout_model extends CI_Model {
 		$logs = array('order_id'=>$order_id, 'activity'=>'Order email confirmation sent.');
 	    $this->insertOrderEventLogs($logs);
 	}
+	public function sendOrderEmailNotificationToAdmin($order_id) {
+		$orderData = $this->getOrderData($order_id);
+		
+		$config = array (
+			'mailtype' => 'html',
+			'charset'  => 'utf-8',
+			'priority' => '1'
+		);
+		$order_date = date('F d, Y, h:i A', strtotime($orderData['ordered_date']));
+		$data['header_image'] = base_url().'assets/images/herbal-house-logo.png';
+		$data['header_image_url'] = base_url().'?utm_source=herbalhouse&utm_medium=order_confirmation&utm_campaign=email';
+		$data['name'] = 'Admin';
+		$data['email_address'] = $orderData['email_address'];
+		$data['reference_no'] = $orderData['reference_no'];
+		$data['total_amount'] = number_format( $orderData['total_amount'], 2);
+		$data['payment_method'] = $orderData['payment_method'] ;
+		$data['order_details'] = base_url('order/').$orderData['reference_no'];
+		$data['ordered_date'] =  $order_date;
+
+		$this->email->initialize($config);
+		$this->email->from('no-reply@herbalhouseph.com', 'Herbal House Philippines');
+		// $this->email->to('bl4nkcode01@gmail.com'); /* SEND TO ADMIN EMAIL */
+		$this->email->to('herbalhouseph@gmail.com'); /* SEND TO ADMIN EMAIL */
+		$this->email->subject('New Order Arrived!');
+		$body = $this->load->view('email/admin_order_notification', $data, TRUE);
+		$this->email->message($body);
+		$this->email->send();
+
+		$logs = array('order_id'=>$order_id, 'activity'=>'Email sent to admin for Notification.');
+	    $this->insertOrderEventLogs($logs);
+	}
 	public function getOrderData($order_id) {
-		$query = $this->db->SELECT('bit.fname, bit.lname, bit.email_address, ot.reference_no, ot.total_revenue as total_amount, ot.payment_method, ot.created_at as ordered_date')
+		$query = $this->db->SELECT('bit.fname, bit.lname, bit.email_address, ot.reference_no, ot.shipping_fee, ot.total_revenue as total_amount, ot.payment_method, ot.created_at as ordered_date')
 			->FROM('order_tbl as ot')
 			->JOIN('billing_info_tbl as bit','bit.bi_id = ot.bi_id')
 			->WHERE('ot.order_id', $order_id)

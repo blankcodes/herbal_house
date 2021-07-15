@@ -16,17 +16,20 @@ $('#order_pagination').on('click','a',function(e){
 });
 
 function showAllOrders(page){
-	$("#orders_tbl").html('<tr class="text-center"><td colspan="8">Getting Orders...</td></tr>');
+	$("#orders_tbl").html('<tr class="text-center"><td colspan="9">Getting Orders...</td></tr>');
 	$.ajax({
-		url: base_url+'api/v1/orders/_get_all/'+page,
+		url: base_url+'api/v1/orders/_get_all',
 		type: 'GET',
 		dataType: 'JSON',
+		data: {page_no:page}
 	})
 	.done(function(res) {
 		if (parseInt(res.count) > 0) {
 			string = '';
 			payment_status_label = '';
 			order_status_label = '';
+			referrer = '';
+
 			for(var i in res.result) {
 				status = res.result[i].status;
 				payment_status = res.result[i].payment_status;
@@ -41,7 +44,7 @@ function showAllOrders(page){
 					order_status_label = 'danger';
 				}
 				else if (status == 'packed') {
-					order_status_label = 'info';
+					order_status_label = 'primary';
 				}
 				else if (status == 'shipped') {
 					order_status_label = 'warning';
@@ -57,32 +60,29 @@ function showAllOrders(page){
 					payment_status_label = 'badge-danger-lighten';
 				}
 
+				if (res.result[i].referrer == 'none') {
+					referrer = '<span class="badge badge-warning-lighten font-12">None</span>';
+				}
+				else{
+					referrer = '<span class="badge badge-primary-lighten font-12">'+res.result[i].referrer +'</span>';
+				}
+
 				string +='<tr>'
-                        +'<td>'
-                            +'<div class="form-check">'
-                                +'<input type="checkbox" class="form-check-input" id="customCheck2">'
-                                +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
-                            +'</div>'
-                        +'</td>'
                         +'<td><a target="_blank" href="'+base_url+'order/'+res.result[i].reference_no+'" class="text-body fw-bold cursor-pointer">#'+res.result[i].reference_no+'</a> </td>'
                         +'<td>'
                         	+'<h5 class="dropdown">'
-                        	// +'<span class="badge badge'+order_status_label+'-lighten text-capitalize" >'+res.result[i].status+' </span>'
-                        		// +'<button class="btn btn-'+order_status_label+' dropdown-toggle text-capitalized btn-s" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
-                          //           +res.result[i].status+''
-                          //       +'</button>'
-                                 +'<span onclick="updateOrderStatusModal('+res.result[i].order_id+')" class="badge badge-'+order_status_label+'-lighten text-capitalize pointer-cursor" >'+res.result[i].status+' </span>'
-                                   
+                                 +'<span onclick="updateOrderStatusModal(\''+res.result[i].reference_no+'\', \''+res.result[i].order_id+'\')" class="badge badge-'+order_status_label+'-lighten font-12 text-capitalize pointer-cursor" ><i class="uil-edit"></i> '+res.result[i].status+' </span>'
                         	+'</h5>'
-
                         +'</td>'
-                        +'<td class="text-capitalize">₱ '+res.result[i].total_revenue+'</td>'
+                        +'<td><a class="badge badge-info-lighten font-12" target="_blank" href="'+res.result[i].member_overview+'">'+res.result[i].member+'</a></td>'
+                        +'<td class="text-capitalize fw-600">₱ '+res.result[i].total_revenue+'</td>'
                         +'<td>'+res.result[i].payment_method+'</td>'
-                        +'<td><h5><span class="badge '+payment_status_label+' text-capitalize"><i class="mdi mdi-coin"></i> '+res.result[i].payment_status+'</span></h5></td>'
+                        +'<td><h5><span class="badge '+payment_status_label+' text-capitalize font-12"><i class="mdi mdi-coin"></i> '+res.result[i].payment_status+'</span></h5></td>'
+                        +'<td><a target="_blank" href="'+res.result[i].referrer_overview+'">'+referrer+'</a></td>'
                         +'<td>'+res.result[i].created_at+'</small></td>'
 
-                        +'<td>'
-                            +'<a target="_blank" rel="noopener" href="'+base_url+'order/details/'+res.result[i].reference_no+'" class="font-14"> View <i class="uil-external-link-alt "></i> </a>'
+                        +'<td width=150>'
+                            +'<a target="_blank" rel="noopener" href="'+base_url+'order/details/'+res.result[i].reference_no+'" class="font-12 "> <i class="mdi mdi-clipboard-text-search-outline"></i> Check details  </a>'
                             // +'<a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-square-edit-outline"></i></a>'
                             // +'<a href="javascript:void(0);" class="action-icon"> <i class="mdi mdi-delete"></i></a>'
                        +'</td>'
@@ -90,12 +90,12 @@ function showAllOrders(page){
 			}
 		}
 		else{
-			string = '<tr class="text-center"><td colspan="8">No Orders Found!</td></tr>'
+			string = '<tr class="text-center"><td colspan="9">No Orders Found!</td></tr>'
 		}
 		$('#orders_tbl').html(string)
 	})
 	.fail(function() {
-		$("#orders_tbl").html('<tr class="text-center"><td colspan="8">No Orders Found!</td></tr>');
+		$("#orders_tbl").html('<tr class="text-center"><td colspan="9">No Orders Found!</td></tr>');
 	})
 	.always(function() {
 		// $("#orders_tbl").html('<tr class="text-center"><td colspan="7">Loading Products...</td></tr>');
@@ -127,7 +127,7 @@ function getOrderdetails(ref_no) {
 
 		if (order_status == 'created') {
 			order_status_label = 'info';
-			stat_icon = 'mdi mdi-cart-plus';
+			stat_icon = 'uil-shopping-cart-alt';
 			update_status = 'packed';
 		}
 		else if (order_status == 'delivered') {
@@ -180,7 +180,7 @@ function getOrderdetails(ref_no) {
 		}
 
 		$("#_update_order_status_btn").attr('onclick','updateOrderStatus(\''+res.data.order_id+'\',\''+update_status+'\')')
-		$("#_order_status").html('<span class="badge badge-'+order_status_label+'-lighten text-capitalize font-14 btn-rounded fw-700 padding-right-10 padding-left-10">'+order_status+' <i class="'+stat_icon+'"></i></span>')
+		$("#_order_status").html('<span class="badge badge-'+order_status_label+'-lighten text-capitalize font-13 rounded fw-700 padding-right-10 padding-left-10">'+order_status+' <i class="'+stat_icon+'"></i></span>')
 		$("#_view_payment_mode").text(payment_mode);
 		$("#_view_ref_no").text('#'+res.data.reference_no);
 		$("#_view_grand_total").text('₱ '+res.data.order_amount.grand_total);
@@ -211,13 +211,12 @@ function getOrderdetails(ref_no) {
 		$("#loader").attr('hidden','hidden');
 	})
 }
-$("#update_order_status_").on('click', function(e){
-	e.preventDefault();
+$("#update_order_status_").on('click', function(){
 	order_id = $("#order_id_status").val();
 	status = $("#__order_status_select").val();
 
 	if (status == '' || !status) {
-		$.NotificationApp.send("Error!","Please select a Order Status!","top-right","rgba(0,0,0,0.2)","error");
+		$.NotificationApp.send("Error!","Please select an Order Status!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
 	}
 
@@ -234,6 +233,7 @@ $("#update_order_status_").on('click', function(e){
 			return false;
 		}
 	}
+	$("#loader").removeAttr('hidden','hidden');
 	$.ajax({
 	    url: base_url+'api/v1/order/_update_status',
 	    type: 'POST',
@@ -246,6 +246,10 @@ $("#update_order_status_").on('click', function(e){
 			showAllOrders(1);
 			$("#update_order_status_modal").modal('hide')
 		}
+		else if (res.data.status == 'failed') {
+			$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+		}
+		$("#loader").attr('hidden','hidden');
  	})
 	.fail(function() {
 	    console.log("error");
@@ -265,39 +269,47 @@ $("#__order_status_select").on('change', function(){
 
 	}
 })
-// function updateOrderStatus(status){
-// 	order_id = $("#order_id_status").val();
-// 	sweetAlert({
-// 		title:'Are you sure?',
-// 		text: 'Update order status to '+status+'?',
-// 		type:'warning',
-// 		showCancelButton: true,
-// 		confirmButtonColor: '#3699ff',
-// 		cancelButtonColor: '#98a6ad',
-// 		confirmButtonText: 'Yes, proceed!'
-// 	},function(isConfirm){
-// 		('ok');
-// 	});
-// 	$('.swal2-confirm').click(function(){
-// 		$.ajax({
-// 	    	url: base_url+'api/v1/order/_update_status',
-// 	    	type: 'POST',
-// 	    	dataType: 'JSON',
-// 	    	data: {order_id:order_id,status:status},
-// 	    })
-// 	    .done(function(res) {
-// 	    	if (res.data.status == 'success') {
-// 				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
-// 				showAllOrders(1);
-// 				$("#update_order_status_modal").modal('hide')
-// 	    	}
-// 	    })
-// 	    .fail(function() {
-// 	    	console.log("error");
-// 	    })
-// 	});
-// }
-function updateOrderStatusModal(order_id){
-	$("#order_id_status").val(order_id);
-	$("#update_order_status_modal").modal('show');
+
+function updateOrderStatusModal(reference_no, order_id){
+	$("#loader").removeAttr('hidden','hidden');
+	$.ajax({
+	    url: base_url+'api/v1/order/_get_order_details',
+	    type: 'GET',
+	    dataType: 'JSON',
+	    data: {reference_no:reference_no},
+	})
+	.done(function(res) {
+	   	string = '';
+		if (res.data.status == 'created') {
+			string +='<option selected disabled="">Choose Order Status</option>'
+	            +'<option value="packed">Packed</option>'
+	            +'<option value="cancelled">Cancel</option>'
+		}
+		else if(res.data.status == 'packed'){
+			string +='<option selected disabled="">Choose Order Status</option>'
+				+'<option value="shipped">Shipped</option>'
+	            +'<option value="cancelled">Cancel</option>'
+		}
+		else if(res.data.status == 'shipped'){
+			$("#ship_wrapper").hide();
+			string += '<option selected disabled="">Choose Order Status</option>'
+				+'<option value="delivered">Delivered</option>'
+		}
+		else if(res.data.status == 'delivered'){
+			string += '<option selected disabled="">Choose Order Status</option>'
+				+'<option disabled="">Dispute</option>'
+		}
+		else if(res.data.status == 'cancelled'){
+			string += '<option selected disabled="">Choose Order Status</option>'
+				+'<option disabled="">Dispute</option>'
+		}
+		$("#__order_status_select").html(string)
+		$("#order_id_status").val(order_id);
+		$("#update_order_status_modal").modal('show');
+		$("#loader").attr('hidden','hidden');
+ 	})
+	.fail(function() {
+	    console.log("error");
+	})
+	
 }

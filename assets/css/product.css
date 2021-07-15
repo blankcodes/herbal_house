@@ -6,6 +6,7 @@
 	text-overflow: ellipsis !important;
 	white-space: nowrap !important;
 }
+
 .cart-product-title{
 	overflow: hidden !important;
 	text-overflow: ellipsis !important;
@@ -17,7 +18,7 @@
 		border-radius: 10px;
 	}
 	.product--details{
-		padding: 0px 20px 0px 100px !important;
+		padding: 0px 20px 0px 30px !important;
 	}
 }
 
@@ -168,6 +169,16 @@
 		text-overflow: ellipsis !important;
 		white-space: nowrap !important;
 	}
+	.product-category-btn{
+		font-size: 14.5px !important;
+	}
+	.prod-cat-btn{
+		font-size: 12.5px !important;
+	}
+	#_prodcat_products .card-body{
+		padding: 1.4rem 1.3rem;
+	}
+
 	.product-cards-img{
 		padding: 20px 20px 20px 30px !important;
 	}
@@ -226,6 +237,9 @@
 
 }
 @media only screen and (max-width: 415px) {
+	.card-title-div{
+    	width: 180px !important;
+	}
 	/* product page*/
 	.mobile-qty-prod{
 		font-size: 15px !important;
@@ -344,6 +358,21 @@
 		text-overflow: ellipsis !important;
 		white-space: nowrap !important;
 	}
+	.product-category-btn{
+		font-size: 14px !important;	
+	}
+	.prod-cat-btn{
+		font-size: 12px !important;
+	}
+	#_prodcat_products .card-body{
+		padding: 1.3rem 1rem;
+	}
+	#_mob_category_wrapper .card{
+		height: 190px;	
+	}
+	#_mob_category_wrapper .card-body{
+		padding: 1.3rem .7rem;
+	}
 	.product-cards-img{
 		padding: 20px 20px 20px 30px !important;
 	}
@@ -404,6 +433,41 @@
 }
 
 @media only screen and (max-width: 376px) {
+	.card-title-div{
+    	width: 155px !important;
+	}
+	.card-body {
+	    -webkit-box-flex: 1;
+	    -ms-flex: 1 1 auto;
+	    flex: 1 1 auto;
+	    padding:10px 10px;
+	}
+	.card-title{
+		margin-top: 7px;
+		font-size: 13px !important;
+		overflow: hidden !important;
+		text-overflow: ellipsis !important;
+		white-space: nowrap !important;
+	}
+	.product-category-btn{
+		font-size: 12.5px !important;
+	}
+	.prod-cat-btn{
+		font-size: 11px !important;
+	}
+	#_prodcat_products .card-body{
+		padding: 1.2rem .9rem;
+	}
+	.prod-cat-btn{
+		font-size: 10px !important;
+	}
+	
+	#_prodcat_products h3{
+		margin-top: 5px;
+	}
+	#_mob_category_wrapper .card{
+		height: 180px;	
+	}
 	/* product page*/
 	.product-page-title{
 		font-size: 22px;
@@ -427,7 +491,11 @@
 		margin-top: 5px;
 	}
 }
-
+@media only screen and (max-width: 320px) {
+	.card-title-div{
+    	width: 130px !important;
+	}
+}
 .product--title-desc{
 	font-size: 16.5px !important;
 }

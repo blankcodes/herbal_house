@@ -3,12 +3,30 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Products_model extends CI_Model {
 
+	public function generateTransactionRefNo ( $length = 7) {
+	    $characters = '0123456789';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    $ref_no = '100UNI'.$randomString;
+
+	    $check = $this->db->WHERE('reference_no', $ref_no)->GET('transaction_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateTransactionRefNo();
+	    }
+	    return $ref_no;
+	}
 	public function sitemapProducts(){
-		return $this->db->SELECT('url')->GET('products_tbl')->result_array();
+		return $this->db->SELECT('url')->WHERE('status','active')->GET('products_tbl')->result_array();
+	}
+	public function sitemapProductCategory(){
+		return $this->db->SELECT('category_url as url')->WHERE('status','active')->GET('product_category_tbl')->result_array();
 	}
 	public function addProduct(){
 	   	$path = "assets/images/products/"; // upload directory
-		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif'); // valid image extnsion
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp'); // valid image extnsion
 
 		if (isset($_FILES['product_image'])) {
 			$img = str_replace(' ', '-', $_FILES['product_image']['name']);
@@ -57,7 +75,7 @@ class Products_model extends CI_Model {
     public function updateProduct(){
 		if ($this->session->user_type == 'admin') {
 			$path = "assets/images/products/"; // upload directory
-			$valid_extensions = array('jpeg', 'jpg', 'png', 'gif'); // valid image extnsion
+			$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp'); // valid image extnsion
 			$p_id = $this->input->post('p_id');
 			$product_image = $this->input->post('product_image');
 
@@ -181,7 +199,7 @@ class Products_model extends CI_Model {
 					'dc_price'=>$q['dc_price'],
 					'image'=>$q['image'],
 					'qty'=>$q['qty'],
-					'points'=>$q['points'] * .1,/* 10% for the unilvl of products purchase*/
+					'points'=>$q['points'],/* 10% for the unilvl of products purchase*/
 					'status'=>$q['status'],
 					'sku'=>$q['sku'],
 					'url'=>base_url('product/').$q['url'],
@@ -206,6 +224,20 @@ class Products_model extends CI_Model {
     	$query = $this->db->SELECT('pc_id, name')
     		->ORDER_BY('name', 'asc')
     		->GET('product_category_tbl')->result_array();
+    	return $query ;
+    }
+    public function getProductCategoryHome(){
+    	$query = $this->db->SELECT('name, image, category_url')
+    		->ORDER_BY('name', 'asc')
+    		->WHERE('status','active')
+    		->GET('product_category_tbl')->result_array();
+    	return $query ;
+    }
+    public function getProductCategoryHomeCount(){
+    	$query = $this->db->SELECT('pc_id, name')
+    		->ORDER_BY('name', 'asc')
+    		->WHERE('status','active')
+    		->GET('product_category_tbl')->num_rows();
     	return $query ;
     }
     public function deleteProduct(){
@@ -318,8 +350,45 @@ class Products_model extends CI_Model {
 		$data['status'] = $q['status'];
 		$data['sku'] = $q['sku'];
 		$data['product_url'] = base_url('product/').$q['url'];
+		$data['category_url'] = base_url('product/category/').$q['category_url'];
 
 		return $data;
+    }
+    public function getProductCategoryDataByURL($category_url) {
+    	$query = $this->db->WHERE('category_url', $category_url)
+			->WHERE('status', 'active')
+			->GET('product_category_tbl')->row_array();
+		return $query;
+    }
+    public function getProductsByCategoryDataByURL($category_url) {
+    	$productQuery = $this->db->SELECT('pt.*, pct.name as category, pct.category_url')
+    		->FROM('products_tbl as pt')
+    		->JOIN('product_category_tbl as pct', 'pct.pc_id=pt.pc_id')
+			->ORDER_BY('pt.created_at', 'DESC')
+			->WHERE('pct.category_url', $category_url)
+			->WHERE('pct.status', 'active')
+			->WHERE('pt.status', 'active')
+			->GET()->result_array();
+		
+		$result = array();
+		foreach($productQuery as $q) {
+			$dataArr = array(
+				'p_id' => $q['p_id'],
+				'p_pub_id' => $q['p_pub_id'],
+				'pc_id' => $q['pc_id'],
+				'name' => $q['name'],
+				'category' => $q['category'],
+				'description' => $q['description'],
+				'price' => number_format((isset($this->session->user_id))  ? $q['dc_price'] : $q['srp_price'], 2),
+				'image_url' =>  base_url().$q['image'],
+				'qty' => $q['qty'],
+				'status' => $q['status'],
+				'sku' => $q['sku'],
+				'product_url' => base_url('product/').$q['url'],
+			);
+			array_push($result, $dataArr);
+		}
+		return $result;
     }
     public function getShopProductsCount () {
     	return $this->db->WHERE('status','active')->GET('products_tbl')->num_rows();
@@ -342,9 +411,36 @@ class Products_model extends CI_Model {
 				'category'=>$q['category'],
 				'price'=>(isset($this->session->user_id)) ? number_format($q['dc_price'], 2): number_format($q['srp_price'], 2) ,
 				'product_image'=>base_url().$q['image'],
+				// 'qty'=>$q['qty'],
+				// 'sku'=>$q['sku'],
+				'url'=>base_url('product/').$q['url'],
+				// 'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
+			);
+			array_push($result, $array);
+    	}
+    	return $result;
+    }
+    public function getShopUserProducts($row_per_page, $row_no){
+    	$query = $this->db->SELECT('pt.*, pct.name as category, pct.category_url')
+    		->FROM('products_tbl as pt')
+    		->JOIN('product_category_tbl as pct', 'pct.pc_id=pt.pc_id')
+			->ORDER_BY('pt.priority', 'ASC')
+			->ORDER_BY('pt.name', 'ASC')
+			->WHERE('pt.status', 'active')
+			->LIMIT($row_per_page, $row_no)
+			->GET()->result_array();
+
+		$result = array();
+    	foreach($query as $q){
+			$array = array(
+				'p_pub_id'=>$q['p_pub_id'],
+				'product_name'=> $q['name'],
+				'category'=>$q['category'],
+				'price'=>(isset($this->session->user_id)) ? number_format($q['dc_price'], 2): number_format($q['srp_price'], 2) ,
+				'product_image'=>base_url().$q['image'],
 				'qty'=>$q['qty'],
 				'sku'=>$q['sku'],
-				'url'=>base_url('product/').$q['url'],
+				'url'=>base_url('product/').$q['url'].'?ref='.$this->session->username,
 				'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
 			);
 			array_push($result, $array);
@@ -360,6 +456,10 @@ class Products_model extends CI_Model {
 		return $response;
     }
     public function getRecommendedProducts(){
+    	$limit = 4;
+    	if (isset($this->session->referrer)) {
+    		$limit = 8;
+    	}
     	if ($this->input->get('nonce') !== $this->session->_rec_product_nonce) {
 			$data['status'] = 405;
 			$data['response'] = 'Request is not allowed!';
@@ -371,7 +471,7 @@ class Products_model extends CI_Model {
 	    		->JOIN('product_category_tbl as pct','pct.pc_id = pt.pc_id', 'left')
 	    		->WHERE('pt.status','active')
 	    		->WHERE_NOT_IN('pt.p_pub_id', $this->input->get('p_pub_id'))
-	    		->LIMIT(4)
+	    		->LIMIT($limit)
 	    		->GET('products_tbl')->result_array();
 	    	$result = array();
 	    	foreach($query as $q){
@@ -386,7 +486,9 @@ class Products_model extends CI_Model {
 				);
 				array_push($result, $array);
 	    	}
-	    	return $result;
+	    	$response['products'] = $result;
+	    	$response['referrer'] = ($limit > 4) ? 'TRUE' : 'FALSE';
+ 	    	return $response;
 		}
     }
 
@@ -482,7 +584,7 @@ class Products_model extends CI_Model {
 	}
 	public function getProductCodes ($row_per_page, $row_no) {
 		if ($this->session->user_type == 'admin') {
-    		$query = $this->db->SELECT('pt.*, pct.product_code')
+    		$query = $this->db->SELECT('pt.*, pct.product_code, pct.status as pc_stat')
 	    		->FROM('products_tbl as pt')
 	    		->JOIN('product_code_tbl as pct', 'pct.p_id=pt.p_id')
 				->ORDER_BY('pt.created_at', 'DESC')
@@ -495,6 +597,7 @@ class Products_model extends CI_Model {
 					'p_id'=>$q['p_id'],
 					'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
 					'product_code'=>$q['product_code'],
+					'status'=>$q['pc_stat'],
 					'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
 				);
 				array_push($result, $array);
@@ -508,49 +611,299 @@ class Products_model extends CI_Model {
 			$qty = $this->input->get('qty');
 			$p_id = $this->input->get('p_id');
 			$user_code = $this->input->get('user_code');
+			$productCodeCount = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->num_rows();
+			$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
 
-			for ($x = 0; $x < $qty; $x++) {
-				$dataArr = array('status'=>'used');
-				$this->db->WHERE('p_id', $p_id)
-					->UPDATE('product_code_tbl', $dataArr);
+			/* CHECK IF THE CURRENT PRODUCT CODE IS MORE THAN THE REQUEST QTY OF THE PURCHASE*/ 
+			if ($productCodeCount > $qty) {
+				for ($x = 0; $x < $qty; $x++) {
+					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->row_array(); /* GET PRODUCTS CODE THAT IS NOT USED */
 
-				$this->insertNewProductWalkinTransaction($p_id, $user_code);
-				$this->accumulateProfitSharing($p_id);
+					$dataArr = array('status'=>'used');
+					$this->db->WHERE('pc_id',$productCode['pc_id'])
+						->UPDATE('product_code_tbl', $dataArr);
+
+					$this->insertNewProductWalkinTransaction($p_id, $user_code, $productCode['pc_id']);
+
+					/* INSERT UNILEVEL POINTS TO YOURSELF */ 
+					$this->insertUnilevelPointsWallet($p_id, $user_code);
+
+
+					/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
+					$this->insertReferralUnilvlPoints($p_id, $userData['sponsor_id']);
+				}
+				$response['status'] = 'success';
+				$response['message'] = 'Successfully Processed!';
 			}
-			$response['status'] = 'success';
-			$response['message'] = 'Successfully Processed!';
+			else{
+				$response['status'] = 'failed';
+				$response['message'] = 'Generate Product Code for this Product first!';
+			}
 			return $response;
-			// $user_code = $this->input->get('user_code');
-
-			// /* check if there's existing code sent to the user_code (user) AND if the user_code(user) is existing */ 
-			// $checkUserCode = $this->db->WHERE('user_code', $user_code)->WHERE('product_code', $code)->WHERE('')->GET('product_code_tbl')->num_rows();
-
-			// $getUserCode = $this->db->SELECT('act.p_id')
-			// 	->FROM('activation_code_tbl as act')
-			// 	->JOIN('package_tbl as pt', 'pt.p_id = act.p_id')
-			// 	->WHERE('act.code', $code)
-			// 	->GET()->row_array();
-
-			// if ($checkCode <= 0 && $checkUserCode <= 0) {
-			// 	$data = array(
-			// 		'p_id'=>$getUserCode['p_id'], 
-			// 		'user_code'=>$user_code, 
-			// 		'code'=>$code, 
-			// 	);
-			// 	$this->db->INSERT('user_code_tbl', $data); 
-
-			// 	$mData = array('status'=>'sent');
-			// 	$this->db->WHERE('code',$code)->UPDATE('activation_code_tbl',$mData);
-
-			// 	$response['status'] = 'success';
-			// 	$response['message'] = 'Code Successfully sent!';
-			// }
-			// else{
-			// 	$response['status'] = 'failed';
-			// 	$response['message'] = 'Something went wrong. Please try again!';
-			// }
-			// return $response;
     	}
+	}
+	public function insertUnilevelAfterShopPurchase ($order_id) {
+		if (isset($this->session->user_id)) {
+			$sales = $this->db->WHERE('order_id', $order_id)->GET('sales_tbl')->result_array();
+
+			foreach ($sales as $s) { /* LOOP FOR HOW MANY PRODUCTS IN AN ORDER */
+				for ($x = 0; $x < $s['qty']; $x++) { /* LOOP FOR HOW MANY QTY FOR EVERY PRODUCT PURCHASE */
+					$userData = $this->db->WHERE('user_id', $s['user_id'])->GET('user_tbl')->row_array();
+					$orderData = $this->db->WHERE('order_id', $order_id)->GET('order_tbl')->row_array();
+
+					/* GENERATE NEW PRODUCT CODES */ 
+					$this->generateProductCodeShopPurchase($s['qty'], $s['p_id']);
+
+					/* GET THE NEW GENERATED PRODUCT CODE*/ 
+					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $s['p_id'])->GET('product_code_tbl')->row_array();
+
+					$orderStatArr = array('status'=>'used');
+					$this->db->WHERE('pc_id', $productCode['pc_id'])->UPDATE('product_code_tbl', $orderStatArr);
+
+					/* BOUGHT WITH A MEMBER ACCOUNT */
+					if (isset($userData)) {
+						$this->insertNewShopPurchaseTransaction($s['p_id'], $userData['user_code'], $productCode['pc_id']);
+
+						/* INSERT UNILEVEL POINTS TO YOURSELF */ 
+						$this->insertUnilevelPointsWallet($s['p_id'], $userData['user_code']);
+
+						/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
+						$this->insertReferralUnilvlPoints($s['p_id'], $userData['sponsor_id']);
+					}
+
+					/* BOUGHT WITH A NON-MEMBER ACCOUNT BUT REFERRED */
+					else if (isset($orderData['referrer']) || $orderData['referrer'] !== '') {
+						$userReferrer = $this->db->WHERE('username', $orderData['referrer'])->GET('user_tbl')->row_array();
+
+						$this->insertNewShopPurchaseTransaction($s['p_id'], $userReferrer['user_code'], $productCode['pc_id']);
+
+						/* INSERT UNILEVEL POINTS TO YOURSELF */ 
+						$this->insertUnilevelPointsWallet($s['p_id'], $userReferrer['user_code']);
+
+						/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
+						$this->insertReferralUnilvlPoints($s['p_id'], $userReferrer['sponsor_id']);
+					}
+				}
+			}
+    	}
+	}
+	public function insertNewShopPurchaseTransaction($p_id, $user_code, $pc_id){
+		if (isset($this->session->user_id)) {
+			$getProdPoints = $this->db->SELECT('points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				'p_id'=>$p_id,
+				'pc_id'=>$pc_id,
+				'status'=>'complete',
+				'unilevel_points'=>$getProdPoints['points'], /* total points earnd for product unilevel */
+				'user_code'=>$user_code,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('repeat_purchase_history_tbl',$dataArr);
+			$id = $this->db->insert_id();
+			$ref_no = $this->generateProductPurchaseRefNo($id);
+
+			/* INSERT TRANSACTION ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=>$ref_no,
+				'activity'=>'Repeat Purchase',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('transaction_tbl', $txDataArr);
+
+
+		}
+	}
+	public function generateProductCodeShopPurchase($qty, $p_id) {
+		for($x = 0; $x < $qty; $x++){
+			$this->generateBulkProductCodeShopPurchase($p_id);
+		}
+
+	   	$activity_log = array(
+	   		'user_id'=>$this->session->user_id, 
+	   		'message_log'=>'Generated '.$qty.' Product Codes - Shop Purchase', 
+	   		'ip_address'=>$this->input->ip_address(), 
+	   		'platform'=>$this->agent->platform(), 
+	   		'browser'=>$this->agent->browser(),
+	   		'created_at'=>date('Y-m-d H:i:s')
+	   	); 
+		$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+	}
+	public function generateBulkProductCodeShopPurchase($p_id, $length = 15){
+		$characters = '0123456789ABCDEF';
+	    $charactersLength = strlen($characters);
+	    $product_code = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $product_code .= $characters[rand(0, $charactersLength - 1)];
+	    }
+
+	    $check = $this->db->WHERE('product_code', $product_code)->GET('product_code_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateBulkProductCodeShopPurchase();
+	    }
+	    else{
+	    	$product = $this->input->post('product');
+		    $data = array(
+	    		'product_code'=>$product_code,
+	    		'p_id'=>$p_id
+	    	);
+	    	$this->db->INSERT('product_code_tbl', $data); /* insert member code*/
+	    }
+	}
+	public function insertReferralUnilvlPoints( $p_id, $sponsor_id) {
+		if (!empty($sponsor_id)) {
+			/* 1st gen / level*/ 
+			$this->insertUnilevelPointsWallet($p_id, $sponsor_id); 
+
+			$gen2ndData = $this->db->WHERE('user_code', $sponsor_id)->GET('user_tbl')->row_array();
+			/* 2nd Generation */ 
+			if (!empty($gen2ndData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen2ndData['sponsor_id']);
+			}
+
+			/* 3rd Generation*/
+			$gen3rdData = $this->db->WHERE('user_code', $gen2ndData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen3rdData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen3rdData['sponsor_id']);
+			}
+
+			/* 4th Generation*/
+			$gen4thData = $this->db->WHERE('user_code', $gen3rdData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen4thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen4thData['sponsor_id']);
+			}
+					
+			/* 5th Generation*/
+			$gen5thData = $this->db->WHERE('user_code', $gen4thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen5thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen5thData['sponsor_id']);
+			}
+
+			/* 6th Generation*/
+			$gen6thData = $this->db->WHERE('user_code', $gen5thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen6thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen6thData['sponsor_id']);
+			}						
+				
+			/* 7th Generation*/
+			$gen7thData = $this->db->WHERE('user_code', $gen6thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen7thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen7thData['sponsor_id']);
+			}
+									
+			/* 8th Generation*/
+			$gen8thData = $this->db->WHERE('user_code', $gen7thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen8thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen8thData['sponsor_id']);
+			}
+
+			/* 9th Generation*/
+			$gen9thData = $this->db->WHERE('user_code', $gen8thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen9thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen9thData['sponsor_id']);
+			}
+
+			/* 10th Generation*/
+			$gen10thData = $this->db->WHERE('user_code', $gen9thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen10thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen10thData['sponsor_id']);
+			}
+		} //
+	}
+	public function insertUnilevelPointsWallet($p_id, $user_id) {
+		if (isset($this->session->user_id)) {
+			$ref_no = $this->generateTransactionRefNo();
+			$getProdPoints = $this->db->SELECT('points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+			
+			$checkWalletUser = $this->db->WHERE('user_code', $user_id)
+				->WHERE('type','unilevel_bonus')
+				->GET('wallet_tbl')->row_array();
+
+			if (isset($checkWalletUser)) {
+				$dataArr = array(
+					'balance'=>$checkWalletUser['balance'] + $getProdPoints['points'],
+					'updated_at'=>date('Y-m-d H:i:s')
+				);
+				$this->db->WHERE('user_code', $user_id)
+					->WHERE('type','unilevel_bonus')
+					->UPDATE('wallet_tbl',$dataArr);	
+			}
+			else{
+				$dataArr = array(
+					'user_code'=>$user_id,
+					'balance'=>$getProdPoints['points'],
+					'type'=>'unilevel_bonus',
+					'created_at'=>date('Y-m-d H:i:s'),
+				);
+				$this->db->INSERT('wallet_tbl',$dataArr);	
+			}
+
+			/* INSERT WALLET ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=> $ref_no,
+				'user_code'=> $user_id,
+				'amount'=> $getProdPoints['points'],
+				'activity'=>'Unilevel Points',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('wallet_activity_tbl', $txDataArr);
+
+			/* INSERT TRANSACTION ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=>$ref_no,
+				'activity'=>'Unilevel Points',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('transaction_tbl', $txDataArr);
+
+		}
+	}
+	public function insertNewProductWalkinTransaction($p_id, $user_code, $pc_id){
+		if (isset($this->session->user_id)) {
+			$getProdPoints = $this->db->SELECT('points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				'p_id'=>$p_id,
+				'pc_id'=>$pc_id,
+				'status'=>'complete',
+				'unilevel_points'=>$getProdPoints['points'], /* total points earnd for product unilevel */
+				'user_code'=>$user_code,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('repeat_purchase_history_tbl',$dataArr);
+			$id = $this->db->insert_id();
+			$ref_no = $this->generateProductPurchaseRefNo($id);
+
+			/* INSERT TRANSACTION ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=>$ref_no,
+				'activity'=>'Repeat Purchase',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('transaction_tbl', $txDataArr);
+
+
+		}
+	}
+	public function generateProductPurchaseRefNo($ref_id, $length = 6){
+		$characters = '0123456789ABCDEF';
+	    $charactersLength = strlen($characters);
+	    $temp_ref_no = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $temp_ref_no .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    $ref_num = '100RP'.$ref_id.$temp_ref_no;
+
+	    $check = $this->db->WHERE('ref_no', $ref_num)->GET('repeat_purchase_history_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateProductPurchaseRefNo($ref_id);
+	    }
+	    else{
+	    	$dataArr = array('ref_no'=>$ref_num);
+	    	$this->db->WHERE('rph_id', $ref_id)->UPDATE('repeat_purchase_history_tbl', $dataArr);
+	    	return $ref_num;
+	    }
 	}
 	public function accumulateProfitSharing($p_id){
 		if (isset($this->session->user_id)) {
@@ -566,37 +919,6 @@ class Products_model extends CI_Model {
 
 		}
 	}
-	public function insertNewProductWalkinTransaction($p_id, $user_code){
-		if (isset($this->session->user_id)) {
-			$getProductPoints = $this->db->SELECT('profit_sharing_points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
-
-			$dataArr = array(
-				'p_id'=>$p_id,
-				'ref_no'=>$this->generateProductPurchaseRefNo(),
-				'status'=>'complete',
-				'user_code'=>$user_code,
-				'created_at'=>date('Y-m-d H:i:s')
-			);
-			$this->db->INSERT('repeat_purchase_history_tbl',$dataArr);
-
-		}
-	}
-	public function generateProductPurchaseRefNo($length = 9){
-		$characters = '0123456789ABCDEF';
-	    $charactersLength = strlen($characters);
-	    $ref_no = '';
-	    for ($i = 0; $i < $length; $i++) {
-	        $ref_no .= $characters[rand(0, $charactersLength - 1)];
-	    }
-
-	    $check = $this->db->WHERE('ref_no', $ref_no)->GET('repeat_purchase_history_tbl')->num_rows();
-	    if ($check > 0) {
-	    	$this->generateProductPurchaseRefNo();
-	    }
-	    else{
-	    	return $ref_no;
-	    }
-	}
 	public function productRepeatPurchaseHistoryCount(){
 		if (isset($this->session->user_id)) {
 			return $this->db->SELECT('rpt.*, pt.name')
@@ -611,7 +933,7 @@ class Products_model extends CI_Model {
     		$query = $this->db->SELECT('rpt.*, pt.name')
 	    		->FROM('repeat_purchase_history_tbl as rpt')
 	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
-				->ORDER_BY('pt.created_at', 'DESC')
+				->ORDER_BY('rpt.created_at', 'DESC')
 				->LIMIT($row_per_page, $row_no)
 				->GET()->result_array();
 			$result = array();
@@ -622,11 +944,75 @@ class Products_model extends CI_Model {
 					'user_code'=>$q['user_code'],
 					'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
 					'status'=>$q['status'],
-					'created_at'=>date('m/d/Y', strtotime($q['created_at'])),
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);
 				array_push($result, $array);
 			}
 			return $result;
     	}
+	}
+	public function getProductRepeatPurchaseCount(){
+		if (isset($this->session->user_id)) {
+			return $this->db->SELECT('rpt.*, pt.name, pt.points')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->WHERE('rpt.user_code', $this->session->user_code)
+				->GET()->num_rows();
+		}
+	}
+	public function getProductRepeatPurchase($row_per_page, $row_no){
+		if ($this->session->user_id) {
+    		$query = $this->db->SELECT('rpt.*, pt.name, pt.points')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->WHERE('rpt.user_code', $this->session->user_code)
+				->ORDER_BY('rpt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'ref_no'=>$q['ref_no'],
+					'product'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
+					'points'=>'₱ '.number_format($q['points'], 2), /* 10% of the points earned for unilevel */
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+	}
+	public function getProductRepeatPurchaseOpt($row_per_page, $row_no){
+		if ($this->session->user_id) {
+    		$query = $this->db->SELECT('rpt.*, pt.name, pt.points')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->WHERE('rpt.user_code', $this->input->get('user_code'))
+				->ORDER_BY('rpt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'ref_no'=>$q['ref_no'],
+					'product'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
+					'points'=>'₱ '.number_format($q['points'], 2), /* 10% of the points earned for unilevel */
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+	}
+	public function getProductRepeatPurchaseOptCount(){
+		if (isset($this->session->user_id)) {
+			return $this->db->SELECT('rpt.*, pt.name, pt.points')
+	    		->FROM('repeat_purchase_history_tbl as rpt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
+				->WHERE('rpt.user_code', $this->input->get('user_code'))
+				->GET()->num_rows();
+		}
 	}
 }

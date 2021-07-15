@@ -22,7 +22,7 @@
                             <div class="col-lg-12">
                                 <div class="card">
                                     <div class="card-body">
-                                        <h4 class="font-17 fw-700">Order Details: &nbsp;<span id="_view_ref_no"></span></h4>
+                                        <h4 class="font-17 fw-600">Order Details: &nbsp;<span id="_view_ref_no"></span></h4>
                                         <span id="_order_placed" class="font-14"></span><br>
                                         <div>
                                             Order Status: <span id="_order_status"></span> 
@@ -30,6 +30,7 @@
                                     </div>
                                 </div>
                             </div> <!-- end col -->
+
                         </div>
 
 
@@ -63,7 +64,7 @@
                                         <h4 class="header-title mb-3">Delivery Info</h4>
             
                                         <div class="text-left">
-                                            <i class="mdi mdi-truck-fast h3 text-muted"></i>
+                                            <!-- <i class="mdi mdi-truck-fast h3 text-muted"></i> -->
                                             <h5><b>Courier: </b><span  id="_view_ship_courier">Processing...</span></h5>
                                             <p class="mb-1"><b>Tracking Number :</b> <span id="_view_shipping_order_id">Processing...</span></p>
                                             <p class="mb-0"><b>Payment Method  :</b> <span id="_view_payment_method"></span></p>
@@ -102,12 +103,12 @@
                                                     <table class="table mb-0">
                                                         <tbody id="order_price_tally_tbl">
                                                             <tr>
-                                                                <td>Grand Total :</td>
-                                                                <td id="_view_grand_total">₱ 0.00</td>
-                                                            </tr>
-                                                            <tr>
                                                                 <td>Shipping Charge :</td>
                                                                 <td id="_view_shipping_fee">₱ 0.00</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>SubTotal :</td>
+                                                                <td id="_view_grand_total">₱ 0.00</td>
                                                             </tr>
                                                             <!-- <tr>
                                                                 <td>Estimated Tax : </td>
@@ -115,7 +116,7 @@
                                                             </tr> -->
                                                             <tr>
                                                                 <th>Total :</th>
-                                                                <th id="_view_total">₱ 0.00</th>
+                                                                <th id="_view_total" class="text-success font-18 fw-700">₱ 0.00</th>
                                                             </tr>
                                                         </tbody>
                                                     </table>

@@ -38,7 +38,7 @@
 
                                                         <tr>
                                                             <td>SubTotal :</td>
-                                                            <td id="_grand_total_mob">₱ 0.00</td>
+                                                            <td id="_sub_total_mob">₱ 0.00</td>
                                                         </tr>
 
                                                         <tr>
@@ -105,21 +105,13 @@
                                                         <table class="table mb-0">
                                                             <tbody>
                                                                 <tr>
-                                                                    <td>Grand Total :</td>
-                                                                    <td id="_grand_total">₱ 0.00</td>
+                                                                    <td>SubTotal :</td>
+                                                                    <td id="_sub_total">₱ 0.00</td>
                                                                 </tr>
                                                                 <tr>
                                                                     <td>Discount : </td>
                                                                     <td id="_discount">₱ 0.00</td>
                                                                 </tr>
-                                                                <!-- <tr>
-                                                                    <td>Shipping Charge :</td>
-                                                                    <td id="_shipping_charge">₱ 0.00</td>
-                                                                </tr> -->
-                                                                <!-- <tr>
-                                                                    <td>Estimated Tax : </td>
-                                                                    <td>$19.22</td>
-                                                                </tr> -->
                                                                 <tr>
                                                                     <th>Total :</th>
                                                                     <th id="_total">₱ 0.00</th>
@@ -134,12 +126,7 @@
 
                                             <!-- Add note input-->
                                             <div class="col-lg-8">
-                                               <!--  <div class="mt-3">
-                                                    <label for="example-textarea" class="form-label">Add a Note:</label>
-                                                    <textarea class="form-control" id="example-textarea" rows="3"
-                                                        placeholder="Write some note.."></textarea>
-                                                </div> -->
-
+                                               
                                                 <!-- action buttons-->
                                                 <div class="row mt-4">
                                                     <div class="col-sm-6">
@@ -148,8 +135,8 @@
                                                     </div> <!-- end col -->
                                                     <div class="col-sm-6">
                                                         <div class="text-sm-end">
-                                                            <a href="<?=base_url('checkout')?>" class="btn btn-success font-15 rounded k-btn">
-                                                                <i class="uil-cart me-1"></i> Check Out </a>
+                                                            <button id="_checkout_btn" onclick="window.location='<?=base_url('checkout')?>'" class="btn btn-success font-15 rounded k-btn">
+                                                                <i class="uil-cart me-1"></i> Check Out </button>
                                                         </div>
                                                     </div> <!-- end col -->
                                                 </div> <!-- end row-->
@@ -179,8 +166,8 @@
                             </div>
                             
                             <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('checkout')?>'">
-                                    <button class="c-white cart-checkout-btn btn btn-success btn-rounded">Checkout</button>
+                                <div class="mobile-nav-btn">
+                                    <button id="_checkout_btn" onclick="window.location.href='<?=base_url('checkout')?>'" class="c-white cart-checkout-btn btn btn-success btn-rounded">Checkout</button>
                                 </div>      
                             </div>
                         </nav>

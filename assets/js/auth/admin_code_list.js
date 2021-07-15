@@ -6,7 +6,7 @@ if (page == 'code_list') {
 }
 $("#_add_code_btn").on('click', function(){
 	$.ajax({
-		url: base_url+'api/v1/package/_get_package_list',
+		url: base_url+'api/v1/package/_get_package_list_opt',
 		type: 'GET',
 		dataType: 'JSOn',
 	})
@@ -25,6 +25,110 @@ $("#_add_code_btn").on('click', function(){
 	})
 	.fail(function() {
 		console.log("error");
+	})
+})
+$("#_add_bulk_codes_btn").on('click', function(){
+	$.ajax({
+		url: base_url+'api/v1/package/_get_package_list_opt',
+		type: 'GET',
+		dataType: 'JSOn',
+	})
+	.done(function(res) {
+		string = '<option disabled="" selected="">Select Package</option>';
+		if (res.data.length > 0) {
+			for(var i in res.data) {
+				string += '<option value="'+res.data[i].p_id+'">'+res.data[i].name+'</option>'
+			}
+			$("#__select_package").html(string)
+			$("#send_generate_code_modal").modal('show');
+		}
+		else{
+			$.NotificationApp.send("Oh, Snap!","Kindly add Package first","top-right","rgba(0,0,0,0.2)","error");
+		}
+	})
+	.fail(function() {
+		console.log("error");
+	})
+})
+$("#_search_user_name_form").on('submit', function(e) {
+	e.preventDefault();
+	keyword = $("#search_user_name_").val();
+
+	if (!keyword || keyword == '' || keyword == ' ') {
+		return false;
+	}
+
+	$.ajax({
+		url: base_url+'api/v1/users/_get',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {keyword:keyword}
+	})
+	.done(function(res) {
+		string = '';
+		if (res.data.status == 'success') {
+			for(var i in res.data.search){
+				string+='<a href="#" onclick="chooseUserCode(\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
+			}
+		}
+		else if(res.data.status == 'no_record'){
+			string = '<span class="margin-left-10">'+res.data.message+'</span>'
+		}
+		$("#__search_user_dropdown").show()
+		$("#__member_search").html(string);
+	})
+	.fail(function() {
+		string = '<span class="margin-left-10">No records found!</span>'
+		$("#__member_search").html(string);
+	})
+});
+function chooseUserCode(user_code, name){
+	$("#search_user_name_").val('');
+	$("#__user_name").val(name);
+	$("#__user_code").val(user_code)
+	$("#__search_user_dropdown").hide()
+}
+$("#_send_multiple_codes_btn").on('click', function(){
+	user_code = $("#__user_code").val(); /* user code, the receiver*/
+	qty = $("#_mult_qty").val(); /* user code, the receiver*/
+	package = $("#__select_package").val(); /* user code, the receiver*/
+
+	if (!user_code || user_code == '') {
+		$.NotificationApp.send("Oh, snap!","User ID is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	if (!package || package == '') {
+		$.NotificationApp.send("Oh, snap!","Please choose a product!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	if (!qty || qty == '') {
+		$.NotificationApp.send("Oh, snap!","Quantity is required and should be greater than zero!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/codes/_send_multiple_codes',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {user_code:user_code, qty:qty, package:package},
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$("#_search_user_name_form input").val('');
+			$("#send_generate_code_modal").modal('hide');
+			showMemberCodes(1);
+		}
+		else{
+			$.NotificationApp.send("Oh, snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+		}
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		console.log("error");
+		$("#loader").attr('hidden','hidden');
 	})
 })
 $('#_code_pagination').on('click','a',function(e){
@@ -227,7 +331,7 @@ $("#_send_member_code_btn").on('click', function(){
 		return false;
 	}
 	if (!user_code || user_code == '') {
-		$.NotificationApp.send("Oh, snap!","User Code is required!","top-right","rgba(0,0,0,0.2)","error");
+		$.NotificationApp.send("Oh, snap!","User ID is required!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
 	}
 

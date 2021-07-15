@@ -51,13 +51,17 @@ function showPackageList(page_no) {
 	.done(function(res) {
 		$('#_package_list_pagination').html(res.pagination);
 		string = '';
-		badge_status = 'warning';
+		badge_status = '';
 		status_update = 'active';
 		if (res.result.length > 0) {
 			for(var i in res.result) {
 				if (res.result[i].status == 'active') {
 					badge_status = 'success'
 					status_update = 'disabled';
+				}
+				else{
+					badge_status = 'warning'
+					status_update = 'active';
 				}
 				
 				string += '<tr>'
@@ -71,18 +75,9 @@ function showPackageList(page_no) {
 	                        +'<span class="">'+res.result[i].direct_points+'</span>'
 	                    +'</td>'
 	                    +'<td>'
-	                        +'<span class="">'+res.result[i].match_points+'</span>'
+	                        +'<span class="">'+res.result[i].indirect_points+'</span>'
 	                    +'</td>'
-	                    +'<td>'
-	                        +'<span class="">'+res.result[i].unilvl_points+'</span>'
-	                    +'</td>'
-	                    +'<td>'
-	                        +'<span class="">'+res.result[i].pm_maximum_points+'</span>'
-	                    +'</td>'
-	                    +'<td>'
-	                        +'<span class="">'+res.result[i].am_maximum_points+'</span>'
-	                    +'</td>'
-	                    +'<td class=""><span>'+res.result[i].profit_sharing_points+'</td>'
+	                    
 	                    +'<td>'
 	                        +'<span class="fw-400 badge badge-'+badge_status+'-lighten text-capitalize pointer-cursor font-12" onclick="updatePackageStatus(\''+res.result[i].p_id+'\', \''+status_update+'\',\''+page_no+'\')">'+res.result[i].status+'</span>'
 	                    +'</td>'
@@ -122,14 +117,11 @@ function editPackage(p_id){
 	})
 	.done(function(res) {
 		$("#p_id").val(res.data.p_id);
-		$("#_edit_match_points").val(res.data.match_points);
 		$("#_edit_direct_points").val(res.data.direct_points);
+		$("#_edit_indirect_points").val(res.data.indirect_points);
 		$("#_edit_package").val(res.data.name);
 		$("#_edit_cost").val(res.data.cost);
-		$("#_edit_unilvl_points").val(res.data.unilvl_points);
 		$("#_edit_description").val(res.data.description);
-		$("#_edit_max_points_am").val(res.data.am_maximum_points);
-		$("#_edit_max_points_pm").val(res.data.pm_maximum_points);
 		$("#edit_package_modal").modal('show');
 		$("#loader").attr('hidden','hidden');
 

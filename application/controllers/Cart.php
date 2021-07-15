@@ -20,7 +20,7 @@ class Cart extends CI_Controller {
     }
     public function getShoppingCartData() {
         $data = $this->cart_model->getShoppingCartData();
-    	if ($data['count'] <= 0 && $data['grand_total'] == "0.00") {
+    	if ($data['count'] <= 0 && $data['total'] == "0.00") {
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }

@@ -11,8 +11,9 @@ class Home extends CI_Controller {
         $this->load->model('my_account_model');
         $this->load->model('cart_model');
         $this->load->model('order_model');
-        $this->load->model('binary_model');
+        $this->load->model('register_model');
         $this->load->model('member_model');
+        $this->load->model('login_model');
 		$this->load->library('user_agent');
         $this->load->library('form_validation');
 		$this->load->helper('cookie');
@@ -22,7 +23,10 @@ class Home extends CI_Controller {
     	$checkMaintenance = $this->my_account_model->checkMaintenance();
 		if ($checkMaintenance <= 0) {
 			$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+			$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 			$this->session->set_userdata('_product_nonce', $data['nonce']['hash']);
+			$data['csrf'] = $this->csrf_model->getCsrfData();
 			$data['page'] = 'index';
 	    	$this->load->view('index', $data);
 			$this->load->view('footer');
@@ -31,22 +35,70 @@ class Home extends CI_Controller {
 			$this->load->view('errors/maintenance');
 		}
     }
-   	
+    public function affiliateRegister($affID) {
+    	$userData = $this->db->SELECT('username')->WHERE('aff_id', $affID)->GET('user_tbl')->row_array();
+    	if (isset($userData)) {
+   			header('location:'.base_url('account/signup?ref=').$userData['username'].'?utm_souce=herbalhouse&utm_campaign=affiliate_program&utm_medium=affiliates');
+    	}
+   	}
+   	public function registerNewUser() {
+   		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+		$data['userData'] = $this->my_account_model->getUserData();
+	    $data['page'] = 'register_new_account';
+	    $data['title'] = 'Register Account';
+	    $this->load->view('home/register_new_user', $data);
+	    $this->load->view('footer');
+   	}
 	public function getCsrfData() {	
 		$data = $this->csrf_model->getCsrfData();
    		$this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 	public function login() {
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 
-       	if (!isset($this->session->user_id )) {
+		if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->session->set_userdata('user_id', $userData['user_id']);
+                $this->session->set_userdata('user_type', $userData['user_type']);
+                $this->session->set_userdata('user_code', $userData['user_code']);
+              	$this->session->set_userdata('username', $userData['username']);
+
+                if ($userData['user_type'] == 'admin') {
+                    $this->session->set_userdata('admin', $userData['username']);
+                }
+       			header('location:'.base_url('account'));
+    		}
+    		else{
+                unset($_COOKIE['remember_login']); 
+                delete_cookie("remember_login");
+
+    			header('location:'.base_url('login'));
+    		}
+		}
+		else if (isset($this->session->user_id )) {
+       		$this->account();
+       	}
+       	else if (!isset($this->session->user_id )) {
+       		delete_cookie("remember_login");
+       		unset($_COOKIE['remember_login']);
+
        		$data['login_token'] = base64_encode( openssl_random_pseudo_bytes(64)); /* generated token */
 			$data['page'] = 'login';
 			$this->load->view('home/login', $data);
 			$this->load->view('home/footer');
        	}
        	else{
-       		header('location:'.base_url('account'));
+       		delete_cookie("remember_login");
+       		unset($_COOKIE['remember_login']);
+			$this->session->sess_destroy();	
+			header('location:'.base_url('login'));
        	}
 	}
 	public function logout(){
@@ -63,7 +115,9 @@ class Home extends CI_Controller {
 	}
 	/* admin panel start */ 
 	public function account (){
-		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		if (isset($this->session->user_id) && isset($this->session->admin)) {
 			$data['title'] = 'My Account';
 			$data['page'] = 'admin_dashboard';
 			$data['userData'] = $this->my_account_model->getUserData();
@@ -78,6 +132,7 @@ class Home extends CI_Controller {
 			$data['title'] = 'Dashboard';
 			$data['page'] = 'dashboard';
 			$data['userData'] = $this->my_account_model->getUserData();
+			$data['password_check'] = $this->my_account_model->passwordCheck($data['userData']['password']);
 			$this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
 			$this->load->view('account/navbar');
@@ -90,6 +145,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function productCodeList (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->admin)) {
 			$data['title'] = 'Product Code List';
@@ -106,6 +163,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function members(){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
     	if (isset($this->session->admin)) {
 			$data['package'] = $this->member_model->getPackageList();
@@ -124,6 +183,8 @@ class Home extends CI_Controller {
 		}
     }
     public function maintenance(){
+    	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
     	if (isset($this->session->admin)) {
 			$data['title'] = 'Maintenance Page';
 			$data['page'] = 'maintenance_page';
@@ -140,6 +201,8 @@ class Home extends CI_Controller {
 		}
     }
 	public function products (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Products';
@@ -157,6 +220,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function ledger (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Ledger';
@@ -173,6 +238,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function productsCategory (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Products Category';
@@ -190,6 +257,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function walkinBuyers (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Walk-in Buyers';
@@ -206,6 +275,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function orderAdmin (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if (isset($this->session->user_id) && $this->session->user_type == 'admin') {
 			$data['title'] = 'Orders';
 			$data['page'] = 'admin_orders';
@@ -222,6 +293,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function OrderDetailsAdmin($ref_no){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
         $checkOrder = $this->order_model->checkOrderRefNo($ref_no);
         if ($checkOrder > 0 && $this->session->user_type == 'admin') {
             $data['reference_no'] = $ref_no;
@@ -238,7 +311,28 @@ class Home extends CI_Controller {
           	header('location:'.base_url('/login?r=').uri_string());
         }
     }
+    public function OrderDetailsUser($ref_no){
+    	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+        $checkOrder = $this->order_model->checkOrderRefNo($ref_no);
+        if ($checkOrder > 0 && isset($this->session->user_id)) {
+            $data['reference_no'] = $ref_no;
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['page'] = 'order_details_admin';
+            $data['title'] = 'Order Ref #'.$ref_no.'';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('account/order_details');
+            $this->load->view('account/footer');
+        }
+        else{
+          	header('location:'.base_url('/login?r=').uri_string());
+        }
+    }
     public function codeList (){
+    	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'admin') {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'code_list';
@@ -253,7 +347,63 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	 public function withdrawRequest (){
+	 	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		if ($this->session->user_type == 'admin') {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['page'] = 'withdraw_request';
+            $data['title'] = 'Withdrawal Requests';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('account/withdraw_request');
+            $this->load->view('account/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	public function productsDetails ($product_url){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		$data['product'] = $this->products_model->getProductDataByURL($product_url);
+		$data['userData'] = $this->my_account_model->getUserData();
+		$data['page'] = 'shop_product';
+		$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+		$this->session->set_userdata('_rec_product_nonce', $data['nonce']['hash']);
+
+		if (isset($data['product']['name'])) {
+			$this->load->view('shop/header', $data);
+			$this->load->view('shop/navbar');
+			$this->load->view('shop/product_details');
+			$this->load->view('shop/footer');
+		}
+		else{
+			$this->error404();
+		}
+	}
+	public function productCategory ($category_url){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		$data['category'] = $this->products_model->getProductCategoryDataByURL($category_url);
+		$data['products'] = $this->products_model->getProductsByCategoryDataByURL($category_url);
+		$data['userData'] = $this->my_account_model->getUserData();
+		$data['page'] = 'product_category';
+		$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+		$this->session->set_userdata('_rec_product_nonce', $data['nonce']['hash']);
+
+		if (isset($data['category']['name'])) {
+			$this->load->view('shop/p_cat_header', $data);
+			$this->load->view('shop/navbar');
+			$this->load->view('shop/product_category');
+			$this->load->view('shop/footer');
+		}
+		else{
+			$this->error404();
+		}
+	}
+	public function userProductsDetails ($product_url){
 		$data['product'] = $this->products_model->getProductDataByURL($product_url);
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'shop_product';
@@ -271,6 +421,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function memberAdminBinaryByUC ($user_code){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'admin' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'member_binary_list_uc';
@@ -286,10 +438,55 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	public function userOverview ($user_code){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		if ($this->session->user_type == 'admin' && $this->session->user_id) {
+            $data['userData'] = $this->my_account_model->getUserData();
+            $data['userDataOpt'] = $this->my_account_model->getUserDataOpt($user_code);
+            $data['page'] = 'user_overview';
+            $data['title'] = 'User Oveview of '.$data['userDataOpt']['fname'].' '.$data['userDataOpt']['lname'];
+            $data['user_code'] = $user_code;
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('account/user_overview');
+            $this->load->view('account/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	/* admin panel end */ 
 
 	/* members pages start */
+	public function registerDirectPage(){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+        $data['packageCredit'] = $this->register_model->getPackageCredit();
+		if ($this->session->user_type == 'member' && $this->session->user_id) {
+			if (!empty($data['packageCredit'])) {
+	            $data['userData'] = $this->my_account_model->getUserData();
+	            $data['page'] = 'register_invite';
+	            $data['title'] = 'Register Invite';
+	            $this->load->view('account/header', $data);
+				$this->load->view('account/leftside-menu');
+	            $this->load->view('account/navbar');
+	            $this->load->view('member/register_invite');
+	            $this->load->view('member/footer');
+			}
+			else{
+				header('location: '.base_url().'member/invites-list');
+			}
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	public function memberCodes (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'member_code_list';
@@ -305,6 +502,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function memberBinary (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'member_binary_list';
@@ -320,6 +519,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function memberDirectListBinary ($user_code){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'member_binary_list_direct';
@@ -336,10 +537,12 @@ class Home extends CI_Controller {
 		}
 	}
 	public function directInvites (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'direct_invites';
-            $data['title'] = 'Direct Invites';
+            $data['title'] = 'Invites List';
             $this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
             $this->load->view('account/navbar');
@@ -352,6 +555,8 @@ class Home extends CI_Controller {
 	}
 
 	public function profitSharing (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'profit_sharing';
@@ -367,6 +572,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function memberProducts (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
@@ -384,6 +591,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function customerOrders (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'customer_orders';
@@ -399,6 +608,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function myOrders (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_type == 'member' && $this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'my_orders';
@@ -414,6 +625,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function settings (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
@@ -430,11 +643,13 @@ class Home extends CI_Controller {
 		}
 	}
 	public function eWallet (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_id) {
             $data['userData'] = $this->my_account_model->getUserData();
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
             $data['page'] = 'wallet';
-            $data['title'] = 'E-wallet';
+            $data['title'] = 'Wallet';
             $this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
             $this->load->view('account/navbar');
@@ -447,6 +662,8 @@ class Home extends CI_Controller {
 	}
 	/* members pages end */
 	public function cart (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'shopping_cart';
 		$data['title'] = 'Shopping Cart';
@@ -456,6 +673,8 @@ class Home extends CI_Controller {
 		$this->load->view('cart/footer');
 	}
 	public function checkout (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$checkCart = $this->cart_model->checkCartData();
 		if ($checkCart > 0) {
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
@@ -468,7 +687,7 @@ class Home extends CI_Controller {
 			$this->load->view('checkout/footer');
 		}
 		else{
-			header('location:'.base_url());
+			header('location:'.base_url('#shop_now'));
 		}
 	}
 	public function order ($ref_no){
@@ -478,7 +697,7 @@ class Home extends CI_Controller {
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 			$data['userData'] = $this->my_account_model->getUserData();
 			$data['page'] = 'order_details';
-			$data['title'] = 'Order Ref #'.$ref_no.'';
+			$data['title'] = 'Thank you! / Order Ref. #'.$ref_no.'';
 			$this->load->view('order/header', $data);
 			$this->load->view('order/navbar');
 			$this->load->view('order/order_details');
@@ -490,6 +709,8 @@ class Home extends CI_Controller {
 		}
 	}
 	public function about (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'about_page';
 		$data['title'] = 'About Us';
@@ -497,6 +718,21 @@ class Home extends CI_Controller {
 		$this->load->view('home/navbar');
 		$this->load->view('home/about');
 		$this->load->view('cart/footer');
+	}
+	public function membership (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		$data['userData'] = $this->my_account_model->getUserData();
+		$data['page'] = 'membership';
+		$data['title'] = 'Membership';
+		$this->load->view('cart/header', $data);
+		$this->load->view('home/navbar');
+		$this->load->view('home/membership');
+		$this->load->view('cart/footer');
+	}
+	public function error404() {
+		$data['page'] = '404_page';
+		$this->load->view('errors/error_404', $data);
 	}
 	
 }

@@ -72,12 +72,20 @@
                                 </div>
                                 <div class="modal-body">
                                     <form class="ps-3 pe-3" action="#" id="_add_product_cat_form">
+
+                                        <div class="mb-3 col-lg-6">
+                                            <div class="col-md-12 col-xs-12">
+                                                <img src="<?=base_url('assets/images/thumbnail.png')?>" alt="thumbnail" id="prodct_img_thumbnail" width="150" class="img-fluid br-10">
+                                            </div>
+                                            <label for="product_cat_image" class="form-label">Product Category Image</label>
+                                            <input onchange="readURL(this)" type="file" id="product_cat_image" name="product_cat_image" class="form-control">
+                                        </div>
+
                                         <div class="mb-3">
                                             <input type="hidden" id="csrf_token" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                             <label for="product_name" class="form-label">Product Category Name</label>
                                             <input class="form-control" type="text" id="product_cat_name" name="product_cat_name" required="" placeholder="Product Category Name">
                                         </div>
-
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-rounded btn-light" data-bs-dismiss="modal">Close</button>

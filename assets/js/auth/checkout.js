@@ -14,20 +14,20 @@ function getShoppingCartData(){
 	})
 	.done(function(res) {
 		string = '';
-		price_details = '<tr class="text-end">'
+		price_details = '<tr class="">'
                     +'<td>'
                        	+'<h6 class="m-0">Sub Total:</h6></td>'
-      	            	+'<td class="text-end" width=150">₱ '+res.data.total+'</td>'
+      	            	+'<td class="text-end" width=150">₱ '+res.data.subtotal+'</td>'
                    +'</tr>'
-                   +'<tr class="text-end">'
+                   +'<tr class="">'
                         +'<td><h6 class="m-0">Shipping:</h6></td>'
-                        +'<td class="text-end" width=150">₱ 0.00</td>'
+                        +'<td class="text-end" width=150">₱ '+res.data.shipping_charge+'</td>'
                     +'</tr>'
-                    +'<tr class="text-end">'
+                    +'<tr class="">'
                         +'<td>'
                            +'<h5 class="m-0">Total:</h5>'
                         +'</td>'
-                        +'<td class="text-end fw-semibold font-17 fw-600">₱ '+res.data.grand_total+'</td>'
+                        +'<td width="200" class="text-end font-17 fw-700 text-success" style="font-weight: 700 !important;">₱ '+res.data.total+'</td>'
          		+'</tr>'
 
 		if (res.data.cart.length > 0) {
@@ -224,8 +224,8 @@ function getPaymentOptions(){
 	})
 }
 $("#_complete_order_form").on('submit', function(e) {
-	$("#_complete_order_btn").attr('disabled','disabled');
 	$("#loader").removeAttr('hidden');
+	$("#_complete_order_btn").attr('disabled','disabled');
 	e.preventDefault();
 
 	$.ajax({
@@ -247,19 +247,23 @@ $("#_complete_order_form").on('submit', function(e) {
 			$("#loader").attr('hidden','hidden');
 			$.NotificationApp.send("Oh Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","warning");
 		}
+		else if(res.data.status == 'failed'){
+			$("#loader").attr('hidden','hidden');
+			$.NotificationApp.send("Oh Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","warning");
+		}
 		else{
 			$("#loader").attr('hidden','hidden');
 			$.NotificationApp.send("Oh Snap!",res.data.message.payment_method,"top-right","rgba(0,0,0,0.2)","warning");
 		}
+		$("#_complete_order_btn").removeAttr('disabled');
 		$('html, body').animate({
 			scrollTop: 0
 		}, 800);
-	})
-	.fail(function(){
 
 	})
-	.always(function() {
+	.fail(function(){
 		$("#_complete_order_btn").removeAttr('disabled');
+		$("#loader").attr('hidden','hidden');
 	})
 	newCsrfData()
 })

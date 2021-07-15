@@ -96,7 +96,7 @@
                                     <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#drop" role="button" aria-haspopup="false"
                                         aria-expanded="false">
                                         <span class="account-user-avatar"> 
-                                            <i class="uil-user-circle " style="font-size: 30px; margin-top: -8px;"></i>
+                                            <?= ($userData['image']) ? '<img class="rounded-circle" src="'.base_url().$userData['image'].'">' : '<i class="uil-user-circle " style="font-size: 28px;"></i>'?>
                                         </span>
                                         <span>
                                             <span class="account-user-name text-capitalize"><?=$userData['fname'].' '.$userData['lname'];?></span>
@@ -136,13 +136,13 @@
                             <div class="app-search d-none d-lg-block">
                                 <form id="search_product_form">
                                     <div class="input-group">
-                                        <input type="text" class="form-control dropdown-toggle" name="keyword" placeholder="Search Product..." id="top-search">
+                                        <input type="text" class="form-control" name="keyword" placeholder="Search Product..." id="top-search">
                                         <span class="mdi mdi-magnify search-icon"></span>
                                         <button class="input-group-text btn-success" type="submit">Search</button>
                                     </div>
                                 </form>
 
-                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-product-panel" id="search-dropdown">
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-product-panel" hidden="" id="_search_dropdown">
                                     <!-- item-->
                                     <div class="dropdown-header noti-title">
                                         <h5 class="text-overflow mb-2" id="search_fund_title">Found <span class="text-danger" id="search_prod_count">0</span> results</h5>

@@ -253,6 +253,12 @@ $("#_add_product_cat_form").on('submit', function(e) {
 	e.preventDefault();
 	$("#add_product_cat_btn").attr('disabled','disabled').text('Adding...');
 	var formData = new FormData(this);
+	var product_cat_image = $("#product_cat_image").val();
+
+	if (!product_cat_image || product_cat_image == '') {
+		$.NotificationApp.send("Oh Snap!","Product image is required!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
 
 	$.ajax({
 		url: base_url+'api/v1/product/_add_product_category',
@@ -334,8 +340,9 @@ function showProductsCategory(page_no){
                     +'<td>'+res.result[i].category+'</td>'
                     +'<td><span class="text-capitalize badge '+status+' pointer-cursor" onclick="changeProductCategoryStatus(\''+res.result[i].pc_id+'\',\''+res.result[i].status+'\')">'+res.result[i].status+'</span></td>'
                     +'<td>'+res.result[i].created_at+'</td>'
-                    +'<td class="take-action text-left">'
-                    	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'
+                    +'<td class="">'
+                    	+'<a class="text-muted pr-1 btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i></a>'
+                    	+'<a class="text-muted pr-1 btn-rounded" href="#edit_product" onclick="editProductCategory('+res.result[i].pc_id+')"><i class="uil-edit"></i></a>'
                     +'</td>'
        			+'</tr>'
 			}
@@ -637,8 +644,15 @@ function showProductsCodeList(page_no){
 	.done(function(res) {
 		$('#product_code_pagination').html(res.pagination);
 		string = '';
+		badge_stat = 'warning';
 		for(var i in res.result) {
 			if (res.count > 0) {
+				if (res.result[i].status == 'new') {
+					badge_stat = 'success'
+				}
+				else if(res.result[i].status == 'used'){
+					badge_stat = 'danger'
+				}
 				string +='<tr>'
                  	+'<td>'
 	                    +'<div class="form-check">'
@@ -648,6 +662,7 @@ function showProductsCodeList(page_no){
                     +'</td>'
                     +'<td>'+res.result[i].name+'</td>'
                     +'<td>'+res.result[i].product_code+'</td>'
+                    +'<td><span class="badge badge-'+badge_stat+'-lighten text-capitalize">'+res.result[i].status+'</span></td>'
                     +'<td>'+res.result[i].created_at+'</td>'
                     +'<td class="take-action text-left">'
                     	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'
@@ -734,12 +749,17 @@ $("#_send_product_code_btn").on('click', function(){
 	qty = $("#qty").val(); /* user code, the receiver*/
 	p_id = $("#_select_product").val(); /* user code, the receiver*/
 
-	
 	if (!user_code || user_code == '') {
 		$.NotificationApp.send("Oh, snap!","User Code is required!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
 	}
 
+	if (!p_id || p_id == '') {
+		$.NotificationApp.send("Oh, snap!","Please choose a product!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	$("#loader").removeAttr('hidden');
 	$.ajax({
 		url: base_url+'api/v1/product/_process_walkin_tx',
 		type: 'GET',
@@ -751,10 +771,12 @@ $("#_send_product_code_btn").on('click', function(){
 			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 			$("#search_code_name_form input").val('');
 			$("#walkin_buy_modal").modal('hide');
+			showWalkinTx(1);
 		}
 		else{
 			$.NotificationApp.send("Oh, snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
 		}
+		$("#loader").attr('hidden', 'hidden');
 	})
 	.fail(function() {
 		console.log("error");
@@ -771,8 +793,13 @@ function showWalkinTx(page_no){
 	.done(function(res) {
 		$('#product_code_pagination').html(res.pagination);
 		string = '';
+		bg_stat = 'info';
+
 		for(var i in res.result) {
-			if (res.count > 0) {
+			if (res.result[i].status == 'complete') {
+				bg_stat = 'success';
+			}
+			if (parseInt(res.count) > 0) {
 				string +='<tr>'
                  	+'<td>'
 	                    +'<div class="form-check">'
@@ -780,10 +807,10 @@ function showWalkinTx(page_no){
 	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
 	                    +'</div>'
                     +'</td>'
-                    +'<td>'+res.result[i].ref_no+'</td>'
+                    +'<td>#'+res.result[i].ref_no+'</td>'
                     +'<td>'+res.result[i].user_code+'</td>'
                     +'<td>'+res.result[i].name+'</td>'
-                    +'<td>'+res.result[i].status+'</td>'
+                    +'<td><span class="badge badge-'+bg_stat+'-lighten text-capitalize">'+res.result[i].status+'</span></td>'
                     +'<td>'+res.result[i].created_at+'</td>'
                     // +'<td class="take-action text-left">'
                     // 	+'<a class="dropdown-item btn-rounded" href="#delete_product" onclick="deleteProductCategory('+res.result[i].pc_id+')"><i class="uil-trash-alt"></i> Delete</a>'

@@ -9,7 +9,7 @@
                     <div class="container-fluid">
                         <div class="row">
                             <div class="col-md-6">
-                                &copy; <?=date('Y');?> HerbalHouseBHP.com
+                                &copy; <?=date('Y');?> Herbal House Philippines
                             </div>
                             <div class="col-md-6">
                                 <div class="text-md-end footer-links d-none d-md-block">
@@ -48,15 +48,15 @@
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
-        <?php if ($page == 'settings' || $page == 'member_binary_list' || $page == 'member_binary_list_uc' || $page == 'member_binary_list_direct' ||  $page == 'register_direct'){ ?>
-<script src="<?=base_url()?>assets/js/auth/member_binary.js"></script>
+        <?php if ($page == 'settings' || $page == 'wallet' ||  $page == 'register_invite'){ ?>
 <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
-<?php } else if($page == 'wallet') { ?>
+<?php } if($page == 'wallet') { ?>
 <script src="<?=base_url()?>assets/js/auth/_wallet.js"></script>
 <?php } else if($page == 'profit_sharing') { ?>
 <script src="<?=base_url()?>assets/js/auth/_profit_sharing.js"></script>
-<?php } else if($page == 'my_orders') { ?>
+<?php } else if($page == 'dashboard') { ?>
 <script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
+<script src="<?=base_url()?>assets/js/auth/_qrcode.js"></script>
 <?php } ?>
     <script>
         <?php if ($page == 'member_binary_list_uc' || $page == 'member_binary_list_direct') { ?>

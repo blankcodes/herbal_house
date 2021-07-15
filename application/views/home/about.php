@@ -7,9 +7,9 @@
                                 <h1 class="text-white fw-normal mb-4 hero-title">
                                     About Us
                                 </h1>
-                                <p class="mb-4 font-16 c-white">Herbal House is a 100% Filipino-owned company based in Region 8, particularly in Sta. Rita, Samar. A company led by passionate and goal-driven young entrepreneurs aims to help improve the health and wellness of every individual by incorporating organic herbal products into their diet. Our company believes that our health should be our top priority, and this will be made possible through herbal house products. </p>
+                                <p class="mb-4 font-16 c-white">Herbal House is a 100% Filipino owned company based in Leyte particularly in Tacloban City. It is a company led by passionate and goal-driven young entrepreneurs that aims to help improve the health and wellness of every individual. </p>
 
-                                <a href="" target="_blank" class="btn btn-success rounded font-15 k-btn">Join Us <i class="mdi mdi-arrow-right"></i> </a>
+                                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=join_btn&utm_campaign=about_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Join Us Now <i class="mdi mdi-arrow-right"></i> </a>
                             </div>
                         </div>
                         <div class="col-md-5 offset-md-2">
@@ -27,7 +27,7 @@
                 <div class="row justify-content-center">
                     <div class="row">
                         <div class="col-lg-5">
-                            <img src="<?=base_url('assets/images/gallery/mission.jpg')?>" class="rounded img-fluid abt-img-shadow" height="420" alt="mission">
+                            <img src="<?=base_url('assets/images/gallery/mission.webp')?>" class="rounded img-fluid abt-img-shadow" height="420" alt="mission">
                         </div>
                         <div class="col-lg-1"></div>
                         <div class="col-lg-6 mt-5">
@@ -42,7 +42,7 @@
 
                     <div class="row mt-4">
                         <div class="col-lg-5" id="mobile-view">
-                            <img src="<?=base_url('assets/images/gallery/vision.jpg')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="mission">
+                            <img src="<?=base_url('assets/images/gallery/vision.webp')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="mission">
                         </div>
                         <div class="col-lg-1" id="mobile-view"></div>
                         <div class="col-lg-6 mt-5">
@@ -54,14 +54,14 @@
                         </div>
                         <div class="col-lg-1" id="web-view"></div>
                         <div class="col-lg-5" id="web-view">
-                            <img src="<?=base_url('assets/images/gallery/vision.jpg')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="mission">
+                            <img src="<?=base_url('assets/images/gallery/vision.webp')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="vision">
                         </div>
                     </div>
 
                 
                     <div class="row mt-4">
                         <div class="col-lg-5">
-                            <img src="<?=base_url('assets/images/gallery/core-values.jpg')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="mission">
+                            <img src="<?=base_url('assets/images/gallery/core-values.webp')?>" class="img-fluid rounded abt-img-shadow" height="320" alt="core values">
                         </div>
                         <div class="col-lg-1"></div>
                         <div class="col-lg-5 mt-5">
@@ -76,10 +76,30 @@
                 <!-- end row -->
 
 
-                <div class="row margin-top-90 ">
-                    <h2>Leadership Team</h2>
-                    <div class=" margin-top-20 padding-bottom-50">
-                        
+                <div class=" margin-top-90 text-center">
+                    <h2 class="">Leadership Team</h2>
+                    <p class="font-15">Meet the doers and builders.</p>
+                    <div class="row margin-top-20 padding-bottom-50" id="_leadership_team">
+                        <div class="col-lg-3">
+                            <div class="card">
+                                <div class="card-body mt-2 mb-2">
+                                    <img alt="mark susaya" src="<?=base_url('assets/images/team/mark-susaya.webp')?>" class="avatar-xl rounded-circle">
+                                    <div>
+                                        <div class="name">
+                                            <label class="mt-2">Mark Susaya</label>
+                                        </div>
+                                        <div class="position">
+                                            <label class="font-12 fw-500">Chief Executive Officer & Co-Founder</label>
+                                        </div>
+                                        <div class="social">
+                                            <a href="#facebook" class="font-23 facebook-color facebook-c"><i class="mdi mdi-facebook"></i></a>
+                                            <a href="#twitter" class="font-23 twitter-color twitter-c"><i class="mdi mdi-twitter"></i></a>
+                                            <a href="#instagram" class="font-23 instagram-color instagram-c"><i class="mdi mdi-email"></i></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- end row-->

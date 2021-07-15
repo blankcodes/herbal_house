@@ -1,5 +1,16 @@
 var base_url;
 
+$("#show_password").on('click', function() {
+	$("#password").attr('type','text');
+	$(this).attr('hidden','hidden');
+	$("#hide_password").removeAttr('hidden');
+})
+$("#hide_password").on('click', function() {
+	$("#password").attr('type','password');
+	$(this).attr('hidden','hidden');
+	$("#show_password").removeAttr('hidden');
+})
+
 $("#login_form").on('submit', function(e) {
 	e.preventDefault();
 	$("#login_btn").attr('disabled','disabled').text('Please wait...');

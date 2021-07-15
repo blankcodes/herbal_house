@@ -44,11 +44,12 @@
                                                         <th class="all">Package Name</th>
                                                         <th>Cost</th>
                                                         <th>Direct Referral</th>
-                                                        <th>Match Points</th>
-                                                        <th>UniLvl Points</th>
-                                                        <th>AM Points</th>
-                                                        <th>PM Points</th>
-                                                        <th>Profit Sharing</th>
+                                                        <th>InDirect Referral</th>
+                                                        <!-- <th>Match Points</th> -->
+                                                        <!-- <th>UniLvl Points</th> -->
+                                                        <!-- <th>AM Points</th> -->
+                                                        <!-- <th>PM Points</th> -->
+                                                        <!-- <th>Profit Sharing</th> -->
                                                         <th>Status</th>
                                                         <th>Added Date</th>
                                                         <th style="width: 85px;">Action</th>
@@ -108,32 +109,9 @@
                        </div>
 
                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="match_points"  id="" placeholder="Ex. Package 2498" required="required" />
-                            <label for="" class="fw-400">Sales Match Points</label>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="unilvl_points"  id="" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="" class="fw-400">Entry UniLevel Bonus</label>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="profit_sharing_points" value=""  placeholder="Ex. Package 2498" required="required"/>
-                            <label for="" class="fw-400">Profit Sharing Points</label>
-                        </div>
-                        
-                         <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="max_points_am"  id="" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="" class="fw-400">AM Sales Match Points</label>
-                            <small>Maximum Sales Match Bunos get in the AM period (00:01 - 11:59)</small>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="max_points_pm" id="" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="" class="fw-400">PM Sales Match Points</label>
-                            <small>Maximum Sales Match Bunos get in the PM period (12:00 - 23:59)</small>
-                        </div>
-
+                            <input type="number" class="form-control"  name="indirect_points" id="" placeholder="Points/Cash earned for InDirect Referral" required="required"/>
+                            <label for="" class="fw-400">InDirect Referral Bonus</label>
+                       </div>
 
                         <div class="mt-2">
                             <textarea class="form-control" name="description" id="" placeholder="Package Description" required="required"></textarea>
@@ -179,31 +157,10 @@
                        </div>
 
                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="match_points" value="" id="_edit_match_points" placeholder="Ex. Package 2498" required="required" />
-                            <label for="_edit_match_points" class="fw-400">Sales Match Points</label>
+                            <input type="number" class="form-control"  name="indirect_points" value="" id="_edit_indirect_points" placeholder="Points/Cash earned from inDirect Referral" required="required" />
+                            <label for="_edit_indirect_points" class="fw-400">InDirect Referral Bonus</label>
                         </div>
 
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="profit_sharing_points" value="" id="_edit_profit_sharing_points" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="_edit_profit_sharing_points" class="fw-400">Profit Sharing Points</label>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="unilvl_points" value="" id="_edit_unilvl_points" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="_edit_unilvl_points" class="fw-400">Entry UniLevel Bonus</label>
-                        </div>
-
-                         <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="max_points_am" value="" id="_edit_max_points_am" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="_edit_max_points_am" class="fw-400">AM Sales Match Points</label>
-                            <small>Maximum Sales Match Bunos get in the AM period (00:01 - 11:59)</small>
-                        </div>
-
-                        <div class="form-floating mt-2">
-                            <input type="number" class="form-control"  name="max_points_pm" value="" id="_edit_max_points_pm" placeholder="Ex. Package 2498" required="required"/>
-                            <label for="_edit_max_points_pm" class="fw-400">PM Sales Match Points</label>
-                            <small>Maximum Sales Match Bunos get in the PM period (12:00 - 23:59)</small>
-                        </div>
 
                         <div class="mt-2">
                             <textarea class="form-control" name="description" id="_edit_description" placeholder="Package Description" required="required"></textarea>

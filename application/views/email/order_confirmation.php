@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Thank you for your order  / Herbal House</title>
+		<title>Order Confirmation - Herbal House Philippines</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
@@ -101,7 +101,7 @@
 								<table class="flexible" width="600" align="center" style="margin:0 auto;" cellpadding="0" cellspacing="0">
 									<tr>
 										<td class="" style="padding-bottom: 10px; padding-top: 20px;"> 
-											<a href="<?=$header_image_url?>"><img src="<?=$header_image?>" style="width: 280px; height: auto;" alt="HerbalHouseBHP.com"></a>
+											<a href="<?=$header_image_url?>"><img src="<?=$header_image?>" style="width: 280px; height: auto;" alt="Herbal House PH"></a>
 										</td>
 									</tr>
 									<tr>
@@ -131,8 +131,18 @@
 																</tr>
 
 																<tr style="padding-bottom: 10px; width: 100%; font-family: Poppins;">
-																	<td width="200">Amount: </td>
-																	<td width="200"><span >₱ <?=$total_amount?></span></td>
+																	<td width="200">Shipping Fee: </td>
+																	<td width="200"><span >₱ <?=$shipping_fee?></span></td>
+																</tr>
+
+																<tr style="padding-bottom: 10px; width: 100%; font-family: Poppins;">
+																	<td width="200">Subtotal: </td>
+																	<td width="200"><span >₱ <?=$subtotal?></span></td>
+																</tr>
+																
+																<tr style="padding-bottom: 10px; width: 100%; font-family: Poppins;">
+																	<td width="200">Total: </td>
+																	<td width="200"><span >₱ <?=$total?></span></td>
 																</tr>
 
 																<tr style="padding-bottom: 10px; width: 100%; font-family: Poppins;">
@@ -143,7 +153,7 @@
 														</div>
 
 														<div style="padding-bottom:25px; text-align: center; padding-top: 15px;">
-															<a href="<?=$order_details?>" style="border-radius: 10px; border: 1px solid #05cb62 ; background: #05cb62 ; color: #fff; padding: 13px 20px 13px 20px; text-decoration: none; font-size: 20px; font-weight: 500;">Check Order</a>
+															<a href="<?=$order_details?>" style="border-radius: 10px; border: 1px solid #05cb62 ; background: #05cb62 ; color: #fff; padding: 13px 20px 13px 20px; text-decoration: none; font-size: 17px; font-weight: 500;">View Order</a>
 														</div>
 
 

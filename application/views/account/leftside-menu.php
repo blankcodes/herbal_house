@@ -43,7 +43,7 @@
                         <li class="side-nav-item">
                             <a href="<?=base_url()?>ledger" class="side-nav-link">
                                 <i class="uil-layer-group "></i>
-                                <span> Ledger </span>
+                                <span> Package List </span>
                             </a>
                         </li>
 
@@ -55,11 +55,11 @@
                             </a>
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?=base_url('ecom/walkin-buyers')?>">Walk-in Buyers</a>
-                                    </li>
-                                    <li>
-                                        <a href="<?=base_url('product/code-list')?>">Product Code List</a>
+                                    </li> -->
+                                   <li>
+                                        <a href="<?=base_url('ecom/orders')?>">Orders</a>
                                     </li>
                                     <li>
                                         <a href="<?=base_url('ecom/products')?>">Products</a>
@@ -67,15 +67,16 @@
                                     <li>
                                         <a href="<?=base_url('ecom/products-category')?>">Products Category</a>
                                     </li>
+                                    
                                     <li>
-                                        <a href="<?=base_url('ecom/orders')?>">Orders</a>
+                                        <a href="<?=base_url('product/code-list')?>">Product Code List</a>
                                     </li>
-                                    <li>
+                                    <!-- <li>
                                         <a href="<?=base_url('ecom/customers')?>">Customers</a>
                                     </li>
                                     <li>
                                         <a href="apps-ecommerce-sellers.html">Sellers</a>
-                                    </li>
+                                    </li> -->
                                 </ul>
                             </div>
                         </li>
@@ -89,6 +90,12 @@
                             <a href="<?=base_url('code-list')?>" class="side-nav-link">
                                 <i class="uil-database "></i>
                                 <span> Activation Code List</span>
+                            </a>
+                        </li>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url('withdraw-request')?>" class="side-nav-link">
+                                <i class="uil-money-withdrawal "></i>
+                                <span> Withdrawal Requests</span>
                             </a>
                         </li>
                         <li class="side-nav-item">
@@ -126,17 +133,17 @@
                         </li>
 
                         <li class="side-nav-item">
-                            <a href="<?=base_url('member/direct-invites')?>" class="side-nav-link">
+                            <a href="<?=base_url('member/invites-list')?>" class="side-nav-link">
                                 <i class="uil-users-alt  "></i>
-                                <span> Direct List</span>
+                                <span> Invites List</span>
                             </a>
                         </li>
-                        <li class="side-nav-item">
+                        <!-- <li class="side-nav-item">
                             <a href="<?=base_url('member/binary')?>" class="side-nav-link">
                                 <i class="uil-game-structure "></i>
                                 <span> Binary Tree </span>
                             </a>
-                        </li>
+                        </li> -->
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/codes')?>" class="side-nav-link">
                                 <i class="uil-database "></i>
@@ -146,13 +153,7 @@
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/ewallet')?>" class="side-nav-link">
                                 <i class="uil-wallet "></i>
-                                <span> E-wallet</span>
-                            </a>
-                        </li>
-                        <li class="side-nav-item">
-                            <a href="<?=base_url('member/profit-sharing')?>" class="side-nav-link">
-                                <i class="uil-money-stack  "></i>
-                                <span> Profit Sharing</span>
+                                <span> Wallet</span>
                             </a>
                         </li>
                         <?php } ?>

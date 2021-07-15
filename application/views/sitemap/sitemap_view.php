@@ -14,12 +14,22 @@
         <priority>1.0</priority>
     </url>
     <url>
+        <loc><?= base_url('account/signup');?></loc>
+        <priority>1.0</priority>
+    </url>
+    <url>
         <loc><?= base_url('cart');?></loc>
         <priority>1.0</priority>
     </url>
     <?php foreach ($this->products_model->sitemapProducts() as $p){ ?>
     <url>
         <loc><?=base_url('product/').$p['url']?></loc>
+        <priority>1.0</priority>
+    </url>
+   <?php } ?>
+   <?php foreach ($this->products_model->sitemapProductCategory() as $p){ ?>
+    <url>
+        <loc><?=base_url('product/category/').$p['url']?></loc>
         <priority>1.0</priority>
     </url>
    <?php } ?>

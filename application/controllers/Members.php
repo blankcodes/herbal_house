@@ -23,6 +23,10 @@ class Members extends CI_Controller {
     	$data = $this->member_model->generateCode();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
+    public function deleteUser(){
+        $data = $this->member_model->deleteUser();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
     public function showActivationCodes(){
         $row_no = $this->input->get('page_no');
         // Row per page
@@ -149,7 +153,8 @@ class Members extends CI_Controller {
         $data = $this->member_model->getNewMemberActivationCodeCount();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function getDirectList($row_no = 0){
+    public function getDirectList(){
+        $row_no = $this->input->get('page_no');
         // Row per page
         $row_per_page = 10;
 
@@ -165,13 +170,67 @@ class Members extends CI_Controller {
         $products = $this->member_model->getDirectListByUserCode($row_per_page, $row_no);
 
         // Pagination Configuration
-        $config['base_url'] = base_url('member/direct-invites/');
+        $config['base_url'] = base_url('api/v1/member/_get_direct_list');
         $config['use_page_numbers'] = TRUE;
         $config['total_rows'] = $all_count;
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
+        $config['full_tag_open'] = '<ul class="pagination btn-xs">';
+        $config['full_tag_close'] = '</ul>';
+        $config['num_tag_open'] = '<li class="page-item ">';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['next_tag_open'] = '<li class="page-item">';
+        $config['next_tagl_close'] = '</a></li>';
+        $config['prev_tag_open'] = '<li class="page-item">';
+        $config['prev_tagl_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-item disabled">';
+        $config['first_tagl_close'] = '</li>';
+        $config['last_tag_open'] = '<li class="page-item">';
+        $config['last_tagl_close'] = '</a></li>';
+        $config['attributes'] = array('class' => 'page-link');
+        $config['next_link'] = 'Next'; // change > to 'Next' link
+        $config['prev_link'] = 'Previous'; // change < to 'Previous' link
+
+        // Initialize
+        $this->pagination->initialize($config);
+
+        // Initialize $data Array
+        $data['pagination'] = $this->pagination->create_links();
+        $data['result'] = $products;
+        $data['row'] = $row_no;
+        $data['count'] = $all_count;
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    public function getInDirectList(){
+        $row_no = $this->input->get('page_no');
+        // Row per page
+        $row_per_page = 10;
+
+        // Row position
+        if($row_no != 0){
+          $row_no = ($row_no-1) * $row_per_page;
+        }
+
+        // All records count
+        $all_count = $this->member_model->getInDirectListCount();
+
+        // Get records
+        $products = $this->member_model->getInDirectListByUserCode($row_per_page, $row_no);
+
+        // Pagination Configuration
+        $config['base_url'] = base_url('api/v1/member/_get_indirect_list');
         $config['use_page_numbers'] = TRUE;
+        $config['total_rows'] = $all_count;
+        $config['per_page'] = $row_per_page;
+
+        // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';
@@ -254,7 +313,8 @@ class Members extends CI_Controller {
         $data['count'] = $all_count;
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
-    public function showAllMemberList($row_no = 0){
+    public function showAllMemberList(){
+        $row_no = $this->input->get('page_no');
         // Row per page
         $row_per_page = 10;
 
@@ -270,13 +330,67 @@ class Members extends CI_Controller {
         $products = $this->member_model->getAllMemberList($row_per_page, $row_no);
 
         // Pagination Configuration
-        $config['base_url'] = base_url('member/direct-invites/');
+        $config['base_url'] = base_url('api/v1/users/_search');
         $config['use_page_numbers'] = TRUE;
         $config['total_rows'] = $all_count;
         $config['per_page'] = $row_per_page;
 
         // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
+        $config['full_tag_open'] = '<ul class="pagination btn-xs">';
+        $config['full_tag_close'] = '</ul>';
+        $config['num_tag_open'] = '<li class="page-item ">';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li class="page-item active"><a class="page-link" href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['next_tag_open'] = '<li class="page-item">';
+        $config['next_tagl_close'] = '</a></li>';
+        $config['prev_tag_open'] = '<li class="page-item">';
+        $config['prev_tagl_close'] = '</li>';
+        $config['first_tag_open'] = '<li class="page-item disabled">';
+        $config['first_tagl_close'] = '</li>';
+        $config['last_tag_open'] = '<li class="page-item">';
+        $config['last_tagl_close'] = '</a></li>';
+        $config['attributes'] = array('class' => 'page-link');
+        $config['next_link'] = 'Next'; // change > to 'Next' link
+        $config['prev_link'] = 'Previous'; // change < to 'Previous' link
+
+        // Initialize
+        $this->pagination->initialize($config);
+
+        // Initialize $data Array
+        $data['pagination'] = $this->pagination->create_links();
+        $data['result'] = $products;
+        $data['row'] = $row_no;
+        $data['count'] = $all_count;
+        $this->output->set_content_type('application/json')->set_output(json_encode($data));
+    }
+    public function searchUser(){
+        $row_no = $this->input->get('page_no');
+        // Row per page
+        $row_per_page = 10;
+
+        // Row position
+        if($row_no != 0){
+          $row_no = ($row_no-1) * $row_per_page;
+        }
+
+        // All records count
+        $all_count = $this->member_model->getSearchedUserCount();
+
+        // Get records
+        $products = $this->member_model->getSearchedUser($row_per_page, $row_no);
+
+        // Pagination Configuration
+        $config['base_url'] = base_url('api/v1/users/_search');
         $config['use_page_numbers'] = TRUE;
+        $config['total_rows'] = $all_count;
+        $config['per_page'] = $row_per_page;
+
+        // Pagination with bootstrap
+        $config['page_query_string'] = TRUE;
+        $config['query_string_segment'] = 'page_no';
         $config['full_tag_open'] = '<ul class="pagination btn-xs">';
         $config['full_tag_close'] = '</ul>';
         $config['num_tag_open'] = '<li class="page-item ">';
@@ -332,8 +446,8 @@ class Members extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
     }
     public function updateAccount(){
-        $fname = $this->input->post('fname');
-        $lname = $this->input->post('lname');
+        // $fname = $this->input->post('fname');
+        // $lname = $this->input->post('lname');
         $email_address = $this->input->post('email_address');
         $mobile_number = $this->input->post('mobile_number');
 
@@ -341,8 +455,8 @@ class Members extends CI_Controller {
         $checkNumber = $this->member_model->checkMobNumber($mobile_number);
 
         $data = array(
-            'fname'=>$fname,
-            'lname'=>$lname,
+            // 'fname'=>$fname,
+            // 'lname'=>$lname,
             'email_address'=>$email_address,
             'mobile_number'=>$mobile_number,
         );
@@ -364,8 +478,86 @@ class Members extends CI_Controller {
        
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
     }
+    public function updateAccountUsername(){
+        $username = $this->input->post('username');
+        $checkUsername = $this->member_model->checkUsername($username);
+
+        $data = array(
+            'username'=>$username,
+            'updated_at'=>date('Y-m-d H:i:s'),
+        );
+        
+        if ($checkUsername > 0) {
+            $response['status'] = 'failed';
+            $response['message'] = 'Username Already Exist!';
+        }
+
+        else{
+            $this->member_model->updateAccountData($data);
+            $response['status'] = 'success';
+            $response['message'] = 'Account info successfully updated!';
+        }
+       
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+    }
     public function updateProfileImg(){
         $data = $this->member_model->updateProfileImg();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function sendMultipleCodes(){
+        $data = $this->member_model->sendMultipleCodes();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function getUserInfo(){
+        $data = $this->member_model->getUserInfo();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function updateUserInviteStatus(){
+        if (isset($this->session->admin)){
+            $status = $this->input->post('status');
+            $user_code = $this->input->post('user_code');
+            $user_id = $this->input->post('user_id');
+            $package = $this->input->post('package');
+
+            $packageData = $this->member_model->getPackageActivationCode($package);
+            $userData = $this->member_model->checkUserDataPOST($user_code);
+            if ($status !== 'paid') {
+                $response['status'] = 'failed';
+                $response['message'] = 'Status is not recognized!';
+            }
+            else if(!isset($packageData)) {
+                $response['status'] = 'failed';
+                $response['message'] = 'No Activation Code Available! Generate Activation code First!';
+            }
+            else if($userData['website_invites_status'] == 'inactive' && $userData['registration_type'] == 'website_invites' && $userData['member_code'] == '') {
+                $register = $this->register_model->insertDirectReferralBonus($userData['sponsor_id'], $user_id, $packageData['code']);
+                if ($register == 'success') {
+                    $this->member_model->insertPackageCode($packageData, $user_code);
+                    $this->member_model->changeWebsiteInvitesStatus($user_code, $packageData['code']);
+                }
+                $response['status'] = 'success';
+                $response['message'] = 'User Status change to Active!';
+               
+            }
+            else{
+                $response['status'] = 'failed';
+                $response['message'] = 'Something went wrong! Please try again!';
+            }
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+        }
+    }
+    public function getUserAffId() {
+        if (isset($this->session->user_code)) {
+            $userData = $this->db->SELECT('user_code, aff_id')->WHERE('user_code', $this->session->user_code)->GET('user_tbl')->row_array();
+        
+            if(empty( $userData['aff_id'] )) {
+                $aff_id = $this->member_model->generateAffiliateID();
+                $data['aff_link'] = base_url('invite/').$aff_id;
+            }
+            else{
+                $data['aff_link'] = base_url('invite/').$userData['aff_id'];
+            }
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+        }
     }
 }

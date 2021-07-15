@@ -44,6 +44,7 @@
                                                         </th>
                                                         <th class="all">Product</th>
                                                         <th>Codes</th>
+                                                        <th>Status</th>
                                                         <th>Date Added </th>
                                                         <th style="width: 85px;">Action</th>
                                                     </tr>

@@ -78,7 +78,7 @@
                                 <a class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
                                     aria-expanded="false">
                                     <span class="account-user-avatar"> 
-                                        <i class="uil-user-circle " style="font-size: 28px;"></i>
+                                        <?= ($userData['image']) ? '<img class="rounded-circle" src="'.base_url().$userData['image'].'">' : '<i class="uil-user-circle " style="font-size: 28px;"></i>'?>
                                     </span>
                                     <span>
                                         <span class="account-user-name text-capitalize"><?=$userData['fname'].' '.$userData['lname'];?></span>

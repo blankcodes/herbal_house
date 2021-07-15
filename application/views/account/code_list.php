@@ -25,10 +25,13 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row mb-2">
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-6">
                                                 <button class="btn btn-success mb-2" id="_add_code_btn"><i class="mdi mdi-plus-circle me-2"></i> Generate Activation Codes</button>
+
+                                                <button class="btn btn-success mb-2" id="_add_bulk_codes_btn"><i class=" uil-message me-2"></i> Send Multiple Codes</button>
                                             </div>
-                                            <div class="col-sm-8">
+
+                                            <div class="col-sm-6">
                                                 <div class="text-sm-end">
                                                     <button type="button" class="btn btn-light mb-2" onclick="showMemberCodes(1)">Refresh</button>
                                                     <button type="button" class="btn btn-light mb-2">Export</button>
@@ -46,7 +49,7 @@
                                                                 <label class="form-check-label" for="customCheck1">&nbsp;</label>
                                                             </div>
                                                         </th>
-                                                        <th>Member Code</th>
+                                                        <th>Code</th>
                                                         <th>Package Name</th>
                                                         <th>Status</th>
                                                         <th>Date Added</th>
@@ -100,7 +103,62 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal --> 
 
-                        <div id="send_to_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+                        <div id="send_generate_code_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                            <div class="modal-dialog modal-lg ">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success">
+                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-edit"></i> <span id="_modal_title">Send Multiple Activation Codes</span></h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div class="modal-body mb-3">
+                                        <div class="alert alert-light bg-light text-dark border-0" role="alert">
+                                            Choose Package and input a number on how many codes will be generated at once.
+                                        </div>
+                                        <label>Input numbers</label>
+                                        <input type="number" class="form-control mt-2" name="qty" id="_mult_qty" placeholder="Ex. 20">
+                                        <small>*Numbers on how many activation codes will be send.</small>
+                                        <div class="mt-2">
+                                            <label>Package Name</label>
+                                            <select class="form-control select2" name="package" data-toggle="select2" id="__select_package">
+                                                <option disabled="" selected="">Select Package</option>
+                                            </select>
+                                        </div>
+
+                                        <label class=" mt-2">Send to</label>
+                                        <form id="_search_user_name_form">
+                                            <div class="dropdown">
+                                                <input type="text" class="form-control dropdown-toggle" id="search_user_name_" name="code_name" placeholder="Search Name/User ID/Mobile number">
+                                                 <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-user-dropdown" id="__search_user_dropdown">
+                                                    <div id="__member_search" class="mb-1 mt-1">
+                                                        <!-- item-->
+                                                    </div>
+                                                </div>
+                                                <button type="submit" class="btn btn-success rounded mt-1 float-right">Search</button>
+                                            </div>
+                                        
+
+                                        <hr>
+                                        
+                                        <div class="mt-3">
+                                            <label>User Full Name</label>
+                                            <input type="text" class="form-control" id="__user_name" name="user_name" placeholder="User Full Name"readonly="">
+                                        </div>
+
+                                        <div class="mt-2">
+                                            <label>User ID</label>
+                                            <input type="text" class="form-control" id="__user_code" name="user_code" placeholder="User ID" readonly="">
+                                        </div>
+                                        </form>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" id="_send_multiple_codes_btn" class="btn btn-rounded btn-success">Generate Codes</button>
+                                        <button type="button" class="btn btn-rounded btn-light" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal --> 
+
+                        <div id="send_to_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                             <div class="modal-dialog modal-lg ">
                                 <div class="modal-content">
                                     <div class="modal-header bg-success">

@@ -106,8 +106,8 @@
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="mb-3">
-                                                                        <label for="billing-state" class="form-label">State <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" name="state" type="text" placeholder="Enter your state" id="billing_state" required/>
+                                                                        <label for="billing-state" class="form-label">Province <span class="text-danger">*</span></label>
+                                                                        <input class="form-control" name="state" type="text" placeholder="Enter your Province" id="billing_state" required/>
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
@@ -139,7 +139,7 @@
                                                                 <div class="col-12">
                                                                     <div class="mb-3">
                                                                         <div class="form-check">
-                                                                            <input id="_ship_same_address" name="ship_same_address" type="checkbox" class="form-check-input" >
+                                                                            <input id="_ship_same_address" name="ship_same_address" type="checkbox" class="form-check-input" checked>
                                                                             <label class="form-check-label" for="_ship_same_address">Ship to the same address ?</label>
                                                                         </div>
                                                                     </div>
@@ -266,7 +266,7 @@
                                                                 </div>
                                                             </div> <!-- end row -->
 
-                                                            <h4 class="mt-4">Shipping Method</h4>
+                                                            <!-- <h4 class="mt-4">Shipping Method</h4>
 
                                                             <p class="text-muted mb-3">Fill the form below in order to
                                                                 send you the order's invoice.</p>
@@ -290,7 +290,7 @@
                                                                         <p class="mb-0 ps-3 pt-1">Estimated 1-2 days shipping (Duties and tax may be due upon delivery)</p>
                                                                     </div>
                                                                 </div>
-                                                            </div>
+                                                            </div> -->
                                                             <!-- end row-->
 
                                                             <div class="row mt-4">
@@ -355,8 +355,7 @@
                                                             </div> <!-- end col -->
                                                             <div class="col-sm-6">
                                                                 <div class="text-sm-end">
-                                                                    <button id="_complete_order_btn" type="submit" class="btn btn-success btn-lg k-btn rounded">
-                                                                        <i class="uil-bill  me-1"></i> Place Order</button>
+                                                                    <button id="_complete_order_btn" type="submit" class="btn btn-success btn-lg k-btn rounded"> <i class="uil-bill  me-1"></i> Place Order</button>
                                                                 </div>
                                                             </div> <!-- end col -->
                                                         </div> <!-- end row-->

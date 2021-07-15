@@ -2,9 +2,9 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Log In / Herbal House</title>
+        <title>Log In - Herbal House Philippines</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Log In / Herbal House" />
+        <meta name="description" content="Log In - Herbal House Philippines" />
         <meta name="theme-color" content="#0acf67" />
         <!-- App favicon -->
         <link rel="shortcut icon" href="assets/images/favicon.png">
@@ -18,7 +18,7 @@
     </head>
 
     <body class="loading">
-        <div class="account-pages mt-5">
+        <div class="account-pages mt-3">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-xxl-4 col-lg-5">
@@ -50,16 +50,23 @@
                                     </div>
 
 
-                                    <div class="form-floating mb-3 ">
+                                    <div class="form-floating ">
                                         <input type="password" id="password" name="password" class="form-control " placeholder="Enter your password" />
                                         <label for="password" class="fw-400">Password</label>
                                        <!--  <div class="input-group-text" data-password="false">
                                             <span class="password-eye pointer-cursor"></span>
                                         </div> -->
                                     </div>
+                                    <div class="mt-1 text-sm-end">
+                                        <div class="mt-1 pointer-cursor">
+                                            <small id="show_password"><span class="pointer-cursor" ></span><i class="uil-eye "></i> Show Password</small>
+                                            <small hidden id="hide_password"><span class="pointer-cursor" ></span><i class="uil-eye-slash "></i> Hide Password</small>
+                                        </div>
+                                    </div>
 
 
-                                    <div class="mb-3 mb-3">
+
+                                    <div class="mt-3 mb-3">
                                         <div class="form-check">
                                             <input type="checkbox" class="form-check-input" value="<?=$login_token?>" name="remember_login" id="remember_login" checked>
                                             <label class="form-check-label" for="remember_login">Remember me</label>
@@ -68,6 +75,10 @@
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                     <div class="mb-3 mb-0 text-center">
                                         <button class="btn btn-success rounded k-btn btn-lg col-lg-12 col-12 font-17" id="login_btn" type="submit"> Log In </button>
+                                    </div>
+
+                                    <div class="text-center mt-1 mb-3">
+                                        <a href="#forgot_password">Forgot Password</a>
                                     </div>
 
                                 </form>
