@@ -1,5 +1,5 @@
 # Herbal House
-Ecommerce and MLM system of Herbal House | Business Helping Program
+Ecommerce and dropshipping of Herbal House Philippines
 
 ### Features:
 * Ecommerce and dropshipping feature
