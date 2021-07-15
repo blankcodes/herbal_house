@@ -1,4 +1,4 @@
-# Herbal House
+# Herbal House Philippines
 Ecommerce and dropshipping of Herbal House Philippines
 
 ### Features:
