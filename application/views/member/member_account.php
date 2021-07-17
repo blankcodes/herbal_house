@@ -19,10 +19,17 @@
                             </div>
                         </div>     
                         <!-- end page title --> 
-                       <?php if ($userData['website_invites_status'] == 'inactive'){ ?>
+                        <?php if ($userData['website_invites_status'] == 'inactive'){ ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
                                 <strong>Notice: </strong> Start Earning by Activating your account! Click <a href="#click_here" onclick="paymentInfo()">here</a>.
+                            </div>
+                        <?php } ?>
+
+                        <?php if ($order_check > 0){ ?>
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Notice: </strong> You have active Order/s that needs to be Packed or Shipped! Go to <a href="<?=base_url('member/customer-orders')?>">Customer's Orders</a>.
                             </div>
                         <?php } ?>
 
@@ -250,6 +257,10 @@
                                         <button type="button" class="btn-close" id="_qr_modal_close_btn" data-bs-dismiss="modal" aria-hidden="true"></button>
                                     </div>
                                     <div class="modal-body mb-3">
+                                        <div id="_aff_alert_div" hidden="hidden" class="alert alert-danger alert-dismissible fade show" role="alert">
+                                            <div id="_aff_alert_message"></div>
+                                        </div>
+
                                         <div class="alert alert-light bg-light text-dark border-0" role="alert">
                                             Use your affiliate link to earn more. Get ₱ 1,000 from anyone who register using your affiliate link and activate their account.
                                         </div>
@@ -306,7 +317,30 @@
                             </div><!-- /.modal-dialog -->
                         </div><!-- /.modal -->
 
+                        <div id="_news_earn_more_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                            <div class="modal-dialog modal-lg ">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success">
+                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-info-circle"></i> <span id="_modal_title">Ways to Earn More!</span></h4>
+                                        <button type="button" class="btn-close " data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <div id="">
+                                        <div class="modal-body mb-3">
+                                            <img src="<?=base_url('assets/images/earn-more.jpg')?>" class="img-fluid br-10" alt="earn more">
+                                            <div class="alert alert-light bg-light text-dark border-0 mt-2" role="alert">
+                                                <p>You can now use your Affiliate Link to invite your friends, family and anyone on the internet!</p>
+                                                <p>What you will only do is to share your Affiliate link which can be seen on <a href="<?=base_url('member/membership')?>" target="_blank">Membership Page</a>. </p> 
+                                                <p>You can include your Affiliate Link on your posts that is related to Herbal House Philippines on your social media accounts. You may use the marketing materials available on the Membership Page as well.</p>
+                                            </div>
 
+                                        </div>
+                                        <div class="modal-footer mb-2">
+                                            <button type="button" class="btn rounded btn-lg rounded font-15 btn-light " data-bs-dismiss="modal" >Close</button>
+                                        </div>
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
                     </div> <!-- container -->
 
                 </div> <!-- content -->
@@ -318,7 +352,5 @@
             <!-- ============================================================== -->
 
         </div>
-
-
         <!-- END wrapper -->
 

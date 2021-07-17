@@ -133,17 +133,16 @@
                                     </div>
                                 </form>
 
-                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-product-panel" id="search-dropdown">
-                                    <!-- item-->
+                                <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-product-panel" hidden="" id="_search_dropdown">
                                     <div class="dropdown-header noti-title">
-                                        <h5 class="text-overflow mb-2" id="search_fund_title">Found <span class="text-danger" id="search_prod_count">0</span> results</h5>
+                                        <div class="row mb-2" style="position: relative;">
+                                            <h5 class="text-overflow fw-500 font-14 mt-1" id="search_fund_title">Found <span class="text-danger" id="search_prod_count">0</span> results</h5>
+                                            <a class="text-overflow text-end pointer-cursor font-13 text-muted" style="top: 2px; position: absolute;" id="_close_search_wrapper">Close</a>
+                                        </div>
                                     </div>
 
                                     <div id="_product_search_result" class="mb-1">
-                                        <!-- item-->
-                                        
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>

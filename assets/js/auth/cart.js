@@ -413,7 +413,12 @@ $("#top-search").on('focusin', function(){
 	$("#_search_dropdown").removeAttr('hidden').addClass('d-block')
 	$('#_product_search_result').html('')
 })
-$("#top-search").on('focusout', function(){
+// $("#top-search").on('focusout', function(){
+// 	$("#search_fund_title").html('<div class="col-12">Start searching...</div>')
+// 	$("#_search_dropdown").attr('hidden','hidden').removeClass('d-block')
+// 	$('#_product_search_result').html('')
+// })
+$("#_close_search_wrapper").on('click', function () {
 	$("#search_fund_title").html('<div class="col-12">Start searching...</div>')
 	$("#_search_dropdown").attr('hidden','hidden').removeClass('d-block')
 	$('#_product_search_result').html('')
@@ -423,11 +428,12 @@ $("#_mobile_search_product").on('focusin', function(){
 	$("#search_header__").text('Start Searching...')
 	$('#_search_result_wrapper').html('')
 })
-$("#_mobile_search_product").on('focusout', function(){
-	$("#search_result_panel").attr('hidden','hidden');
-	$("#search_header__").text('Start Searching...')
-	$('#_search_result_wrapper').html('')
-})
+
+// $("#_mobile_search_product").on('focusout', function(){
+// 	$("#search_result_panel").attr('hidden','hidden');
+// 	$("#search_header__").text('Start Searching...')
+// 	$('#_search_result_wrapper').html('')
+// })
 
 if (screen.width <= 768) {
 	if (page == 'index') {

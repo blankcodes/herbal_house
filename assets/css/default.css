@@ -1183,6 +1183,9 @@ input[type=number] {
   }
 }
 @media only screen and (max-width: 769px) {
+  .home-title-join{
+    color: #fff;
+  }
   .product-title-home{
     font-size: 26px;
   }
@@ -1280,20 +1283,26 @@ input[type=number] {
   }
 }
 @media only screen and (max-width: 515px) {
-  .registration-section::after {
-    top: -40px !important;
+  /*.registration-section::after {
+    top: -60px !important;
   }
   .membership-section::after {
-    top: -40px !important;
+    top: -60px !important;
   }
+  .hero-section::after {
+    top: -60px !important;
+  }*/
 }
 @media only screen and (max-width: 415px) {
-  .registration-section::after {
-    top: -40px !important;
+ /* .registration-section::after {
+    top: -60px !important;
   }
   .membership-section::after {
-    top: -40px !important;
+    top: -60px !important;
   }
+  .hero-section::after {
+    top: -60px !important;
+  }*/
   .product-title-home{
     font-size: 23px;
   }
@@ -1560,10 +1569,13 @@ body{
 }
 @media only screen and (max-width: 768px) {
   .registration-section::after {
-    top: -50px !important;
+    top: 0 !important;
   }
   .membership-section::after {
-    top: -50px !important;
+    top: 0 !important;
+  }
+  .about-section::after {
+    top: 0 !important;
   }
   /* mobile menu */
   .mobile-bottom-nav{
@@ -1744,8 +1756,48 @@ body{
   10%, 30%, 50%, 70%, 90% {transform: translateX(-10px);}
   20%, 40%, 60%, 80% {transform: translateX(10px);}
 }
-.hero-section::after {
+
+.category-section {
+  content: ' ';
+  background-image: linear-gradient(to bottom,#8669ed,#727cf5);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  width: 100%;
+  border-radius: 0;
+  top: 0;
+  -webkit-transform: skewY(0deg);
+  transform: skewY(0deg);
+}
+.category-section {
   top: 20px;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  height: 85%;
+}
+.category-section {
+  position: relative;
+  padding: 80px 0 120px 0;
+}
+.about-section::after {
+  content: ' ';
+  background-image: linear-gradient(to bottom,#8669ed,#727cf5);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  width: 100%;
+  border-radius: 0;
+  top: 0;
+  -webkit-transform: skewY(0deg);
+  transform: skewY(0deg);
+}
+.about-section::after {
+   top: 20px;
   background: linear-gradient(0deg, rgba(33, 37, 41,.5), rgba(33, 37, 41,.8)), url('../images/gallery/cover-about.webp') no-repeat center;
   background-attachment: fixed;
   background-position: center;
@@ -1758,14 +1810,14 @@ body{
   content: ' ';
   background-image: linear-gradient(to bottom,#8669ed,#727cf5);
   position: absolute;
-  top: -400px;
   right: 0;
   bottom: 0;
   z-index: -1;
   width: 100%;
   border-radius: 0;
-  -webkit-transform: skewY(-3deg);
-  transform: skewY(-3deg);
+  top: 0;
+  -webkit-transform: skewY(0deg);
+  transform: skewY(0deg);
 }
 .membership-section::after {
   top: 20px;
@@ -1781,18 +1833,45 @@ body{
   position: relative;
   padding: 80px 0 120px 0;
 }
-.registration-section::after {
+.index-section::after {
   content: ' ';
   background-image: linear-gradient(to bottom,#8669ed,#727cf5);
   position: absolute;
-  top: -400px;
   right: 0;
   bottom: 0;
   z-index: -1;
   width: 100%;
   border-radius: 0;
-  -webkit-transform: skewY(-3deg);
-  transform: skewY(-3deg);
+  top: 0;
+  -webkit-transform: skewY(0deg);
+  transform: skewY(0deg);
+}
+.index-section::after {
+  top: -120px;
+  background: linear-gradient(0deg, rgba(33, 37, 41,.5), rgba(33, 37, 41,.8)), url('../images/gallery/membership.webp') no-repeat center;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: fixed;
+  height: 100%;
+}
+.index-section {
+  position: relative;
+  padding: 80px 0 120px 0;
+}
+.registration-section::after {
+  content: ' ';
+  background-image: linear-gradient(to bottom,#8669ed,#727cf5);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  width: 100%;
+  border-radius: 0;
+  top: 0;
+  -webkit-transform: skewY(0deg);
+  transform: skewY(0deg);
 }
 .registration-section::after {
   top: 20px;
@@ -1815,6 +1894,13 @@ body{
 .account-pages{
   background:#fff;
   padding-top: 50px;
+  /*-webkit-transform: skewY(-2deg);*/
+  /*transform: skewY(-2deg);*/
+}
+.index-pages{
+  background:#fafbfe;
+  padding-top: 50px;
+  padding-bottom: 50px;
   /*-webkit-transform: skewY(-2deg);*/
   /*transform: skewY(-2deg);*/
 }
@@ -1945,4 +2031,43 @@ body{
   color: #515659 !important;
   text-transform: uppercase;
   font-weight: 500;
+}
+.navbar-home .nav-user {
+  background-color: #fff;
+  color: #515659;
+}
+.home-index-default .nav-user {
+  background-color: transparent;
+  border:  none;
+}
+.home-index-default .nav-user .account-user-name{
+  color: #fff;
+}
+.home-index-default .nav-user .account-position{
+  color: #fff;
+}
+.home-index-default .nav-user .account-user-avatar{
+  color: #fff;
+}
+.nav-user {
+  background-color: #fafbfd;
+  border: 1px solid #f1f3fa;
+  border-width: 0 1px;
+}
+.nav-user .account-user-name{
+  color: #98a6ad ;
+}
+.nav-user .account-position{
+  color: #98a6ad ;
+}
+.nav-user .account-user-avatar{
+  color: #98a6ad;
+}
+.disabledClick{
+  pointer-events: none;
+}
+.account-user-avatar i {
+  position: absolute;
+  top: calc(-15px / 2);
+  left: 1px;
 }

@@ -123,13 +123,13 @@
                                                                         <label class="form-label">Country <span class="text-danger">*</span></label>
                                                                         <select id="billing_country" data-toggle="select2" name="country" title="Country" required>
                                                                             <option selected disabled="">Select Country</option>
-                                                                            <option value="Cambodia">Cambodia</option>
-                                                                            <option value="Indonesia">Indonesia</option>
-                                                                            <option value="Malaysia">Malaysia</option>
+                                                                            <!-- <option value="Cambodia">Cambodia</option> -->
+                                                                            <!-- <option value="Indonesia">Indonesia</option> -->
+                                                                            <!-- <option value="Malaysia">Malaysia</option> -->
                                                                             <option value="Philippines">Philippines</option>
-                                                                            <option value="Singapore">Singapore</option>
-                                                                            <option value="Thailand">Thailand</option>
-                                                                            <option value="Vietnam">Vietnam</option>
+                                                                            <!-- <option value="Singapore">Singapore</option> -->
+                                                                            <!-- <option value="Thailand">Thailand</option> -->
+                                                                            <!-- <option value="Vietnam">Vietnam</option> -->
                                                                         </select>
                                                                     </div>
                                                                 </div>
@@ -345,6 +345,7 @@
                                                         <div class="mb-3 mt-3">
                                                             <label for="example-textarea" class="form-label">Order Notes:</label>
                                                             <textarea class="form-control" id="order_notes" name="order_notes" rows="3" placeholder="Write some note.."></textarea>
+                                                            <small class="mt-2 font-12">***Double check your information before placing an order to avoid issues.</small>
                                                          </div>
                                                         <!-- end Cash on Delivery box-->
 
@@ -356,6 +357,7 @@
                                                             <div class="col-sm-6">
                                                                 <div class="text-sm-end">
                                                                     <button id="_complete_order_btn" type="submit" class="btn btn-success btn-lg k-btn rounded"> <i class="uil-bill  me-1"></i> Place Order</button>
+
                                                                 </div>
                                                             </div> <!-- end col -->
                                                         </div> <!-- end row-->

@@ -292,8 +292,14 @@ class Ledger_model extends CI_Model {
 	}
 	
 	public function sendWithdrawEmailNotificationToAdmin($user_code, $ref_no, $amount, $payment_method) {
-		$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
+		if (strpos(base_url(), 'localhost') !== false || strpos(base_url(), 'test') !== false) {
+			$recv_email = 'bl4nkcode01@gmail.com';
+		}
+		else{
+			$recv_email = 'herbalhouseph@gmail.com';
+		}
 		
+		$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
 		$config = array (
 			'mailtype' => 'html',
 			'charset'  => 'utf-8',
@@ -309,8 +315,7 @@ class Ledger_model extends CI_Model {
 
 		$this->email->initialize($config);
 		$this->email->from('no-reply@herbalhouseph.com', 'Herbal House Philippines');
-		// $this->email->to('bl4nkcode01@gmail.com'); /* SEND TO ADMIN EMAIL */
-		$this->email->to('herbalhouseph@gmail.com'); /* SEND TO ADMIN EMAIL */
+		$this->email->to($recv_email); /* SEND TO ADMIN EMAIL */
 		$this->email->subject('Withdrawal Request!');
 		$body = $this->load->view('email/admin_withdraw_notification', $data, TRUE);
 		$this->email->message($body);

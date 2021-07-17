@@ -1,5 +1,17 @@
 var base_url;
 if (page == 'dashboard') {
+	if (typeof $.cookie('earn_more_modal') === 'undefined') { //cookie warning-terms-conditions
+      	setTimeout(function(){
+         	$("#_news_earn_more_modal").modal('show');
+     	}, 1000)
+     	$("#_news_earn_more_modal, .btn").click(function() {
+         	$.cookie('earn_more_modal', 'true', { expires: 1, path: '/' });
+     	}); 
+ 	}
+}
+	
+
+if (page == 'dashboard') {
 	checkUserStatus();
 	getUserDashboardOverview(user_code);
 	showProductUnilevelPoints(1);
@@ -37,7 +49,7 @@ $('#_indirect_invites_pagination').on('click','a',function(e){
 });
 function checkUserStatus(){
 	$.ajax({
-		url: base_url+'my-account/getUserStatus', type: 'GET', dataType: 'JSON',
+		url: base_url+'api/v1/user/_get_user_status', type: 'GET', dataType: 'JSON',
 	})
 	.done(function(res) {
 		if (res.data.status == 'inactive') {
@@ -176,8 +188,19 @@ function earnMore(user_code) {
 		url: base_url+'api/v1/user/_get_aff_id', type: 'GET', dataType: 'JSON'
 	})
 	.done(function(res) {
-		$("#copy_url_btn").attr('onclick','copyAffUrl("'+res.data.aff_link+'")');
-		$("#_aff_link").val(res.data.aff_link);
+		if (res.data.status == 'success') {
+			$("#copy_url_btn").removeAttr('disabled', 'disabled');
+			$('#_aff_alert_div').attr('hidden','hidden');
+			$("#copy_url_btn").attr('onclick','copyAffUrl("'+res.data.aff_link+'")');
+			$("#_aff_link").val(res.data.aff_link);
+		}
+		else if (res.data.status == 'failed') {
+			$("#copy_url_btn").attr('disabled', 'disabled');
+			$('#_aff_alert_div').removeAttr('hidden','hidden');
+			$('#_aff_alert_message').text(res.data.response);
+			$("#copy_url_btn").attr('onclick','copyAffUrl("'+res.data.aff_link+'")');
+			$("#_aff_link").val(res.data.aff_link);
+		}
 		$("#loader").attr('hidden','hidden');
     	$("#earn_more_modal").modal('show');
 	})

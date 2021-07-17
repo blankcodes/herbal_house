@@ -57,6 +57,8 @@
 <?php } else if($page == 'dashboard') { ?>
 <script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
 <script src="<?=base_url()?>assets/js/auth/_qrcode.js"></script>
+<?php } else if($page == 'membership') { ?>
+<script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
 <?php } ?>
     <script>
         <?php if ($page == 'member_binary_list_uc' || $page == 'member_binary_list_direct') { ?>

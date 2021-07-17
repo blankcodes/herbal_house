@@ -548,15 +548,7 @@ class Members extends CI_Controller {
     }
     public function getUserAffId() {
         if (isset($this->session->user_code)) {
-            $userData = $this->db->SELECT('user_code, aff_id')->WHERE('user_code', $this->session->user_code)->GET('user_tbl')->row_array();
-        
-            if(empty( $userData['aff_id'] )) {
-                $aff_id = $this->member_model->generateAffiliateID();
-                $data['aff_link'] = base_url('invite/').$aff_id;
-            }
-            else{
-                $data['aff_link'] = base_url('invite/').$userData['aff_id'];
-            }
+            $data = $this->member_model->getUserAffId();
             $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
         }
     }

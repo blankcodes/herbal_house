@@ -17,12 +17,14 @@ var $w = $(window).scroll(function(){
         $("#_logo_default").removeAttr('hidden','hidden');
         $("#_logo_light").attr('hidden','hidden');
         $(".noti-icon").css('color','#515659')
+        $("#_home_navbar").removeClass('home-index-default');
 
     } else {
         $("#_home_navbar").removeClass('navbar-home');
         $("#_logo_default").attr('hidden','hidden');
         $("#_logo_light").removeAttr('hidden','hidden');
         $(".noti-icon").css('color','#fff')
+        $("#_home_navbar").addClass('home-index-default');
     }
 });
 function showProductData(page_no, nonce) {

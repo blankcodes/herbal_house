@@ -118,7 +118,7 @@ function getOrderdetails(ref_no) {
 			track_btn = '<span class="badge badge-success-lighten pointer-cursor font-14" onclick="trackOrder(\''+track_url+'\',\''+res.data.ship_courier.tracking_number+'\',\''+track_base_url+'\')">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
 		}
 		else{
-			track_btn = res.data.ship_courier.tracking_number;
+			track_btn = '<span class="badge badge-success-lighten pointer-cursor font-14">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
 		}
 
 		$("#_order_status").html('<span class="badge badge-'+order_status_label+'-lighten text-capitalize font-14 rounded fw-700 padding-right-10 padding-left-10">'+order_status+' <i class="'+stat_icon+'"></i></span>')

@@ -10,11 +10,15 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc><?= base_url('login');?></loc>
+        <loc><?= base_url('account/signup');?></loc>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc><?= base_url('account/signup');?></loc>
+        <loc><?= base_url('membership');?></loc>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc><?= base_url('login');?></loc>
         <priority>1.0</priority>
     </url>
     <url>

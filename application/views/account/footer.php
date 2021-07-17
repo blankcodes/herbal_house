@@ -47,7 +47,6 @@
 		<script src="<?=base_url()?>assets/js/vendor.min.js"></script>
         <script src="<?=base_url()?>assets/js/app.min.js"></script>
 		<script src="<?=base_url()?>assets/js/cilpboard.min.js"></script>
-        <script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
@@ -59,9 +58,10 @@
         <?php }else if($page == 'members_page') { ?><script src="<?=base_url()?>assets/js/auth/admin_members.js"></script>
         <?php }else if($page == 'admin_ledger') { ?><script src="<?=base_url()?>assets/js/auth/admin_ledger.js"></script>
         <?php }else if($page == 'admin_walkin_buyers') { ?><script src="<?=base_url()?>assets/js/auth/admin_products.js"></script>
-        <?php }else if($page == 'dashboard') { ?><script src="<?=base_url()?>assets/js/auth/_qrcode.js"></script>
+        <?php }else if($page == 'dashboard') { ?><script src="<?=base_url()?>assets/js/jquery.cookie.js"></script>
     <?php } ?>
-    
+    <script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
+        
         <script>
             $(function () {
               $('[data-toggle="tooltip"]').tooltip()

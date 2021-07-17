@@ -251,6 +251,11 @@ class Order_model extends CI_Model {
 			return $this->db->WHERE('status','packed')->OR_WHERE('status','created')->GET('order_tbl')->num_rows();
 		}
 	}
+	public function getYourOrderTodo(){
+		if (isset($this->session->user_id)) {
+			return $this->db->WHERE('referrer',$this->session->username)->WHERE('status','packed')->OR_WHERE('status','created')->GET('order_tbl')->num_rows();
+		}
+	}
 
 	public function getOrdersTodayCount(){
 		if (isset($this->session->admin)) {

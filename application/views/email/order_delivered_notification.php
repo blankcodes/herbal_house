@@ -124,7 +124,7 @@
 														</div>
 
 														<div style="padding-bottom:25px; text-align: left; padding-top: 15px; color: #808080; font-size: 14px;">
-															If you have any questions, reply to this email or contact us at herbalhouseph@gmail.com
+															If you have any questions, contact us at herbalhouseph@gmail.com
 														</div>
 
 

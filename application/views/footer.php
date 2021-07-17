@@ -21,7 +21,7 @@
         </div><!-- /.modal -->
 
         <!-- START FOOTER -->
-        <footer class="bg-dark py-4 font-13">
+        <footer class="bg-dark py-4 font-13 ">
             <div class="container">
                 <div class="row mt-3">
                     <div class="col-lg-6">
@@ -45,10 +45,10 @@
                         <h5 class="text-light font-13">Company</h5>
                         <ul class="list-unstyled ps-0 mb-0 mt-3">
                             <li class="mt-2"><a href="<?=base_url('about')?>" class="text-muted">About Us</a></li>
-                            <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Blog</a></li>
+                            <li class="mt-2"><a href="<?=base_url('membership')?>" class="text-muted">Membership</a></li>
+                            <li class="mt-2"><a href="<?=base_url('account/signup')?>" class="text-muted">Sign Up</a></li>
                             <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Terms</a></li>
                             <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Privacy</a></li>
-                            <li class="mt-2"><a href="<?=base_url('login')?>" class="text-muted">Account</a></li>
                         </ul>
                     </div>
                     

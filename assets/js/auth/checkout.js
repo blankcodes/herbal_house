@@ -259,11 +259,11 @@ $("#_complete_order_form").on('submit', function(e) {
 		$('html, body').animate({
 			scrollTop: 0
 		}, 800);
+		newCsrfData()
 
 	})
 	.fail(function(){
 		$("#_complete_order_btn").removeAttr('disabled');
 		$("#loader").attr('hidden','hidden');
 	})
-	newCsrfData()
 })

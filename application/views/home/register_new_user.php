@@ -154,45 +154,32 @@
             </nav>
             <!-- NAVBAR END -->
                     <!-- Start Content-->
-                    <div class="container" style="">
-                        <div class="product_section mb-3 search_wrapper_home" style="margin-bottom: -90px !important; ">
-                            <form id="_mobile_search_product_form">
-                                <div class="d-flex search-mobile-product-wrapper">
-                                    <input type="text" id="_mobile_search_product" name="keyword" class="form-control search-mobile-product" placeholder="Search products...">
-                                    <span class="uil-search search-mobile-icon" ></span>
-                                </div>
-                            </form>
-                            <div class="search-result-wrapper" id="search_result_panel" hidden="hidden">
-                                <div class="header padding-right-10 padding-left-10" id="search_header__">
-                                    Found <span class="text-success">0</span> results.
-                                </div>
-                                <div id="_search_result_wrapper">
-                                    
+                    <section class="product_section" >
+                        <div class="container" id="shop_now">
+                            <div class="mb-3 search_wrapper_home">
+                                <form id="_mobile_search_product_form">
+                                    <div class="d-flex search-mobile-product-wrapper">
+                                        <input type="text" id="_mobile_search_product" name="keyword" class="form-control search-mobile-product" placeholder="Search products...">
+                                        <span class="uil-search search-mobile-icon" ></span>
+                                    </div>
+                                </form>
+                                <div class="search-result-wrapper" id="search_result_panel" hidden="hidden">
+                                    <div class="header padding-right-10 padding-left-10" id="search_header__">
+                                        Found <span class="text-success">0</span> results.
+                                    </div>
+                                    <div id="_search_result_wrapper">
+                                        
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </section>
 
-                        <!-- start page title -->
-                        <!-- <div class="row margin-top-100">
-                            <div class="col-12">
-                                <div class="page-title-box">
-                                    <div class="page-title-right">
-                                        <ol class="breadcrumb m-0">
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Herbal House</a></li>
-                                            <li class="breadcrumb-item"><a href="javascript: void(0);">Register Account</a></li>
-                                        </ol>
-                                    </div>
-                                    <h4 class="page-title">Register Account</h4>
-                                </div>
-                            </div>
-                        </div>  -->    
-                        <!-- end page title --> 
-
-                        <section class="registration-section margin-top-140">
+                        <section class="registration-section margin-top-30">
                             <div class="hero-overlay">
                                 <div class="container">
                                     <div class="row align-items-center">
+                                        <div id="web-view" class=" margin-top-200"></div>
                                         <div class="col-md-12">
                                             <div class="mt-md-4 margin-top-50">
                                                 <h1 class="text-white text-center text-uppercase fw-600 mb-4 hero-title">

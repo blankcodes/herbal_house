@@ -22,6 +22,7 @@ class Home extends CI_Controller {
     public function index(){
     	$checkMaintenance = $this->my_account_model->checkMaintenance();
 		if ($checkMaintenance <= 0) {
+			$data['userData'] = $this->my_account_model->getUserData();
 			$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
 			$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
 			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
@@ -133,6 +134,7 @@ class Home extends CI_Controller {
 			$data['page'] = 'dashboard';
 			$data['userData'] = $this->my_account_model->getUserData();
 			$data['password_check'] = $this->my_account_model->passwordCheck($data['userData']['password']);
+			$data['order_check'] = $this->order_model->getYourOrderTodo($data['userData']['password']);
 			$this->load->view('account/header', $data);
 			$this->load->view('account/leftside-menu');
 			$this->load->view('account/navbar');
@@ -660,6 +662,25 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	public function accountMembership (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		if ($this->session->user_id) {
+			$data['affData'] = $this->member_model->getUserAffId();
+            $data['userData'] = $this->my_account_model->getUserData();
+			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+            $data['page'] = 'membership';
+            $data['title'] = 'Membership';
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('member/membership');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	/* members pages end */
 	public function cart (){
 		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
@@ -714,9 +735,9 @@ class Home extends CI_Controller {
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'about_page';
 		$data['title'] = 'About Us';
-		$this->load->view('cart/header', $data);
-		$this->load->view('home/navbar');
-		$this->load->view('home/about');
+		// $this->load->view('cart/header',);
+		// $this->load->view('home/navbar');
+		$this->load->view('home/about', $data);
 		$this->load->view('cart/footer');
 	}
 	public function membership (){
@@ -725,9 +746,9 @@ class Home extends CI_Controller {
 		$data['userData'] = $this->my_account_model->getUserData();
 		$data['page'] = 'membership';
 		$data['title'] = 'Membership';
-		$this->load->view('cart/header', $data);
-		$this->load->view('home/navbar');
-		$this->load->view('home/membership');
+		// $this->load->view('cart/header', $data);
+		// $this->load->view('home/navbar');
+		$this->load->view('home/membership', $data);
 		$this->load->view('cart/footer');
 	}
 	public function error404() {

@@ -1,5 +1,5 @@
                     <!-- Start Content-->
-                    <div class="container mb-5">
+                    <div class="container">
                         
                         <!-- start page title -->
                         <div id="web-view" class="row margin-top-90">
@@ -37,23 +37,48 @@
                                 </div>
                             </div>
                         </section>
+<!-- 
+                        <section class="category-section margin-top-90" style=" 
+                        background: linear-gradient(0deg, rgba(33, 37, 41,.4), rgba(33, 37, 41,.7)), url('<?=base_url().$category['image']?>') no-repeat center; top: 20px; background-position: center; background-repeat: no-repeat; background-size: cover;height: 80%;right: 0;bottom: 0;width: 100%;transform: skewY(0deg);
+
+">
+                            <div class="hero-overlay">
+                                <div class="container">
+                                    <div class="row align-items-center">
+                                        <div id="web-view" class=" margin-top-70"></div>
+                                        <div class="col-md-12">
+                                            <div class="mt-md-4">
+                                                <h1 class="text-white text-uppercase text-center fw-600 mb-5 hero-title">
+                                                   <?=$category['name']?>
+                                                </h1>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </section> -->
                            
                         <div class="mt-4" id="mobile-view"></div>
-                        <div class="row" id="_prodcat_products">
-                            <?php foreach($products as $p) { ?>
-                            <div class="col-md-4 col-lg-3 col-6">
-                                <div class="card">
-                                        <a href="<?=$p['product_url']?>"><img src="<?=$p['image_url']?>" class="card-img-top" alt="<?=$p['name']?>"></a>
-                                        <div class="card-body card-title-div">
-                                            <a href="<?=$p['product_url']?>"><h2 class="card-title text-secondary product-name"><?=$p['name']?><br>
-                                                <small class="product-category"><?=$category['name']?></small></h2>
-                                            </a>
-                                            <h3 class="card-title text-success">₱ <?=$p['price']?></h3>
-                                            <button href="#add_to_cart" class="btn btn-success rounded btn-sm mt-2 prod-cat-btn" onclick="addToCart('<?=$p['p_pub_id']?>')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>
+                        <div class="">
+                            <div class="">
+                                <div class="row" id="_prodcat_products">
+                                    <?php foreach($products as $p) { ?>
+                                    <div class="col-md-4 col-lg-3 col-6">
+                                        <div class="card">
+                                                <a href="<?=$p['product_url']?>"><img src="<?=$p['image_url']?>" class="card-img-top" alt="<?=$p['name']?>"></a>
+                                                <div class="card-body card-title-div">
+                                                    <a href="<?=$p['product_url']?>"><h2 class="card-title text-secondary product-name"><?=$p['name']?><br>
+                                                        <small class="product-category"><?=$category['name']?></small></h2>
+                                                    </a>
+                                                    <h3 class="card-title text-success">₱ <?=$p['price']?></h3>
+                                                    <button href="#add_to_cart" class="btn btn-success rounded btn-sm mt-2 prod-cat-btn" onclick="addToCart('<?=$p['p_pub_id']?>')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>
+                                                </div> 
                                         </div> 
-                                </div> 
-                            </div> 
-                            <?php } ?>
+                                    </div> 
+                                    <?php } ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

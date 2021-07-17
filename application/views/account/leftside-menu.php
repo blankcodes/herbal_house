@@ -138,12 +138,12 @@
                                 <span> Invites List</span>
                             </a>
                         </li>
-                        <!-- <li class="side-nav-item">
-                            <a href="<?=base_url('member/binary')?>" class="side-nav-link">
-                                <i class="uil-game-structure "></i>
-                                <span> Binary Tree </span>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url('member/membership')?>" class="side-nav-link">
+                                <i class="uil-user-check   "></i>
+                                <span> Membership</span>
                             </a>
-                        </li> -->
+                        </li>
                         <li class="side-nav-item">
                             <a href="<?=base_url('member/codes')?>" class="side-nav-link">
                                 <i class="uil-database "></i>
@@ -156,6 +156,7 @@
                                 <span> Wallet</span>
                             </a>
                         </li>
+                        
                         <?php } ?>
                     </ul>
 

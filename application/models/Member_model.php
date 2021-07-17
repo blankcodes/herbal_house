@@ -828,4 +828,27 @@ class Member_model extends CI_Model {
 		    return $random_id;
 	    }
 	}
+	public function getUserAffId(){
+		$userData = $this->db->SELECT('user_code, aff_id, website_invites_status')->WHERE('user_code', $this->session->user_code)->GET('user_tbl')->row_array();
+        
+        if($userData['website_invites_status'] == 'inactive') {
+            $data['status'] = 'failed';
+            $data['response'] = 'Kindly Activate your account first and Start Earning!';
+            $data['aff_link'] = 'None';
+        }
+        else if(empty( $userData['aff_id']) && $userData['website_invites_status'] == 'active') {
+            $aff_id = $this->member_model->generateAffiliateID();
+            $data['status'] = 'success';
+            $data['response'] = 'Affiliate Link Copied!';
+            $data['aff_link'] = base_url('invite/').$aff_id;
+        }
+        else if (!empty( $userData['aff_id']) && $userData['website_invites_status'] == 'active'){
+            $data['status'] = 'success';
+            $data['response'] = 'Affiliate Link Copied!';
+            $data['aff_link'] = base_url('invite/').$userData['aff_id'];
+        }
+        
+        
+        return $data;
+	}
 }

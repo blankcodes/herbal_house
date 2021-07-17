@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <title>Herbal House Philippines - Explore our Healthy, Organic, Herbal Products</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="Explore our Herbal Products, Healthy Products, Nutritious, Organic Products, Supplements, Coffee, Healthy Diet, Juice. Mangosteen, Buah Merah, Purple Corn Juice, Spirulina, Glutagen, Serpentina. Earning at Home through E-commerce and Dropshipping while Staying Healthy."/>
+        <meta name="description" content="Explore our Herbal Products, Healthy Products, Nutritious, Organic Products, Supplements, Coffee, Healthy Diet, Juice. Mangosteen, Buah Merah, Purple Corn Juice, Spirulina, Glutagen, Serpentina. Earning at Home through E-commerce and Dropshipping while Staying Healthy here at Herbal House Philippines."/>
         <meta name="theme-color" content="#0acf67" />
         <meta name="mobile-web-app-capable" content="yes">
 
@@ -58,8 +58,8 @@
         <!-- NAVBAR START -->
          <!-- style="background-image:url(./assets/images/bg.jpg);background-position: center bottom no-repeat;" -->
         <div id="web-view">
-            <nav class="navbar navbar-expand navbar-dark" id="_home_navbar" style="z-index: 100; left: 0px !important;" >
-                <div class="container">
+            <nav class="navbar navbar-expand navbar-dark home-index-default" id="_home_navbar" style="z-index: 100; left: 0px !important;" >
+                <div class="container ">
                    
                     <!-- logo -->
                     <a href="<?=base_url()?>" class="navbar-brand me-lg-5">
@@ -126,7 +126,7 @@
                         <ul class="navbar-nav ms-auto align-items-center">
                             <li class="dropdown notification-list" id="web-view">
                                 <a class="nav-link dropdown-toggle arrow-none cart-icon-home" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false" aria-expanded="false">
-                                <i class="dripicons-cart noti-icon"></i>
+                                <i class="dripicons-cart noti-icon" style="color: #fff;"></i>
                                 <span class="cart-icon-badge bg-success" style="top: 30px; "></span>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg">
@@ -144,11 +144,44 @@
                                     </a>
                                 </div>
                             </li>&nbsp;&nbsp;&nbsp;&nbsp;
+                            <?php if (isset($this->session->username)){ ?>
+                               <li class="dropdown notification-list">
+                                <a class="nav-link dropdown-toggle nav-user arrow-none me-0 mt-1" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="false"
+                                    aria-expanded="false">
+                                    <span class="account-user-avatar"> 
+                                        <?= ($userData['image']) ? '<img class="rounded-circle" src="'.base_url().$userData['image'].'">' : '<i class="uil-user-circle " style="font-size: 34px;"></i>'?>
+                                    </span>
+                                    <span>
+                                        <span class="account-user-name text-capitalize"><?=$userData['fname'].' '.$userData['lname'];?></span>
+                                        <span class="account-position text-capitalize"><?=$userData['user_type']?></span>
+                                    </span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+                                    <!-- item-->
+                                    <a href="<?=base_url('account')?>" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-circle me-1"></i>
+                                        <span>My Account</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="<?=base_url('member/settings')?>" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-account-edit me-1"></i>
+                                        <span>Settings</span>
+                                    </a>
+
+                                    <!-- item-->
+                                    <a href="<?=base_url('logout')?>" class="dropdown-item notify-item">
+                                        <i class="mdi mdi-logout me-1"></i>
+                                        <span>Logout</span>
+                                    </a>
+                                </div>
+                            </li>
+                            <?php } else { ?>
                             <li class="nav-item me-0">
-                                <!-- <a href="#">Shop now</a> -->
-                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success btn-rounded text-uppercase padding-right-15 padding-left-15 d-none d-lg-inline-flex">
+                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success btn-rounded text-uppercase padding-right-20 padding-left-20 d-none d-lg-inline-flex">
                                    Login
                                 </a>
+                            <?php } ?>
                             </li>
                         </ul>
 
@@ -209,7 +242,10 @@
             </div>
         </section>
 
-       <!-- START PRODUCTS MOB-->
+       
+        <!-- START PRODUCTS MOB-->
+       
+
         <section class="product_section" >
             <div class="container" id="shop_now">
                 <div class="mb-3 search_wrapper_home">
@@ -228,61 +264,92 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+         <section class="index-section margin-top-30" id="mobile-view">
+            <div class="hero-overlay">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div id="web-view" class=" margin-top-200"></div>
+                        <div class="col-md-12">
+                            <div class="mt-md-4">
+                                <h1 class="text-white text-uppercase text-center fw-600 mb-5 hero-title">
+                                    Herbal House Philippines<br>
+                                    <small class="text-capitalize fw-400 font-14">Your Partner in Good Health.</small>
+                                    <div>
+                                        <a href="#_watch_video" class="btn btn-outline-light rounded mt-2">Watch Video</a>
+                                    </div>
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="product_section">
+            <div class="index-pages">
+                <div class="container">
+                    <div class=" text-center" id="mobile-view">
+                        <div class="product_cat_top_menu">
+                            <div class="col-lg-12">
+                                <div class="text-center">
+                                     <h2 class="product-title-home"><span class="text-success">Healthy</span> and <span class="text-success">Organic</span> Products</h2>
+                                    <p class="text-muted mt-1 font-14 pr-1 pl-1">Check our Healthy products inspired by and created for a healthier life.</p>
+                                </div>
+                            </div>
+                        </div>
 
 
-                <div class=" text-center mt-4" id="mobile-view">
-                    <div class="mt-2 product_cat_top_menu">
-                        <div class="col-lg-12">
-                            <div class="text-center">
-                                 <h2 class="product-title-home"><span class="text-success">Healthy</span> and <span class="text-success">Organic</span> Products</h2>
-                        <p class="text-muted mt-2 font-15">Check our Healthy products inspired by and created for a healthier life.</p>
+                        <div class="row mt-4" id="_mob_category_wrapper">
+                            <div class="col-md-6 col-lg-3 col-6">
+                                <div class="card">
+                                    <img src="<?=base_url()?>assets/images/category/dietary-supplements.webp" class="card-img-top" alt="Dietary Supplements">
+                                    <div class="card-body">
+                                        <a href="#" class="btn btn-link text-success font-15 fw-600 stretched-link">Dietary Supplement <i class="uil-angle-right "></i></a>
+                                    </div> <!-- end card-body -->
+                                </div> <!-- end card -->
                             </div>
                         </div>
                     </div>
 
-
-                    <div class="row mt-4" id="_mob_category_wrapper">
-                        <div class="col-md-6 col-lg-3 col-6">
-                            <div class="card">
-                                <img src="<?=base_url()?>assets/images/category/dietary-supplements.webp" class="card-img-top" alt="Dietary Supplements">
-                                <div class="card-body">
-                                    <a href="#" class="btn btn-link text-success font-15 fw-600 stretched-link">Dietary Supplement <i class="uil-angle-right "></i></a>
-                                </div> <!-- end card-body -->
-                            </div> <!-- end card -->
+                    <div class="row py-4 product_top_menu">
+                        <div class="col-lg-12">
+                            <div class="text-center">
+                                <!-- <h3 class="mt-0 font-30"><i class=" uil-heartbeat "></i></h3> -->
+                                <h1 class="product-title-home">Explore our <span class="text-success">Herbal</span> Products</h1>
+                                <p class="text-muted mt-2 product-sub-home">Prevention is better than cure;<br>
+                                Why wait for things to go wrong with your health?</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row py-4 mt-4 product_top_menu">
-                    <div class="col-lg-12">
-                        <div class="text-center">
-                            <!-- <h3 class="mt-0 font-30"><i class=" uil-heartbeat "></i></h3> -->
-                            <h1 class="product-title-home">Explore our <span class="text-success">Herbal</span> Products</h1>
-                            <p class="text-muted mt-2 product-sub-home">Prevention is better than cure;<br>
-                            Why wait for things to go wrong with your health?</p>
-                        </div>
+                    <div class="row mobile_products_wrapper" id="mobile-view">
+                        
                     </div>
-                </div>
-
-                <div class="row mobile_products_wrapper" id="mobile-view">
-                    
-                </div>
 
 
-                <div class="row web-view" id="products_wrapper_home">
+                    <div class="row web-view" id="products_wrapper_home">
 
-                </div>
-                <div class="">
-                    <div class="mt-3" id="products_pagination"></div>
+                    </div>
+                    <div class="">
+                        <div class="mt-3" id="products_pagination"></div>
+                    </div>
                 </div>
             </div>
         </section>
         <!-- END PRODUCTS -->
 
+        <!-- Join now Section -->
+        <div class="margin-bottom-40 margin-top-40 text-center">
+            <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
+                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Join Now <i class="mdi mdi-arrow-right"></i></a>
+        </div>
 
-
-        <section class=" mb-5 margin-top-40 pt-4 bg-light-lighten border-top border-light" >
-            <div class="container text-center">
+        <div class="margin-top-20 pt-4 bg-light-lighten border-top border-light" id="web-view"></div>
+        <section class="index-pages" id="_watch_video">
+            <div class="container text-center ">
                 <h3 class="product-title-home"><span class="">About <span class="text-success">Herbal</span> House <span class="text-success">Philippines</span></h3>
                 <p class="text-muted mt-2 product-sub-home">Earning at home through E-commerce and Dropshipping while Staying Healthy.</p>
                 <div class="row">
@@ -296,32 +363,11 @@
                 </div>
             </div>
         </section>
-        
 
-        <!-- Mobile Nav -->
-        <div id="mobile-view" class="mobile-menu">
-            <nav class="mobile-bottom-nav row">
-                <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
-                        <i class="uil-home-alt active"></i> 
-                    </div>      
-                </div>
-                <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
-                        <i class="uil-user"></i>
-                    </div>      
-                </div>
-                <div class="col-4 col-md-4">       
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
-                    </div>
-                </div>
-            </nav>
-        </div>
-        <!-- End Mobile Nav -->
 
         <!-- START CONTACT -->
-        <section class="pt-4 mb-5 pb-4 bg-light-lighten border-top border-bottom border-light"  id="contact_us">
+        <div class="bg-light-lighten border-top border-light" id="web-view"></div>
+        <section class="mb-5 index-pages"  id="contact_us">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-12">
@@ -386,5 +432,33 @@
                 </div>
             </div>
         </section>
+
+
+        <!-- Mobile Nav -->
+        <div id="mobile-view" class="mobile-menu">
+            <nav class="mobile-bottom-nav row">
+                <div class="col-4 col-md-4">
+                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                        <i class="uil-home-alt active"></i> 
+                    </div>      
+                </div>
+                <div class="col-4 col-md-4">
+                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                        <i class="uil-user"></i>
+                    </div>      
+                </div>
+                <div class="col-4 col-md-4">       
+                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- End Mobile Nav -->
+
+        <div class="margin-bottom-70 margin-top-40 text-center">
+            <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
+                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
+        </div>
 
         <!-- END CONTACT -->
