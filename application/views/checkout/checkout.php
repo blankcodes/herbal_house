@@ -196,13 +196,13 @@
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-first-name" class="form-label">First Name <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter your first name" id="shipping_first_name" />
+                                                                        <input class="form-control" type="text" placeholder="Enter your first name" name="fname" id="shipping_first_name" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-last-name" class="form-label">Last Name <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter your last name" id="shipping_last_name" />
+                                                                        <input name="lname" class="form-control" type="text" placeholder="Enter your last name" id="shipping_last_name" />
                                                                     </div>
                                                                 </div>
                                                             </div> <!-- end row -->
@@ -210,13 +210,13 @@
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-email-address" class="form-label">Email Address <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="email" placeholder="Enter your email" id="shipping_email_address" />
+                                                                        <input name="email_address" class="form-control" type="email" placeholder="Enter your email" id="shipping_email_address" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-phone" class="form-label">Phone <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="09xx xxxx xxxx" id="shipping_phone" />
+                                                                        <input class="form-control" type="text" name="phone" placeholder="09xx xxxx xxxx" id="shipping_phone" />
                                                                     </div>
                                                                 </div>
                                                             </div> <!-- end row -->
@@ -224,7 +224,7 @@
                                                                 <div class="col-12">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-address" class="form-label">Address <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter full address" id="shipping_address">
+                                                                        <input class="form-control" type="text" name="address" placeholder="Enter full address" id="shipping_address">
                                                                     </div>
                                                                 </div>
                                                             </div> <!-- end row -->
@@ -232,19 +232,19 @@
                                                                 <div class="col-md-4">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-town-city" class="form-label">Town / City <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter your city name" id="shipping_town_city" />
+                                                                        <input class="form-control" type="text" name="city" placeholder="Enter your city name" id="shipping_town_city" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="mb-3">
-                                                                        <label for="new-adr-state" class="form-label">State <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter your state" id="shipping_state" />
+                                                                        <label for="new-adr-state" class="form-label">Province <span class="text-danger">*</span></label>
+                                                                        <input class="form-control" type="text" name="state" placeholder="Enter your state" id="shipping_state" />
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <div class="mb-3">
                                                                         <label for="new-adr-zip-postal" class="form-label">Zip / Postal Code <span class="text-danger">*</span></label>
-                                                                        <input class="form-control" type="text" placeholder="Enter your zip code" id="shipping_zip_postal" />
+                                                                        <input class="form-control" type="text" name="zip_code" placeholder="Enter your zip code" id="shipping_zip_postal" />
                                                                     </div>
                                                                 </div>
                                                             </div> <!-- end row -->
@@ -252,15 +252,15 @@
                                                                 <div class="col-12">
                                                                     <div class="mb-3">
                                                                         <label class="form-label">Country <span class="text-danger">*</span></label>
-                                                                        <select id="shipping_country" data-toggle="select2" title="Country">
+                                                                        <select id="shipping_country" name="country" data-toggle="select2" title="Country">
                                                                            <option selected disabled="">Select Country</option>
-                                                                            <option value="Cambodia">Cambodia</option>
-                                                                            <option value="Indonesia">Indonesia</option>
-                                                                            <option value="Malaysia">Malaysia</option>
+                                                                            <!-- <option value="Cambodia">Cambodia</option> -->
+                                                                            <!-- <option value="Indonesia">Indonesia</option> -->
+                                                                            <!-- <option value="Malaysia">Malaysia</option> -->
                                                                             <option value="Philippines">Philippines</option>
-                                                                            <option value="Singapore">Singapore</option>
-                                                                            <option value="Thailand">Thailand</option>
-                                                                            <option value="Vietnam">Vietnam</option>                                  
+                                                                            <!-- <option value="Singapore">Singapore</option> -->
+                                                                            <!-- <option value="Thailand">Thailand</option> -->
+                                                                            <!-- <option value="Vietnam">Vietnam</option>                                   -->
                                                                         </select>
                                                                     </div>
                                                                 </div>

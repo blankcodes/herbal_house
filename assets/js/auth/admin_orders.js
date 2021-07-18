@@ -124,6 +124,7 @@ function getOrderdetails(ref_no) {
 		update_status = '';
 		event_logs = res.data.event_logs;
 		event_logs_string = '';
+		tracking_number = '';
 
 		if (order_status == 'created') {
 			order_status_label = 'info';
@@ -179,6 +180,14 @@ function getOrderdetails(ref_no) {
 			$("#_event_logs").html(event_logs_string);
 		}
 
+		tracking_num = res.data.ship_courier.tracking_number;
+		if (tracking_num === null) {
+			tracking_number = '<span class="badge badge-warning-lighten pointer-cursor font-14">Processing... </span>';
+		}
+		else{
+			tracking_number = '<span class="badge badge-success-lighten pointer-cursor font-14">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
+		}
+
 		$("#_update_order_status_btn").attr('onclick','updateOrderStatus(\''+res.data.order_id+'\',\''+update_status+'\')')
 		$("#_order_status").html('<span class="badge badge-'+order_status_label+'-lighten text-capitalize font-13 rounded fw-700 padding-right-10 padding-left-10">'+order_status+' <i class="'+stat_icon+'"></i></span>')
 		$("#_view_payment_mode").text(payment_mode);
@@ -198,7 +207,7 @@ function getOrderdetails(ref_no) {
 		$("#_view_bill_phone").text(res.data.billing_info.phone);
 
 		$("#_view_ship_courier").text(res.data.ship_courier.courier)
-		$("#_view_shipping_order_id").text(res.data.ship_courier.tracking_number)
+		$("#_view_shipping_order_id").html(tracking_number)
 
 		$("#_view_payment_method").text(res.data.payment_method);
 		$("#_order_placed").text(res.data.order_created)

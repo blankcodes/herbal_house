@@ -253,7 +253,12 @@ class Order_model extends CI_Model {
 	}
 	public function getYourOrderTodo(){
 		if (isset($this->session->user_id)) {
-			return $this->db->WHERE('referrer',$this->session->username)->WHERE('status','packed')->OR_WHERE('status','created')->GET('order_tbl')->num_rows();
+
+			$q1 = $this->db->WHERE('referrer', $this->session->username)->WHERE('status','packed')->GET('order_tbl')->num_rows();
+
+			$q2 = $this->db->WHERE('referrer', $this->session->username)->WHERE('status','created')->GET('order_tbl')->num_rows();
+
+			return $q1 + $q2;
 		}
 	}
 

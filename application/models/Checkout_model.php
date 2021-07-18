@@ -15,8 +15,10 @@ class Checkout_model extends CI_Model {
 		}
 
 		$checkBill = 'false';
+		$billOrder = 0;
 		$checkBillInfo = $this->checkBillingInfo($user_id);		
 		if (isset($checkBillInfo)) {
+			$billOrder = $this->checkBillOrder($checkBillInfo['bi_id']);
 			$checkBill = 'true';
 		}
 
@@ -32,86 +34,77 @@ class Checkout_model extends CI_Model {
 		$order_notes = $this->input->post('order_notes');
 		$ship_same_address = $this->input->post('ship_same_address');
 
-		if ($checkBill == 'true') {
-			$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
-				array(
-					'valid_email' => 'Please input a valid Email Address!',
-					'required' => 'Email Address is Required!'
-				)
-			);
 
-			if ($this->form_validation->run() == FALSE) {
-				$response['status'] = 'failed';
-				$response['message'] = $this->form_validation->error_array();
+		$dataArr = array(
+			'user_id'=>$user_id,
+			'fname'=>$fname,
+			'lname'=>$lname,
+			'email_address'=>$email_address,
+			'phone_number'=>$phone,
+			'full_address'=>$address,
+			'city'=>$city,
+			'state'=>$state,
+			'zip_code'=>$zip_code,
+			'country'=>$country,
+			'created_at'=>date('Y-m-d H:i:s'),
+		);
+
+		$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
+			array(
+				'valid_email' => 'Please input a valid Email Address!',
+				'required' => 'Email Address is Required!'
+			)
+		);
+
+		if ($this->form_validation->run() == FALSE) {
+			$response['status'] = 'failed';
+			$response['message'] = $this->form_validation->error_array();
+		}
+
+		else if ($checkBill == 'true' && $billOrder > 0) { /* if bill info already used on an order */
+			$this->db->INSERT('billing_info_tbl', $dataArr);
+			if (isset($ship_same_address)) { /* if checked, copy to shipping bl */
+				$this->addUpdateShippingInfo($dataArr, $user_id);
 			}
-			else{
-				$data = array(
-					'user_id'=>$user_id,
-					'fname'=>$fname,
-					'lname'=>$lname,
-					'email_address'=>$email_address,
-					'phone_number'=>$phone,
-					'full_address'=>$address,
-					'city'=>$city,
-					'state'=>$state,
-					'zip_code'=>$zip_code,
-					'country'=>$country,
-					'created_at'=>date('Y-m-d H:i:s'),
-				);
-				$this->db->WHERE('bi_id', $checkBillInfo['bi_id'])->UPDATE('billing_info_tbl', $data);
-
-				if (isset($ship_same_address)) { /* if checked, copy to shipping bl */
-					$this->addUpdateShippingInfo($data, $user_id);
-					// $this->db->INSERT('shipping_info_tbl', $data);
-				}
-				$response['status'] = 'success';
-				$response['message'] = 'Added billing info';
-			}	
+			$response['status'] = 'success';
+			$response['message'] = 'Added 1 billing info!';
+		}
+		else if($checkBill == 'true' && $billOrder == 0) {
+			$this->db->WHERE('bi_id', $checkBillInfo['bi_id'])->UPDATE('billing_info_tbl', $dataArr);
+			if (isset($ship_same_address)) { /* if checked, copy to shipping bl */
+				$this->addUpdateShippingInfo($dataArr, $user_id);
+			}
+			$response['status'] = 'success';
+			$response['message'] = 'Updated billing info!';
 		}
 		else{
-			$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
-				array(
-					'valid_email' => 'Please input a valid Email Address!',
-					'required' => 'Email Address is Required!'
-				)
-			);
+			// $this->db->WHERE('bi_id', $checkBillInfo['bi_id'])->UPDATE('billing_info_tbl', $data);
+			$this->db->INSERT('billing_info_tbl', $dataArr);
 
-			if ($this->form_validation->run() == FALSE) {
-				$response['status'] = 'failed';
-				$response['message'] = $this->form_validation->error_array();
+			if (isset($ship_same_address)) { /* if checked, copy to shipping bl */
+				$this->addUpdateShippingInfo($dataArr, $user_id);
 			}
-			else{
-				$data = array(
-					'user_id'=>$user_id,
-					'fname'=>$fname,
-					'lname'=>$lname,
-					'email_address'=>$email_address,
-					'phone_number'=>$phone,
-					'full_address'=>$address,
-					'city'=>$city,
-					'state'=>$state,
-					'zip_code'=>$zip_code,
-					'country'=>$country,
-					'created_at'=>date('Y-m-d H:i:s'),
-				);
-				$this->db->INSERT('billing_info_tbl', $data);
-
-				if (isset($ship_same_address)) { /* if checked, copy to shipping bl */
-					$this->db->INSERT('shipping_info_tbl', $data);
-				}
-				$response['status'] = 'success';
-				$response['message'] = 'Added billing info';
-			}	
+			$response['status'] = 'success';
+			$response['message'] = 'Added 2 billing info!';
 		}
-		
 		return $response;
 	}
 	public function checkBillingInfo($user_id){
 		return $this->db->WHERE('user_id', $user_id)
+			->ORDER_BY('created_at','desc')
 			->GET('billing_info_tbl')->row_array();
+	}
+	public function checkBillOrder($bi_id){
+		return $this->db->WHERE('bi_id', $bi_id)
+			->GET('order_tbl')->num_rows();
+	}
+	public function checkShipOrder($si_id){
+		return $this->db->WHERE('si_id', $si_id)
+			->GET('order_tbl')->num_rows();
 	}
 	public function checkShippingInfo($user_id){
 		return $this->db->WHERE('user_id', $user_id)
+			->ORDER_BY('created_at','desc')
 			->GET('shipping_info_tbl')->row_array();
 	}
 	public function userIDGenerator($length=19) {
@@ -148,7 +141,7 @@ class Checkout_model extends CI_Model {
 
 
     	if (isset($user_id)) {
-    		return $this->db->WHERE('user_id', $user_id)->GET('billing_info_tbl')->row_array();
+    		return $this->db->ORDER_BY('created_at','desc')->WHERE('user_id', $user_id)->GET('billing_info_tbl')->row_array();
     	}
     	else{
     		$response['status'] = 'failed';
@@ -176,81 +169,57 @@ class Checkout_model extends CI_Model {
 		$zip_code = $this->input->post('zip_code');
 		$country = $this->input->post('country');
 		$order_notes = $this->input->post('order_notes');
-		$ship_same_address = $this->input->post('ship_same_address');
+		// $ship_same_address = $this->input->post('ship_same_address');
 
 
 		$checkShip = 'false';
+		$shipOrder = 0;
 		$checkShipInfo = $this->checkShippingInfo($user_id);		
 		if (isset($checkShipInfo)) {
+			$shipOrder = $this->checkShipOrder($checkShipInfo['si_id']);
 			$checkShip = 'true';
 		}
 		
-		
-		if ($checkShip == 'true') {
-			$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
-				array(
-					'valid_email' => 'Please input a valid Email Address!',
-					'required' => 'Email Address is Required!'
-				)
-			);
+		$dataArr = array(
+			'user_id'=>$user_id,
+			'fname'=>$fname,
+			'lname'=>$lname,
+			'email_address'=>$email_address,
+			'phone_number'=>$phone,
+			'full_address'=>$address,
+			'city'=>$city,
+			'state'=>$state,
+			'zip_code'=>$zip_code,
+			'country'=>$country,
+			'created_at'=>date('Y-m-d H:i:s'),
+		);
 
-			if ($this->form_validation->run() == FALSE) {
-				$response['status'] = 'failed';
-				$response['message'] = $this->form_validation->error_array();
-			}
-			else{
-				$data = array(
-					'user_id'=>$user_id,
-					'fname'=>$fname,
-					'lname'=>$lname,
-					'email_address'=>$email_address,
-					'phone_number'=>$phone,
-					'full_address'=>$address,
-					'city'=>$city,
-					'state'=>$state,
-					'zip_code'=>$zip_code,
-					'country'=>$country,
-					'created_at'=>date('Y-m-d H:i:s'),
-				);
-				$this->db->WHERE('si_id', $checkShipInfo['si_id'])->UPDATE('shipping_info_tbl', $data);
+		$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
+			array(
+				'valid_email' => 'Please input a valid Email Address!',
+				'required' => 'Email Address is Required!'
+			)
+		);
 
-				$response['status'] = 'success';
-				$response['message'] = 'Added Shipping info';
-			}
+		if ($this->form_validation->run() == FALSE) {
+			$response['status'] = 'failed';
+			$response['message'] = $this->form_validation->error_array();
+		}
+		else if ($checkShip == 'true' && $shipOrder > 0) {
+			$this->db->INSERT('shipping_info_tbl', $dataArr);
+			$response['status'] = 'success';
+			$response['message'] = 'Added Shipping info!';
+		}
+		else if ($checkShip == 'true' && $shipOrder == 0) {
+			$this->db->WHERE('si_id', $checkShipInfo['si_id'])->UPDATE('shipping_info_tbl', $dataArr);
+			$response['status'] = 'success';
+			$response['message'] = 'Updating Shipping info!';
 		}
 		else{
-			$this->form_validation->set_rules('email_address', 'Email', 'required|valid_email',
-				array(
-					'valid_email' => 'Please input a valid Email Address!',
-					'required' => 'Email Address is Required!'
-				)
-			);
-
-			if ($this->form_validation->run() == FALSE) {
-				$response['status'] = 'failed';
-				$response['message'] = $this->form_validation->error_array();
-			}
-			else{
-				$data = array(
-					'user_id'=>$user_id,
-					'fname'=>$fname,
-					'lname'=>$lname,
-					'email_address'=>$email_address,
-					'phone_number'=>$phone,
-					'full_address'=>$address,
-					'city'=>$city,
-					'state'=>$state,
-					'zip_code'=>$zip_code,
-					'country'=>$country,
-					'created_at'=>date('Y-m-d H:i:s'),
-				);
-				$this->db->INSERT('shipping_info_tbl', $data);
-
-				$response['status'] = 'success';
-				$response['message'] = 'Added Shipping info';
-			}
+			$this->db->INSERT('shipping_info_tbl', $dataArr);
+			$response['status'] = 'success';
+			$response['message'] = 'Added Shipping info!';
 		}
-
 		return $response;
 	}
     public function getShippingInfo(){
@@ -578,12 +547,17 @@ class Checkout_model extends CI_Model {
 	}
 	public function addUpdateShippingInfo($data, $user_id){
 		$checkShip = 'false';
+		$shipOrder = 0;
 		$checkShipInfo = $this->checkShippingInfo($user_id);		
 		if (isset($checkShipInfo)) {
+			$shipOrder = $this->checkShipOrder($checkShipInfo['si_id']);
 			$checkShip = 'true';
 		}
 
-		if ($checkShip == 'true') {
+		if ($checkShip == 'true' && $shipOrder > 0) {
+			$this->db->INSERT('shipping_info_tbl', $data);
+		}
+		else if ($checkShip == 'true' && $shipOrder == 0) {
 			$this->db->WHERE('si_id', $checkShipInfo['si_id'])->UPDATE('shipping_info_tbl', $data);
 		}
 		else{

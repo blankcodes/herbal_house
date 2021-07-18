@@ -239,6 +239,14 @@ class My_account_model extends CI_Model {
 	}
 
 	public function sendContactMail(){
+		if (strpos(base_url(), 'localhost') !== false || strpos(base_url(), 'test') !== false) {
+			$recv_email = 'bl4nkcode01@gmail.com';
+		}
+		else{
+			$recv_email = 'herbalhouseph@gmail.com';
+		}
+
+
 		$config = array (
 			'mailtype' => 'html',
 			'charset'  => 'utf-8',
@@ -255,9 +263,8 @@ class My_account_model extends CI_Model {
 
 		$this->email->initialize($config);
 		$this->email->from('no-reply@herbalhouseph.com', 'Herbal House Philippines');
-		// $this->email->to('bl4nkcode01@gmail.com'); /* SEND TO ADMIN EMAIL */
 		$this->email->reply_to($this->input->post('email_address')); /* SEND TO ADMIN EMAIL */
-		$this->email->to('herbalhouseph@gmail.com'); /* SEND TO ADMIN EMAIL */
+		$this->email->to($recv_email); /* SEND TO ADMIN EMAIL */
 		$this->email->subject('New Message from Herbal House Contact Form');
 		$body = $this->load->view('email/new_message', $data, TRUE);
 		$this->email->message($body);

@@ -71,6 +71,12 @@ $("#_billing_info_form").on('submit', function(e) {
 		type: 'POST',
 		dataType: 'JSON',
 		data: $(this).serialize(),
+		statusCode: {
+			403: function() {
+				$.NotificationApp.send("Oh Snap!","Something went wrong! Please try again!","top-right","rgba(0,0,0,0.2)","error");
+				newCsrfData();
+			}
+		}
 	})
 	.done(function(res) {
 		if (res.data.status == 'success' || res.data.status == 'already_exist') {
@@ -81,6 +87,7 @@ $("#_billing_info_form").on('submit', function(e) {
 			$("#billing-information").removeClass('active');
 			newCsrfData();
 			getShippingInfo();
+			getUserBillingInfo();
 		}
 		$("#_proceed_to_shipping_btn").removeAttr('disabled');
 		$("#loader").attr('hidden','hidden');
@@ -98,6 +105,7 @@ function getUserBillingInfo() {
 		type: 'GET',
 		dataType: 'JSON',
 		data: $(this).serialize(),
+		
 	})
 	.done(function(res) {
 		if (res.data !== null) {
@@ -136,6 +144,12 @@ $("#_shipping_info_form").on('submit', function(e) {
 		type: 'POST',
 		dataType: 'JSON',
 		data: $(this).serialize(),
+		statusCode: {
+			403: function() {
+				$.NotificationApp.send("Oh Snap!","Something went wrong! Please try again!","top-right","rgba(0,0,0,0.2)","error");
+				newCsrfData();
+			}
+		}
 	})
 	.done(function(res) {
 		if (res.data.status == 'success' || res.data.status == 'already_exist') {

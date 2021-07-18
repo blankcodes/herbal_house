@@ -27,6 +27,7 @@ function getOrderdetails(ref_no) {
 		order_status = res.data.status;
 		track_btn = '';
 		track_url = '';
+		tracking_number = '';
 
 		if (order_status == 'created') {
 			order_status_label = 'info';
@@ -112,13 +113,21 @@ function getOrderdetails(ref_no) {
 		}
 
 
+		tracking_num = res.data.ship_courier.tracking_number;
+		if (tracking_num === null) {
+			tracking_number = '<span class="badge badge-warning-lighten pointer-cursor font-14">Processing... </span>';
+		}
+		else{
+			tracking_number = '<span class="badge badge-success-lighten pointer-cursor font-14">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
+		}
+
 		if (res.data.ship_courier.courier == 'J&T Express') {
 			track_base_url = 'https://www.jtexpress.ph/index/query/gzquery.html';
 			track_url = 'https://www.jtexpress.ph/index/router/index.html';
-			track_btn = '<span class="badge badge-success-lighten pointer-cursor font-14" onclick="trackOrder(\''+track_url+'\',\''+res.data.ship_courier.tracking_number+'\',\''+track_base_url+'\')">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
+			track_btn = '<span class="badge badge-success-lighten pointer-cursor font-14" onclick="trackOrder(\''+track_url+'\',\''+res.data.ship_courier.tracking_number+'\',\''+track_base_url+'\')">'+tracking_number+' <i class="uil-external-link-alt "></i></span>';
 		}
 		else{
-			track_btn = '<span class="badge badge-success-lighten pointer-cursor font-14">'+res.data.ship_courier.tracking_number+' <i class="uil-external-link-alt "></i></span>';
+			track_btn = '';
 		}
 
 		$("#_order_status").html('<span class="badge badge-'+order_status_label+'-lighten text-capitalize font-14 rounded fw-700 padding-right-10 padding-left-10">'+order_status+' <i class="'+stat_icon+'"></i></span>')
@@ -139,7 +148,7 @@ function getOrderdetails(ref_no) {
 		$("#_view_bill_phone").text(res.data.billing_info.phone);
 
 		$("#_view_ship_courier").text(res.data.ship_courier.courier)
-		$("#_view_shipping_order_id").html(track_btn)
+		$("#_view_shipping_order_id").html(tracking_number)
 		
 		$("#_view_payment_method").text(res.data.payment_method);
 		$("#_order_placed").text(res.data.order_created)
