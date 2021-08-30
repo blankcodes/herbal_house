@@ -35,11 +35,9 @@
 		<script>
 			var base_url = '<?=base_url()?>';
             var page = '<?=$page?>';
-            var user_code = '<?=$userData['user_code']?>';
-            <?php if($page == 'member_products') { ?>
-            var nonce = '<?=$nonce['hash'];?>';
-        <?php } ?>
-        </script>
+		</script>
+    
+    
 		 <!-- bundle -->
 		<script src="<?=base_url()?>assets/vendor/jquery-3.4.1.min.js"></script>
 		<script src="<?=base_url()?>assets/js/vendor.min.js"></script>
@@ -47,23 +45,20 @@
 		<script src="<?=base_url()?>assets/js/cilpboard.min.js"></script>
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
-        <script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
-        <?php if ($page == 'settings' || $page == 'wallet' ||  $page == 'register_invite'){ ?>
-<script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
-<?php } if($page == 'wallet') { ?>
-<script src="<?=base_url()?>assets/js/auth/_wallet.js"></script>
-<?php } else if($page == 'profit_sharing') { ?>
-<script src="<?=base_url()?>assets/js/auth/_profit_sharing.js"></script>
-<?php } else if($page == 'dashboard') { ?>
-<script src="<?=base_url()?>assets/js/auth/member_account.js"></script>
-<script src="<?=base_url()?>assets/js/auth/_qrcode.js"></script>
-<?php } else if($page == 'membership') { ?>
-<script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
-<?php } ?>
-    <script>
-        <?php if ($page == 'member_binary_list_uc' || $page == 'member_binary_list_direct') { ?>
-        showBinaryTree('<?=$user_code?>');
-        <?php } ?>
-    </script>
+        <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
+        
+    <?php if ($page=='investor_dashboard'){ ?>
+    <script src="<?=base_url()?>assets/js/auth/_investor_account.js"></script>
+    <?php } ?>
+    <script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
+        
+        <script>
+
+            $(function () {
+              $('[data-toggle="tooltip"]').tooltip()
+            })
+        </script>
+
+        
 	</body>
 </html>

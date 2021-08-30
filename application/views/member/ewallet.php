@@ -232,15 +232,15 @@
                                 </div>
 
                                 <div class="mt-2">
-                                    Payment Method: <br><span id="_review_pay_method" class="font-25 fw-600"> </span>
+                                    Payment Method: <br><span id="__review_pay_method" class="font-25 fw-600"> </span>
                                 </div>
 
                                 <div class="mt-2">
-                                    Account Name: <br><span id="_review_acct_name" class="font-25 fw-600"> </span>
+                                    Account Name: <br><span id="__review_acct_name" class="font-25 fw-600"> </span>
                                 </div>
 
                                 <div class="mt-2">
-                                    Account Number: <br><span id="_review_acct_num" class="font-25 fw-600"> </span>
+                                    Account Number: <br><span id="__review_acct_num" class="font-25 fw-600"> </span>
                                 </div>
 
                                 <input type="hidden" name="amount" id="__withdraw_amount"  required=""/>

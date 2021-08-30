@@ -333,7 +333,13 @@ class Products extends CI_Controller {
 		}
 	}
 	public function updateProductQuantity() {
-		$data = $this->products_model->updateProductQuantity();
+		$data = array(
+			'status'=>'error',
+			'message'=>'Action not allowed!',
+		);
+		if (isset($this->session->admin)) {
+			$data = $this->products_model->updateProductQuantity();
+		}
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 	public function getRecommendedProducts(){

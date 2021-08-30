@@ -69,7 +69,7 @@
                                             <tr>
                                                 <th>Order Ref No.</th>
                                                 <th>Order Status</th>
-                                                <th>Sales</th>
+                                                <th>Amount To Pay</th>
                                                 <th>Payment Method</th>
                                                 <th>Payment Status</th>
                                                 <th>Ordered Date</th>

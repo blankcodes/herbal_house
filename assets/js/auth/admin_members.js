@@ -52,7 +52,11 @@ function searchUser(_search_query, page_no) {
 	})
 }
 function showMemberList (page_no) {
+	$("#_member_count").text('0')
 	$("#_member_list_tbl").html('<tr class="text-center"><td colspan="8">Getting member list...</td></tr>');
+	$('#_search_member_list_pagination').html('');
+	$('#member_list_pagination').html('');
+	
 	$.ajax({
 		url: base_url+'api/v1/users/_get_member_list',
 		type: 'GET',
@@ -114,7 +118,7 @@ function displayUsersList (count, result) {
 						        +'<a class="dropdown-item" target="_blank" href="'+base_url+'user/overview/'+result[i].user_code+'">View Stats</a>'
 						        // +'<a class="dropdown-item" href="#">Edit</a>'
 						        // +'<a class="dropdown-item" href="#" onclick="changePackage(\''+res.result[i].user_code+'\')">Change Package</a>'
-						        +'<a class="dropdown-item" href="#">Forgot Password</a>'
+						        +'<a class="dropdown-item" href="#delete_user" onclick="resetPassword(\''+result[i].user_code+'\',\''+result[i].name+'\')">Reset Password</a>'
 						        // +'<a class="dropdown-item" href="#">Deactivate</a>'
 						        +'<a class="dropdown-item" href="#delete_user" onclick="deleteUser(\''+result[i].user_code+'\',\''+result[i].name+'\')">Delete</a>'
 						    +'</div>'
@@ -295,8 +299,40 @@ function deleteUser(user_code, name){
 		$("#loader").attr('hidden','hidden');
 
 	});
+}
+function resetPassword(user_code, name){
+	sweetAlert({
+		title:'Reset Password?',
+		text: "User "+name+"'s password will be reset to '123456'! This cannot be undone once proceed.",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/user/_reset_password',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {user_code:user_code, name:name}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				showMemberList(1)
+			}
+			else{
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
 
-	
+	});
 }
 function viewInfo(user_id) {
 	$("#loader").removeAttr('hidden','hidden');

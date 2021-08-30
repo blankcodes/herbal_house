@@ -33,6 +33,9 @@ else if (page == 'user_overview') {
 	showProductUnilevelPointsOpt(1, user_code)
 	getWalletActivity(1, user_code)
 }
+else if (page == 'activity_logs') {
+	getActivityLogs(1);
+}
 $(".close-jq-toast-single").on('click', function() {
 	$("#_alert_web_message").fadeOut(500)
 })
@@ -728,4 +731,72 @@ function checkToDoList(){
 }
 function paymentInfo(){
 	$("#payment_modal").modal('show');
+}
+$('#activity_logs_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    getActivityLogs(page_no);
+});
+$('#activity_logs_search_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+	keyword = $("#_keyword").val();
+    searchActivityLogs(page_no, keyword);
+});
+
+function getActivityLogs(page){
+	$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">Getting Logs...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/logs/_get_activity', type: 'GET', dataType: 'JSON', data: {page_no:page}
+	})
+	.done(function(res) {
+		$('#activity_logs_search_pagination').attr('hidden','hidden');
+		$('#activity_logs_pagination').html(res.pagination);
+		displayActivityLogs(res.count, res.result)
+	})
+	.fail(function() {
+		$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">No Records found!</td></tr>');
+	})
+}
+function displayActivityLogs(count,result){
+	string = '';
+	if (parseInt(count) > 0) {
+		for(var i in result) {
+			string +='<tr>'
+                +'<td><a target="_blank" href="'+base_url+'user/overview/'+result[i].user_code+'" class="text-body fw-bold cursor-pointer">'+result[i].username+'</a> </td>'
+                +'<td>'+result[i].activity+'</td>'
+                +'<td>'+result[i].ip_address+'</td>'
+                +'<td>'+result[i].platform+'</td>'
+                +'<td>'+result[i].browser+'</td>'
+                +'<td>'+result[i].created_at+'</small></td>'
+            +'</tr>'
+		}
+	}
+	$("#activity_logs_tbl").html(string)
+}
+
+
+$("#_search_logs_form").on('submit', function(e) {
+	keyword = $("#_keyword").val();
+
+	if (!keyword || keyword == '') {
+		$.NotificationApp.send("Oh, Snap!", "Type a keyword to search!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+	e.preventDefault();
+	$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">Getting Logs...</td></tr>');
+	searchActivityLogs(1, keyword)
+})
+function searchActivityLogs(page, keyword){
+	$.ajax({
+		url: base_url+'api/v1/logs/_search_activity', type: 'GET', dataType: 'JSON', data: {page_no:page, keyword:keyword}
+	})
+	.done(function(res) {
+		$('#activity_logs_search_pagination').html(res.pagination).removeAttr('hidden');
+		$('#activity_logs_pagination').attr('hidden','hidden');
+		displayActivityLogs(res.count, res.result)
+	})
+	.fail(function() {
+		$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">No Records found!</td></tr>');
+	})
 }

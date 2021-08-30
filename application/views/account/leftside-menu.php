@@ -98,6 +98,14 @@
                                 <span> Withdrawal Requests</span>
                             </a>
                         </li>
+                        <?php if ($userData['user_id'] == 1){ ?>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url()?>technical/activity-logs" class="side-nav-link">
+                                <i class="mdi mdi-cogs"></i>
+                                <span> Activity Logs </span>
+                            </a>
+                        </li>
+                        <?php } ?>
                         <li class="side-nav-item">
                             <a href="<?=base_url()?>settings/maintenance" class="side-nav-link">
                                 <i class="uil-cog"></i>

@@ -4,7 +4,7 @@
             <div class="page">
                 <div class="content">
                     <!-- Topbar Start -->
-                    <div class="navbar-custom" style="left: 0px !important;">
+                    <div class="navbar-custom" style="left: 0px !important;" id="web-view">
                         <div class="container">
                             <div class="float-start padding-top-5 margin-right-20 home-logo">
                                 <a href="<?=base_url()?>"><img src="<?=base_url('assets/images/herbal-house-logo.webp')?>" alt="herebal house logo" height="60" /></a>

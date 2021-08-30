@@ -1,0 +1,169 @@
+
+if (page == 'investor_dashboard') {
+	$("#loader").removeAttr('hidden');
+	f = $('#_pp_from').val();
+	t = $('#_pp_to').val();
+
+	getTotalSales()
+	getProductPurchase(1, f, t)
+}
+$("#_sort_btn").on('click', function() {
+	f = $('#_from').val();
+	t = $('#_to').val();
+
+	$("#_sort_btn").text('Getting data...').attr('disabled','disabled');
+	$.ajax({
+		url: base_url+'api/v1/stat/investor/_sales_sort_by_date', type: 'GET', dataType: 'JSON', data: {f:f,t,t}
+	})
+	.done(function(res) {
+		_title = 'Sales';
+		_salesAreaChart(res.data.sales, _title)
+		$("#_sort_btn").text('Sort').removeAttr('disabled');
+
+	})
+	.fail(function() {
+		
+	})
+})
+function sortMonthSales(m, F){
+	$("#_monthly_sales").text('Loading...')
+	$("#_month").text('...')
+
+	$.ajax({
+		url: base_url+'api/v1/stat/investor/_monthly_sales', type: 'GET', dataType: 'JSON', data: {m:m,F,F}
+	})
+	.done(function(res) {
+		$("#_monthly_sales").text(res.data.sales)
+		$("#_month").text(F)
+	})
+	.fail(function() {
+		
+	})
+}
+function getTotalSales(){
+	_title = '3 Month Sales';
+	$.ajax({
+		url: base_url+'api/v1/stat/investor/_total_order_sales', type: 'GET', dataType: 'JSON', data: {range:_title}
+	})
+	.done(function(res) {
+		$("#_total_sales").text(res.data.total_sales)
+		$("#_monthly_sales").text(res.data.monthly_sales)
+		$("#_month").text(res.data.month_name)
+		_salesAreaChart(res.data.sales, _title)
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		
+	})
+}
+function _salesAreaChart(data, _title){
+	date = [];
+	sales = [];
+	for(var i in data){
+        date.push(data[i].date);
+        sales.push(data[i].sales);
+    }
+	var options = {
+        	series: [{
+        	name: "Sales",
+        	data: sales
+      	}],
+        chart: {
+          	type: 'area',
+          	height: 238,
+          	zoom: {
+            	enabled: false
+          	}
+        },
+       	colors: ['#0acf97'],
+        dataLabels: {
+          	enabled: false
+        },
+        stroke: {
+          	curve: 'smooth'
+        },
+        
+        title: {
+          	text: _title,
+          	align: 'left',
+          	colors: '#98a6ad',
+        },
+        subtitle: {
+          	text: '',
+          	align: 'left'
+        },
+        labels: date,
+        xaxis: {
+          	type: 'datetime',
+        },
+        yaxis: {
+          	opposite: true
+        },
+        legend: {
+          	horizontalAlign: 'left'
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#_sales_chart"), options);
+    chart.render();
+}
+function getProductPurchase(page, f, t){
+	$("#_product_purchase_tbl").html('<tr class="text-center"><td colspan="4">Getting product purchase...</td></tr>');
+	$('#_product_purchase_pagination').html('');
+	$("#_product_puchase_count").text('0')
+
+
+	$.ajax({
+		url: base_url+'api/v1/stat/investor/_product_purchase', type: 'GET', dataType: 'JSON', data: {page:page, f:f, t:t}
+	})
+	.done(function(res) {
+		result = res.result;
+		string = '';
+		$("#_product_puchase_count").text(res.count)
+		$('#_product_purchase_pagination').html(res.pagination);
+
+		for(var i in result) {
+			string += '<tr>'
+               	+'<td class="table-user">'
+                   	+'<a href="javascript:void(0);" class="text-body"">'+result[i].ordered_date+'</a>'
+               	+'</td>'
+               	+'<td>'
+                   	+'<span class=""><a href="'+result[i].product_url+'" target="_blank">'+result[i].product_name+'</a></span>'
+               	+'</td>'
+               	+'<td>'
+                   	+'<span class=""><a href="'+result[i].category_url+'" target="_blank">'+result[i].category+'</a></span>'
+               	+'</td>'
+               	+'<td>'
+                   	+'<span class="">'+result[i].qty+'</span>'
+               +'</td>'
+           	+'</tr>'
+		}
+		$("#_product_purchase_tbl").html(string);
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		
+	})
+}
+$('#_product_purchase_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    f = $('#_pp_from').val();
+	t = $('#_pp_to').val();
+
+    var page = $(this).attr('data-ci-pagination-page');
+    getProductPurchase(page, f, t);
+});
+$('#_sort_purchase_btn').on('click', function(e){
+    e.preventDefault(); 
+    f = $('#_pp_from').val();
+	t = $('#_pp_to').val();
+
+    getProductPurchase(1, f, t);
+});
+$('#_refresh_purchase').on('click', function(e){
+    e.preventDefault(); 
+    f = $('#_pp_from').val();
+	t = $('#_pp_to').val();
+
+    getProductPurchase(1, f, t);
+});

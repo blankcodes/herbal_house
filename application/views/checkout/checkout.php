@@ -19,6 +19,14 @@
                         </div>     
                         <!-- end page title --> 
 
+                        <div id="mobile-view" class="cart-page-header">
+                            <h2 class="cart-page-title"><i class="uil-shopping-cart-alt"></i> Checkout</h2>
+                            
+                            <button class="btn btn-light btn-rounded cart-page-back-btn" onclick="window.history.back();"><i class="uil-angle-left font-25"></i></button>
+                            <span id="cart_count" class="fw-700"></span>
+                        </div>
+
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -400,3 +408,34 @@
                           <img src="<?=base_url('assets/images/loader.gif')?>" width="120" heigth="120">
                         </div>
                     </div>
+
+                    <!-- Mobile Nav -->
+                    <div id="mobile-view" class="mobile-menu">
+                        <nav class="mobile-bottom-nav row">
+                            <div class="col-4 col-md-4">
+                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                    <i class="uil-home-alt "></i> 
+                                    <div class="mt--28 ">
+                                        <small>Home</small>
+                                    </div>
+                                </div>      
+                            </div>
+                            <div class="col-4 col-md-4">
+                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                                    <i class="uil-user"></i>
+                                    <div class="mt--28">
+                                        <small>Account</small>
+                                    </div>
+                                </div>      
+                            </div>
+                            <div class="col-4 col-md-4">       
+                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                    <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                    <div class="mt--28">
+                                        <small>Cart</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </nav>
+                    </div>
+                    <!-- End Mobile Nav -->

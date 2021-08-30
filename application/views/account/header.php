@@ -19,7 +19,7 @@
         <?php if ($page == 'member_products'){ ?>
         <link href="<?=base_url()?>assets/css/product.css" rel="stylesheet" type="text/css" />
         <?php } ?>
-        <?php if($page == 'admin_dashboard') { ?><script src="<?=base_url('assets/js/vendor/apexcharts.js')?>"></script> <?php } ?>
+        <?php if($page == 'admin_dashboard' || $page == 'investor_dashboard') { ?><script src="<?=base_url('assets/js/vendor/apexcharts.js')?>"></script> <?php } ?>
 
         <?= $analyticSrc; ?>
         

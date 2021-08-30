@@ -51,8 +51,9 @@ class Products_model extends CI_Model {
 						'dc_price'=>$this->input->post('dc_price'),
 						'qty'=>$this->input->post('qty'),
 						'description'=>$this->input->post('description'),
+						'points'=>$this->input->post('points'),
 						'p_pub_id'=>$this->productPublicID(),
-						'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
+						// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 						'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_name'), 0, 35) )).'-'.$this->productUrlGenerator(),
 						'sku'=>$this->skuGenerator(),
 					);
@@ -104,7 +105,7 @@ class Products_model extends CI_Model {
 							'priority'=>$this->input->post('priority'),
 							'points'=>$this->input->post('points'),
 							'description'=>$this->input->post('description'),
-							'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
+							// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 							'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 							'updated_at'=>date('Y-m-d H:i:s'),
 						);
@@ -129,7 +130,7 @@ class Products_model extends CI_Model {
 					'description'=>$this->input->post('description'),
 					'priority'=>$this->input->post('priority'),
 					'points'=>$this->input->post('points'),
-					'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
+					// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 					'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 					'updated_at'=>date('Y-m-d H:i:s'),
 				);
@@ -345,6 +346,7 @@ class Products_model extends CI_Model {
 		$data['category'] = $q['category'];
 		$data['description'] = $q['description'];
 		$data['price'] = (isset($this->session->user_id))  ? $q['dc_price'] : $q['srp_price'];
+		$data['dc_price'] = $q['dc_price'];
 		$data['image_url'] =  base_url().$q['image'];
 		$data['qty'] = $q['qty'];
 		$data['status'] = $q['status'];
@@ -1014,5 +1016,11 @@ class Products_model extends CI_Model {
 				->WHERE('rpt.user_code', $this->input->get('user_code'))
 				->GET()->num_rows();
 		}
+	}
+	public function getProductCategoryLimit(){
+		return $this->db->SELECT('name, category_url')
+			->WHERE('status','active')
+			->ORDER_BY('name', 'asc')
+			->GET('product_category_tbl')->result_array();
 	}
 }

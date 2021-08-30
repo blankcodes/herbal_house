@@ -27,6 +27,10 @@ class Members extends CI_Controller {
         $data = $this->member_model->deleteUser();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
+    public function resetPassword(){
+        $data = $this->member_model->resetPassword();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
     public function showActivationCodes(){
         $row_no = $this->input->get('page_no');
         // Row per page

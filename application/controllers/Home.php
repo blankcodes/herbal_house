@@ -74,6 +74,9 @@ class Home extends CI_Controller {
                 if ($userData['user_type'] == 'admin') {
                     $this->session->set_userdata('admin', $userData['username']);
                 }
+                else if ($userData['user_type'] == 'investor') {
+                    $this->session->set_userdata('investor', $userData['username']);
+                }
        			header('location:'.base_url('account'));
     		}
     		else{
@@ -128,6 +131,16 @@ class Home extends CI_Controller {
 			$this->load->view('account/my_account');
 			$this->load->view('widget');
 			$this->load->view('account/footer');
+		}
+		else if (isset($this->session->user_id) && isset($this->session->investor)) {
+			$data['title'] = "Investor's Account";
+			$data['page'] = 'investor_dashboard';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/investor/investor_dashboard');
+			$this->load->view('account/investor/footer');
 		}
 		else if(isset($this->session->user_id) && $this->session->user_type == 'member'){
 			$data['title'] = 'Dashboard';
@@ -289,6 +302,23 @@ class Home extends CI_Controller {
 			$this->load->view('account/orders');
 			$this->load->view('widget');
 			$this->load->view('products/footer');
+		}
+		else{
+			header('location:'.base_url('/login?').uri_string());
+		}
+	}
+	public function activityLogs (){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		if ($this->session->user_id == 1 && isset($this->session->admin )) {
+			$data['title'] = 'Activity Logs';
+			$data['page'] = 'activity_logs';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/activity_logs');
+			$this->load->view('account/footer');
 		}
 		else{
 			header('location:'.base_url('/login?').uri_string());

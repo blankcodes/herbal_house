@@ -60,9 +60,9 @@
                                                             <div class="avatar-lg">
                                                                 <!-- <a href=""><img src="assets/images/users/avatar-2.jpg" alt="" class="rounded-circle img-thumbnail"></a> -->
                                                                 <?php if (!empty($userData['image'])){ ?>
-                                                                 <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                                                 <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" class="rounded-circle profile-image-thumbnail"/>
                                                                 <?php } else{ ?>
-                                                                <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail"/>
+                                                                <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" class="rounded-circle img profile-image-thumbnail"/>
                                                                 <?php } ?>
                                                             </div>
                                                         </div>
@@ -90,10 +90,10 @@
 
                                                 <div class="col-sm-4">
                                                     <div class="text-center mt-sm-0 mt-3 text-sm-end">
-                                                        <button onclick="earnMore('<?=$userData['user_code']?>')" class="btn btn-success btn-sm font-12">
+                                                        <button onclick="earnMore('<?=$userData['user_code']?>')" class="btn btn-success btn-sm font-12 mt-1">
                                                             <i class="mdi mdi-cash-multiple me-1"></i> Earn More
                                                         </button>
-                                                        <a href="<?=base_url()?>member/settings" class="btn btn-primary btn-sm font-12">
+                                                        <a href="<?=base_url()?>member/settings" class="btn btn-primary btn-sm font-12 mt-1">
                                                             <i class="mdi mdi-account-edit me-1"></i> Edit Profile
                                                         </a>
                                                     </div>
@@ -266,8 +266,8 @@
                                         </div>
                                         <div class="mt-2">
                                             <div class="form-floating mb-2 mt-2">
-                                                <input type="text" class="form-control" name="username" value="" id="_aff_link" placeholder="Enter username" required autofocus="autofocus" />
-                                                <label for="username" class="fw-400">Affiliate Link</label>
+                                                <input type="text" class="form-control" value="" id="_aff_link" />
+                                                <label for="" class="fw-400">Affiliate Link</label>
                                             </div>
                                             <div class="mt-2 text-end">
                                                 <button id="copy_url_btn" class="btn btn-success btn-sm rounded"> <i class="uil-copy"></i> Copy</button>

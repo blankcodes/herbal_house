@@ -70,9 +70,8 @@
                                     <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-tag me-2"></i> Add Product Category</h4>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
                                 </div>
-                                <div class="modal-body">
-                                    <form class="ps-3 pe-3" action="#" id="_add_product_cat_form">
-
+                                <form class="ps-3 pe-3" action="#" id="_add_product_cat_form">
+                                    <div class="modal-body">
                                         <div class="mb-3 col-lg-6">
                                             <div class="col-md-12 col-xs-12">
                                                 <img src="<?=base_url('assets/images/thumbnail.png')?>" alt="thumbnail" id="prodct_img_thumbnail" width="150" class="img-fluid br-10">
@@ -86,11 +85,11 @@
                                             <label for="product_name" class="form-label">Product Category Name</label>
                                             <input class="form-control" type="text" id="product_cat_name" name="product_cat_name" required="" placeholder="Product Category Name">
                                         </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-rounded btn-light" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-rounded btn-success" id="add_product_cat_btn">Add Product Category</button>
-                                </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-rounded btn-light" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-rounded btn-success" id="add_product_cat_btn">Add Product Category</button>
+                                    </div>
                                 </form>
                             </div><!-- /.modal-content -->
                         </div><!-- /.modal-dialog -->

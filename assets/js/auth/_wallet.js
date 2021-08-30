@@ -203,9 +203,9 @@ $("#_withdrawal_request_form").on('submit', function(e){
 			
 			$("#_review_balance").text(res.data.total_amount);
 			$("#_processing_fee").text(res.data.processing_fee);
-			$("#_review_pay_method").text(_payment_method);
-			$("#_review_acct_name").text(_account_name);
-			$("#_review_acct_num").text(_account_number);
+			$("#__review_pay_method").text(_payment_method);
+			$("#__review_acct_name").text(_account_name);
+			$("#__review_acct_num").text(_account_number);
 
 			$("#__withdraw_amount").val(res.data.total);
 		 	$("#__payment_method").val(_payment_method);

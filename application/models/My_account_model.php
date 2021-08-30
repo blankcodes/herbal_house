@@ -188,27 +188,6 @@ class My_account_model extends CI_Model {
 	}
 	public function getMyOrdersData($row_per_page, $row_no) {
 		if (isset($this->session->user_id)) {
-   //  		$query = $this->db->SELECT('rpt.*, pt.name')
-	  //   		->FROM('repeat_purchase_history_tbl as rpt')
-	  //   		->JOIN('products_tbl as pt', 'pt.p_id=rpt.p_id')
-			// 	->ORDER_BY('pt.created_at', 'DESC')
-			// 	->WHERE('rpt.user_code', $this->session->user_code)
-			// 	->LIMIT($row_per_page, $row_no)
-			// 	->GET()->result_array();
-			// $result = array();
-
-			// foreach($query as $q){
-			// 	$array = array(
-			// 		'ref_no'=>$q['ref_no'],
-			// 		'user_code'=>$q['user_code'],
-			// 		'name'=> ( strlen($q['name']) > 19 ) ? substr($q['name'], 0, 16).'...' : $q['name'],
-			// 		'status'=>$q['status'],
-			// 		'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
-			// 	);
-			// 	array_push($result, $array);
-			// }
-			// return $result;
-
     		$query = $this->db->SELECT('ot.*, pmt.payment_ref_no, pmt.status as payment_status')
 	    		->FROM('order_tbl as ot')
 	    		->JOIN('payment_tbl as pmt', 'pmt.order_id=ot.order_id', 'left')
@@ -226,7 +205,7 @@ class My_account_model extends CI_Model {
 					'payment_status'=> $q['payment_status'],
 					'bi_id'=>$q['bi_id'],
 					'si_id'=>$q['si_id'],
-					'total_revenue'=>number_format($q['total_revenue'], 2),
+					'total_revenue'=>number_format($q['total_revenue'] + $q['shipping_fee'], 2),
 					'payment_method'=>$q['payment_method'],
 					'note'=>$q['note'],
 					'status'=>$q['status'],
@@ -275,4 +254,75 @@ class My_account_model extends CI_Model {
 			return 'unchange';
 		}
 	}
+	public function getActivityCount () {
+    	if (isset($this->session->admin) && $this->session->user_id == 1) {
+    		return $this->db->GET('activity_logs_tbl')->num_rows();
+		}
+    }
+    public function getAllActivityData ($row_per_page, $row_no) {
+    	if (isset($this->session->admin) && $this->session->user_id == 1) {
+    		$query = $this->db->SELECT('alt.*, ut.username, ut.user_code')
+	    		->FROM('activity_logs_tbl as alt')
+	    		->JOIN('user_tbl as ut', 'ut.user_id=alt.user_id', 'left')
+				->ORDER_BY('alt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'username'=>$q['username'],
+					'user_code'=>$q['user_code'],
+					'activity'=> $q['message_log'],
+					'ip_address'=> $q['ip_address'],
+					'platform'=> $q['platform'],
+					'browser'=>$q['browser'],
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+    }
+     public function getSearchActivityCount () {
+    	if (isset($this->session->admin) && $this->session->user_id == 1) {
+    		$keyword = $this->input->get('keyword');
+    		return $this->db->SELECT('alt.*, ut.username, ut.user_code')
+	    		->FROM('activity_logs_tbl as alt')
+	    		->JOIN('user_tbl as ut', 'ut.user_id=alt.user_id', 'left')
+	    		->LIKE('message_log', $keyword)
+	    		->OR_LIKE('username', $keyword)
+	    		->OR_LIKE('user_code', $keyword)
+				->GET()->num_rows();
+    	}
+    }
+    public function getAllSearchActivityData ($row_per_page, $row_no) {
+    	if (isset($this->session->admin) && $this->session->user_id == 1) {
+    		$keyword = $this->input->get('keyword');
+    		$query = $this->db->SELECT('alt.*, ut.username, ut.user_code')
+	    		->FROM('activity_logs_tbl as alt')
+	    		->JOIN('user_tbl as ut', 'ut.user_id=alt.user_id', 'left')
+	    		->LIKE('message_log', $keyword)
+	    		->OR_LIKE('username', $keyword)
+	    		->OR_LIKE('user_code', $keyword)
+				->ORDER_BY('alt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'username'=>$q['username'],
+					'user_code'=>$q['user_code'],
+					'activity'=> $q['message_log'],
+					'ip_address'=> $q['ip_address'],
+					'platform'=> $q['platform'],
+					'browser'=>$q['browser'],
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+    }
 }

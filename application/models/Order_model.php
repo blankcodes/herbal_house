@@ -50,7 +50,7 @@ class Order_model extends CI_Model {
 		return $data;
 	}
 	public function getBillingInfo($bi_id) {
-		$q = $this->db->WHERE('bi_id', $bi_id)->GET('billing_info_tbl')->row_array();
+		$q = $this->db->WHERE('bi_id', $bi_id)->ORDER_BY('created_at','desc')->GET('billing_info_tbl')->row_array();
 
 		$result['full_name'] = $q['fname'].' '.$q['lname'];
 		$result['email_address'] = $q['email_address'];
@@ -59,7 +59,7 @@ class Order_model extends CI_Model {
 		return $result;
 	}
 	public function getShippingInfo($si_id) {
-		$q = $this->db->WHERE('si_id', $si_id)->GET('shipping_info_tbl')->row_array();
+		$q = $this->db->WHERE('si_id', $si_id)->ORDER_BY('created_at','desc')->GET('shipping_info_tbl')->row_array();
 
 		$result['full_name'] = $q['fname'].' '.$q['lname'];
 		$result['email_address'] = $q['email_address'];

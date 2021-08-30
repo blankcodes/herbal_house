@@ -56,6 +56,34 @@ class Member_model extends CI_Model {
 			return $response;
     	}
     }
+
+    public function resetPassword() {
+    	if (isset($this->session->admin) ) {
+    		$user_code = $this->input->post('user_code');
+    		$default_pass = '123456';
+    		// $userData = $this->db->SELECT('user_type')->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
+
+    		$dataArr = array(
+    			'password'=>$this->hash_password($default_pass)
+    		);
+    		$this->db->WHERE('user_code', $user_code)
+    			->UPDATE('user_tbl', $dataArr);
+
+	    	$activity_log = array(
+	    		'user_id'=>$this->session->user_id, 
+	    		'message_log'=>'Reset Password. User ID:'.$this->input->post('user_code').' User:'.$this->input->post('name'),
+	    		'ip_address'=>$this->input->ip_address(), 
+	   			'platform'=>$this->agent->platform(), 
+	   			'browser'=>$this->agent->browser(),
+	   			'created_at'=>date('Y-m-d H:i:s')
+	    	); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+			$response['status'] = 'success';
+			$response['message'] = "User ".$this->input->post('name')."'s Password Reset Successfully!";	
+			return $response;
+    	}
+    }
 	public function sendMultipleCodes() {
     	if ($this->session->user_id ) {
     		$qty = $this->input->get('qty');
@@ -574,15 +602,15 @@ class Member_model extends CI_Model {
     	if ($this->session->user_type == 'admin') {
     		$keyword = $this->input->get('query');
     		$query = $this->db->SELECT('user_id, user_code, username, fname, lname, mobile_number, user_type, registration_type, website_invites_status, sponsor_id, created_at')
-	    		->FROM('user_tbl')
 				->ORDER_BY('created_at', 'DESC')
-				->LIKE('username', $keyword)
+				->LIKE('user_code', $keyword)
+				->OR_LIKE('username', $keyword)
 				->OR_LIKE('fname', $keyword)
 				->OR_LIKE('lname', $keyword)
 				->OR_LIKE('mobile_number', $keyword)
 				->OR_LIKE('email_address', $keyword)
 				->LIMIT($row_per_page, $row_no)
-				->GET()->result_array();
+				->GET('user_tbl')->result_array();
 			$result = array();
 
 			foreach($query as $q){
@@ -609,7 +637,9 @@ class Member_model extends CI_Model {
     public function getSearchedUserCount() {
     	if ($this->session->user_type == 'admin') {
     		$keyword = $this->input->get('query');
-    		return $this->db->LIKE('username', $keyword)
+    		return $this->db
+    			->LIKE('user_code', $keyword)
+				->OR_LIKE('username', $keyword)
 				->OR_LIKE('fname', $keyword)
 				->OR_LIKE('lname', $keyword)
 				->OR_LIKE('mobile_number', $keyword)
@@ -708,40 +738,33 @@ class Member_model extends CI_Model {
     }
     public function updateProfileImg(){
     	$path = "assets/images/users/"; // upload directory
-		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp'); // valid image extnsion
+		$config['upload_path'] = 'assets/images/users/';
+        $config['allowed_types'] = 'gif|jpg|png|webp';
+        $config['max_size'] = 2000; /* MAX OF 2 MB*/
+        $config['max_width'] = 5000; /* MAX OF 5000 PX*/
+        $config['max_height'] = 5000; /* MAX OF 5000 PX*/
+        $config['encrypt_name'] = true; 
+        $this->load->library('upload', $config);
 
-		if (isset($_FILES['profile_image'])) {
-			$img = str_replace(' ', '-', $_FILES['profile_image']['name']);
-			$tmp = $_FILES['profile_image']['tmp_name'];
+        if (!$this->upload->do_upload('profile_image')) {
+            $error = array('error' => $this->upload->display_errors());
+           	$response['status'] = 'error';
+           	$response['message'] = $error;
+        }
+        else {
+            $data = array('image_metadata' => $this->upload->data());
+            $path = $path.$data['image_metadata']['file_name'];
+            $dataArr = array (
+		 		'image'=>$path,
+		 	);
+     		$this->db->WHERE('user_id', $this->session->user_id)->UPDATE('user_tbl',$dataArr);
 
-			// get uploaded file's extension
-			$ext = pathinfo($img, PATHINFO_EXTENSION);
+            $response['success'] = 'Profile Image Uploaded!';
+            $response['full_path'] = base_url().$path;
+           	$response['status'] = 'success';
+            // $response['message'] = $data;
+        }
 
-			// can upload same image using rand functions
-			$final_image = rand(1000,1000000).'-'.$img;
-
-			// check's valid format
-			if(in_array($ext, $valid_extensions)) { 
-				$path = $path.strtolower($final_image); 
-
-				if(move_uploaded_file($tmp, $path)) {
-					$data = array (
-						'image'=>$path,
-					);
-    				$this->db->WHERE('user_id', $this->session->user_id)->UPDATE('user_tbl',$data);
-					$response['status'] = 'success';
-					$response['message'] = 'Profile Image Uploaded!';
-				}
-			}
-			else {
-				$response['status'] = 'not_img';
-				$response['message'] = 'File not an image!';
-			}
-		}
-		else {
-			$response['status'] = 'failed';
-			$response['message'] = 'Something went wrong!';
-		}
 		return $response;
     }
     public function getUserInfo() {
@@ -847,8 +870,6 @@ class Member_model extends CI_Model {
             $data['response'] = 'Affiliate Link Copied!';
             $data['aff_link'] = base_url('invite/').$userData['aff_id'];
         }
-        
-        
         return $data;
 	}
 }

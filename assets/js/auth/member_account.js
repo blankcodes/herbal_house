@@ -433,7 +433,6 @@ $("#_account_profile_form").on('submit', function(e) {
 		return false;
 	}
 	$("#loader").removeAttr('hidden');
-
 	$.ajax({
 		url: base_url+'api/v1/user/_update_profile_img',
 		type: 'POST',
@@ -450,7 +449,12 @@ $("#_account_profile_form").on('submit', function(e) {
 	})
 	.done(function(res) {
 		if (res.data.status == 'success') {
-			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$(".account-user-avatar img").attr('src',res.data.full_path)
+			console.log(res.data.full_path)
+			$.NotificationApp.send("Success!",res.data.success,"top-right","rgba(0,0,0,0.2)","success");
+		}
+		else if (res.data.status == 'error') {
+			$.NotificationApp.send("Oh Snap!",res.data.message.error,"top-right","rgba(0,0,0,0.2)","warning");
 		}
 		else{
 			$.NotificationApp.send("Oh Snap!!",res.data.message,"top-right","rgba(0,0,0,0.2)","warning");

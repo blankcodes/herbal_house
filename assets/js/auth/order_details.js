@@ -137,10 +137,10 @@ function getOrderdetails(ref_no) {
 		$("#_view_shipping_fee").text('₱ '+res.data.order_amount.shipping);
 		$("#_view_total").text('₱ '+res.data.order_amount.total);
 
-		$("#_view_ship_name").text(res.data.billing_info.full_name);
-		$("#_view_ship_full_address").text(res.data.billing_info.address);
-		$("#_view_ship_email").text(res.data.billing_info.email_address);
-		$("#_view_ship_phone").text(res.data.billing_info.phone);
+		$("#_view_ship_name").text(res.data.shipping_info.full_name);
+		$("#_view_ship_full_address").text(res.data.shipping_info.address);
+		$("#_view_ship_email").text(res.data.shipping_info.email_address);
+		$("#_view_ship_phone").text(res.data.shipping_info.phone);
 
 		$("#_view_bill_name").text(res.data.billing_info.full_name);
 		$("#_view_bill_full_address").text(res.data.billing_info.address);

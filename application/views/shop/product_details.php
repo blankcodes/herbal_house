@@ -138,7 +138,7 @@
                                     </div>
                                     <!-- <button class="btn"><i class=" uil-ellipsis-v "></i></button> -->
                                 </div>
-                                 <button id="_shop_back_btn" class="btn product-page-back-btn" onclick="window.history.back();"><i class="mdi mdi-arrow-left font-22"></i></button>
+                                <button id="_shop_back_btn" class="btn product-page-back-btn" onclick="window.history.back();"><i class="mdi mdi-arrow-left font-22"></i></button>
 
                                 <div class="search-result-wrapper" id="search_result_panel" hidden="hidden">
                                     <div class="header padding-right-10 padding-left-10" id="search_header__">
@@ -189,33 +189,63 @@
                         </div>
                         
                         <!-- Mobile Nav -->
-                        <div id="mobile-view" class="mobile-menu">
+                        <!-- <div id="mobile-view" class="mobile-menu">
                             <nav class="mobile-bottom-nav row">
                                 <div class="col-3 col-md-3">
                                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
                                         <i class="uil-home-alt "></i>
+                                        <div class="mt--28 ">
+                                            <small>Home</small>
+                                        </div>
                                     </div>      
                                 </div>
 
                                 <div class="col-3 col-md-3">       
                                     <div class="mobile-prod-nav-btn cart-prod-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                                        <i class="dripicons-cart font-32 ms-2"></i> <span class=" bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                        <i class="uil-shopping-trolley font-32 ms-2"></i>
+                                        <div class="mt--28 ">
+                                            <small>Cart</small>
+                                        </div>
                                     </div>
                                 </div>
-                                <input min="1" value="1" type="hidden" id="_qty_" name="qty" class="mobile-qty-prod form-control">
-
-                                <!-- <div class="col-3 col-md-3">
-                                    <div class="mobile-prod-nav-btn">
-                                       <input min="1" value="1" type="number" id="_qty_" name="qty" class="mobile-qty-prod form-control">
-                                    </div>     
-                                </div> -->
+                               
 
                                 <div class="col-6 col-md-6">
                                     <div class="mobile-prod-nav-btn">
-                                        <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_add_to_mobile_cart"><i class=" uil-shopping-trolley "></i> Add to Cart</button>
+                                        <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_add_to_mobile_cart"><i class=" uil-shopping-trolley"></i> Add to Cart</button>
                                     </div>      
                                 </div>
                                 
+                            </nav>
+                        </div> -->
+                        <!-- End Mobile Nav -->
+                        
+                        <!-- Mobile Nav -->
+                        <div id="mobile-view" class="mobile-menu">
+                            <nav class="mobile-bottom-nav row">
+                                <div class="col-3 col-md-3">
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                        <i class="uil-home-alt "></i> 
+                                        <div class="mt--28">
+                                            <small>Home</small>
+                                        </div>
+                                    </div>      
+                                </div>
+                                <div class="col-3 col-md-3">
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                        <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                        <div class="mt--28">
+                                            <small>Cart</small>
+                                        </div>
+                                    </div>    
+                                </div>
+
+                                <div class="col-6 col-md-6">  
+                                    <input min="1" value="1" type="hidden" id="_qty_" name="qty" class="mobile-qty-prod form-control">     
+                                    <div class="mobile-nav-btn">
+                                        <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_add_to_mobile_cart"><i class=" uil-shopping-trolley "></i> Add to Cart</button>
+                                    </div>
+                                </div>
                             </nav>
                         </div>
                         <!-- End Mobile Nav -->

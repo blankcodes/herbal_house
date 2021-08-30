@@ -290,7 +290,7 @@
 
                 <div class=" margin-top-90 text-center">
                     <h2 class="">Leadership Team</h2>
-                    <p class="font-15">Meet the doers and builders.</p>
+                    <p class="font-15">Meet the doer and builder.</p>
                     <div class="row margin-top-20 padding-bottom-50" id="_leadership_team">
                         <div class="col-lg-3">
                             <div class="card">
@@ -301,10 +301,10 @@
                                             <label class="mt-2">Mark Susaya</label>
                                         </div>
                                         <div class="position">
-                                            <label class="font-12 fw-500">Chief Executive Officer & Co-Founder</label>
+                                            <label class="font-12 fw-500">Founder & Chief Executive Officer</label>
                                         </div>
                                         <div class="social">
-                                            <a href="#facebook" class="font-23 facebook-color facebook-c"><i class="mdi mdi-facebook"></i></a>
+                                            <a href="https://www.facebook.com/markjoseph.m.susaya" rel="noopener nofollow noreferrer" target="_blank" class="font-23 facebook-color facebook-c"><i class="mdi mdi-facebook"></i></a>
                                             <a href="#twitter" class="font-23 twitter-color twitter-c"><i class="mdi mdi-twitter"></i></a>
                                             <a href="#instagram" class="font-23 instagram-color instagram-c"><i class="mdi mdi-email"></i></a>
                                         </div>
@@ -326,16 +326,25 @@
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
                         <i class="uil-home-alt "></i> 
+                        <div class="mt--28">
+                            <small>Home</small>
+                        </div>
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
                         <i class="uil-user"></i>
-                    </div>      
-                </div>
+                        <div class="mt--28">
+                            <small>Account</small>
+                        </div>
+                     </div>      
+                 </div>
                 <div class="col-4 col-md-4">       
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                        <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                        <div class="mt--28">
+                            <small>Cart</small>
+                        </div>
                     </div>
                 </div>
             </nav>

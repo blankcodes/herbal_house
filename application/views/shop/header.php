@@ -107,16 +107,18 @@
       "description": "<?=$desc;?>",
       "sku": "<?= $product['sku']; ?>",
       "mpn": "MPN-<?= $product['sku']; ?>",
+      "category": "<?= $product['category']; ?>",
       "brand": {
         "@type": "Brand",
-        "name": "Herbal House"
+        "name": "Herbal House Philippines"
       },
       "review": {
         "@type": "Review",
         "reviewRating": {
           "@type": "Rating",
           "ratingValue": "5",
-          "bestRating": "5"
+          "bestRating": "5",
+          "worstRating": "1"
         },
         "author": {
           "@type": "Person",
@@ -125,15 +127,18 @@
       },
       "aggregateRating": {
         "@type": "AggregateRating",
+        "bestRating": "5",
+        "worstRating": "1",
         "ratingValue": "5",
-        "reviewCount": "3"
+        "reviewCount": "7"
       },
       "offers": {
-        "@type": "Offer",
+        "@type": "AggregateOffer",
         "url": "<?=$product['product_url']?>",
         "priceCurrency": "PHP",
-        "price": "<?=$product['price']?>",
-        "priceValidUntil": "2021-12-31",
+        "offerCount": "1",
+        "lowPrice": "<?=$product['dc_price']?>",
+        "highPrice": "<?=$product['price']?>",
         "itemCondition": "https://schema.org/UsedCondition",
         "availability": "https://schema.org/InStock",
         "seller": {

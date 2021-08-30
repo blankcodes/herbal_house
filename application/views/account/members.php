@@ -96,6 +96,7 @@
                                                     <option disabled="" selected="">Select User Type</option>
                                                     <option value="member">Member</option>
                                                     <option value="admin">Admin</option>
+                                                    <option value="investor">Investor</option>
                                                 </select>
                                             </div>
 
@@ -130,7 +131,7 @@
                                                 <label for="password" class="fw-400">Password</label>
                                                 <small class="">*Default password is 123456</small>
                                                 <div class="mt-2 pointer-cursor" data-password="false">
-                                                    <small><span class="password-eye pointer-cursor"></span> Show Password</small>
+                                                    <small><span class="password-eye pointer-cursor"></span> Show/Hide Password</small>
                                                 </div>
                                             </div>
 

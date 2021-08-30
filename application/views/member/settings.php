@@ -27,15 +27,15 @@
                                     <div class="col-md-12 col-xs-12 mb-2 profile-image-upload">
                                         <label for="profile_image">
                                             <?php if (!empty($userData['image'])){ ?>
-                                            <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail pointer-cursor"/>
+                                            <img src="<?=base_url().$userData['image']?>" id="profile_image_thumbnail"  class="rounded-circle  profile-image-thumbnail-settings pointer-cursor"/>
                                             <?php } else{ ?>
-                                            <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" width="150" height="150" class="rounded-circle img-thumbnail pointer-cursor"/>
+                                            <img src="<?=base_url('assets/images/blank-profile-img.png')?>" alt="thumbnail" id="profile_image_thumbnail" class="rounded-circle profile-image-thumbnail pointer-cursor"/>
                                             <?php } ?>
                                         </label>
-                                        <input onchange="readURL(this)" type="file" id="profile_image" name="profile_image"  />
+                                        <input onchange="readURL(this)" type="file" id="profile_image" name="profile_image" class="profile-image-thumbnail"  />
                                      </div>
-
-                                    <div class="mt-3">
+                                     <small class="mt-2">Can upload Max of 2 MB, and max of 1000px per width and height.</small>
+                                    <div class="mt-1">
                                         <button class="btn btn-lg btn-primary rounded font-15 k-btn" type="submit" id="_update_profile">Upload Profile</button>
                                     </div>
                                 </form>
@@ -47,11 +47,13 @@
                                 <form id="_account_username_form">
                                     <h2 class="font-22 fw-600"><i class="uil-edit"></i> Update Username</h2>
                                     <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                    <?php if ($userData['user_type'] == 'member'){ ?>
                                     <div class="alert bg-white fade show c-black" role="alert">
                                         Note that updating your Username will affect your Shop's URL. Your previous product URLs will not work due to this change. <br>
 
                                         After this change, make sure you share the new <a href="<?=base_url('member/products')?>" target="_blank" rel="noopener">product URL</a> to your previous buyers and update your existing marketing materials posted on various social media websites. . 
                                     </div>
+                                    <?php } ?>
                                     <div class="form-floating mb-2">
                                         <input type="text" class="form-control" name="username" value="<?=$userData['username']?>" id="floatingInput" placeholder="User ID"  />
                                         <label for="floatingInput" class="fw-400">Username</label>

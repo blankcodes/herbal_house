@@ -142,11 +142,6 @@
 															</table>
 														</div>
 
-														<div style="padding-bottom:25px; text-align: center; padding-top: 15px;">
-															<a href="<?=$order_details?>" style="border-radius: 10px; border: 1px solid #05cb62 ; background: #05cb62 ; color: #fff; padding: 13px 20px 13px 20px; text-decoration: none; font-size: 20px; font-weight: 500;">View Order</a>
-														</div>
-
-
 														<div style="padding-top: 20px; color: #000;">
 															Regards,<br>
 															Herbal House Team<br>

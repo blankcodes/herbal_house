@@ -249,7 +249,8 @@ $("#_complete_order_form").on('submit', function(e) {
 		data: $(this).serialize(),
 		statusCode: {
 			403: function() {
-				$.NotificationApp.send("Oh Snap!","Refresh the and ty again!","top-right","rgba(0,0,0,0.2)","error");
+				$.NotificationApp.send("Oh Snap!","Refresh the and try again!","top-right","rgba(0,0,0,0.2)","error");
+				newCsrfData()
 			}
 		}
 	})

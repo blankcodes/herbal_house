@@ -39,6 +39,9 @@ class Login extends CI_Controller {
                 if ($checkUser['user_type'] == 'admin') {
                     $this->session->set_userdata('admin', $checkUser['username']);
                 }
+                else if ($checkUser['user_type'] == 'investor') {
+                    $this->session->set_userdata('investor', $checkUser['username']);
+                }
                 if (isset($this->session->temp_user_id)) {
                     $checkUserCart = $this->cart_model->checkUserCart();
                     if (isset($checkUserCart)) {

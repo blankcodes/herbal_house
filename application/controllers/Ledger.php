@@ -6,6 +6,7 @@ class Ledger extends CI_Controller {
 	function __construct (){
         parent::__construct();
         $this->load->model('ledger_model');
+        $this->load->model('member_model');
 		$this->load->library('user_agent');
 		$this->load->library('pagination');
         $this->load->library('form_validation');
@@ -350,7 +351,7 @@ class Ledger extends CI_Controller {
                 $total_amnt = $amount - 50;
                 $response['total_amount'] = '₱ '.number_format($total_amnt, 2); /* 50 for withdrawal processing fee */
                 $response['total'] = $amount; /* 50 for withdrawal processing fee */
-                $response['processing_fee'] = 50; /* 50 for withdrawal processing fee */
+                $response['processing_fee'] = '₱ '.number_format(50, 2); /* 50 for withdrawal processing fee */
                 $response['status'] = 'success';
             }
             $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
@@ -383,6 +384,16 @@ class Ledger extends CI_Controller {
                 $notif_log = array('user_id'=>$this->session->user_id, 'message'=>'Withdrawal Request of ₱'.number_format($amount, 2).'','created_at'=>date('Y-m-d H:i:s')); 
                 $this->insertNewNotification($notif_log); /* INSERT new Notification */
 
+                $activity_log = array(
+                    'user_id'=>$this->session->user_id, 
+                    'message_log'=>'Withdrawal Request of ₱'.number_format($amount,2), 
+                    'ip_address'=>$this->input->ip_address(), 
+                    'platform'=>$this->agent->platform(), 
+                    'browser'=>$this->agent->browser(), 
+                    'created_at'=>date('Y-m-d H:i:s')
+                ); 
+                $this->member_model->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
                 $response['status'] = 'success';
                 $response['message'] = 'Withdrawal request has been submitted!';
             }
@@ -407,6 +418,18 @@ class Ledger extends CI_Controller {
         }
         else if ($walletBalance['balance'] >= $tranfer_amt) {
             $this->ledger_model->transferWalletBalance();
+
+             $activity_log = array(
+                'user_id'=>$this->session->user_id, 
+                'message_log'=>'Transfered amount of ₱'.number_format($tranfer_amt, 2).' from '.ucwords($this->input->post('wallet_type')). ' Wallet to Main Wallet',
+                'ip_address'=>$this->input->ip_address(), 
+                'platform'=>$this->agent->platform(), 
+                'browser'=>$this->agent->browser(), 
+                'created_at'=>date('Y-m-d H:i:s')
+            ); 
+            $this->member_model->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+
             $response['status'] = 'success';
             $reponse['message'] = 'Amount transfered successfully!';
         }

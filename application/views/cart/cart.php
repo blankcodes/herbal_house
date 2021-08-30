@@ -45,10 +45,10 @@
                                                             <td>Discount : </td>
                                                             <td id="_discount_mob">₱ 0.00</td>
                                                         </tr>
-                                                        <tr>
+                                                       <!--  <tr>
                                                             <td>Shipping Charge :</td>
                                                             <td id="_shipping_charge">₱ 0.00</td>
-                                                        </tr>
+                                                        </tr> -->
                                                         <!-- <tr>
                                                             <td>Estimated Tax : </td>
                                                             <td>$19.22</td>
@@ -150,26 +150,32 @@
                         <!-- end row -->
 
                     </div> <!-- container -->
-                    <!-- Mobile Nav -->
-                    <div id="mobile-view" class="mobile-menu">
-                        <nav class="mobile-bottom-nav row">
-                            <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
-                                    <i class="uil-home-alt "></i>
-                                </div>     
-                            </div>
+                    
+                        <!-- Mobile Nav -->
+                        <div id="mobile-view" class="mobile-menu">
+                            <nav class="mobile-bottom-nav row">
+                                <div class="col-3 col-md-3">
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                        <i class="uil-home-alt "></i> 
+                                        <div class="mt--28">
+                                            <small>Home</small>
+                                        </div>
+                                    </div>      
+                                </div>
+                                <div class="col-3 col-md-3">
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                        <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                                        <div class="mt--28">
+                                            <small>Cart</small>
+                                        </div>
+                                    </div>    
+                                </div>
 
-                           <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
-                                    <i class="uil-user"></i>
-                                </div>      
-                            </div>
-                            
-                            <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn">
-                                    <button id="_checkout_btn" onclick="window.location.href='<?=base_url('checkout')?>'" class="c-white cart-checkout-btn btn btn-success btn-rounded">Checkout</button>
-                                </div>      
-                            </div>
-                        </nav>
-                    </div>
-                    <!-- End Mobile Nav -->
+                                <div class="col-6 col-md-6">  
+                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('checkout')?>'">
+                                        <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_checkout_btn"><i class=" uil-shopping-cart-alt"></i> Checkout</button>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                        <!-- End Mobile Nav -->

@@ -37,10 +37,9 @@
                             <h5 class="text-light font-13">Categories</h5>
 
                             <ul class="list-unstyled ps-0 mb-0 mt-3">
-                                <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Dietary Supplement</a></li>
-                                <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Food Supplement</a></li>
-                                <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Juice</a></li>
-                                <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Coffee</a></li>
+                                <?php  foreach($this->products_model->getProductCategoryLimit() as $q) { ?>
+                                    <li class="mt-2"><a href="<?=base_url('product/category/').$q['category_url']?>" target="_blank" rel="noopener" class="text-muted"><?=$q['name']?></a></li>
+                                <?php } ?>
                             </ul>
 
                         </div>
