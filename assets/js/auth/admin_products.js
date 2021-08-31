@@ -278,11 +278,11 @@ $("#_add_product_cat_form").on('submit', function(e) {
 		if (res.data.status == 'success') {
 			$('#_add_product_cat_form input' ).val('');
 			$("#add_product_cat_modal").modal('hide');	
-			$.NotificationApp.send("Success!","New Product Category Added!","top-right","rgba(0,0,0,0.2)","success");
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 			showProductsCategory(1);
 		}
 		else{
-			$.NotificationApp.send("Oh snap!","Something went wrong! Try again!","top-right","rgba(0,0,0,0.2)","success");
+			$.NotificationApp.send("Oh snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 		}
 		$("#add_product_cat_btn").removeAttr('disabled').text('Add Product');
 	})

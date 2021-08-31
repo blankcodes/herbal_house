@@ -161,7 +161,7 @@ class Products extends CI_Controller {
 		else{
 			$row_no = $this->input->get('page_no');
 			// Row per page
-	    	$row_per_page = 10;
+	    	$row_per_page = 12;
 
 	    	// Row position
 		    if($row_no != 0){

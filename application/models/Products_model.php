@@ -212,14 +212,46 @@ class Products_model extends CI_Model {
     	}
     }
     public function addProductCategory(){
-    	$data = array(
-    		'name'=>$this->input->post('product_cat_name'),
-			'category_url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_cat_name'), 0, 11))).'-'.$this->productUrlGenerator(),
-    		'status'=>'inactive',
-    		'created_at'=>date('Y-m-d H:i:s')
-    	);
-    	$this->db->INSERT('product_category_tbl', $data);
-    	return array('status'=>'success');
+    	$path = "assets/images/category/"; // upload directory
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp'); // valid image extnsion
+
+		if (isset($_FILES['product_cat_image'])) {
+			$img = str_replace(' ', '-', $_FILES['product_cat_image']['name']);
+			$tmp = $_FILES['product_cat_image']['tmp_name'];
+
+			// get uploaded file's extension
+			$ext = pathinfo($img, PATHINFO_EXTENSION);
+
+			// can upload same image using rand functions
+			$final_image = rand(1000,1000000).'-'.$img;
+
+			// check's valid format
+			if(in_array($ext, $valid_extensions)) { 
+				$path = $path.strtolower($final_image); 
+
+				if(move_uploaded_file($tmp, $path)) {
+					$data = array(
+						'image'=>$path,
+			    		'name'=>$this->input->post('product_cat_name'),
+						'category_url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_cat_name'), 0, 11))).'-'.$this->productUrlGenerator(),
+			    		'status'=>'inactive',
+			    		'created_at'=>date('Y-m-d H:i:s')
+			    	);
+			    	$this->db->INSERT('product_category_tbl', $data);
+			    	$response['status'] = 'success';
+					$response['message'] = 'New Product Category Added!';
+				}
+			}
+			else {
+				$response['status'] = 'not_img';
+				$response['message'] = 'File not an image! Try again!';
+			}
+		}
+		else {
+			$response['status'] = 'failed';
+			$response['message'] = 'Something went wrong! Try again!';
+		}
+		return $response;
     }
     public function getProductCategory(){
     	$query = $this->db->SELECT('pc_id, name')
