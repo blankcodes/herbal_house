@@ -24,6 +24,7 @@ function showAllOrders(page){
 		data: {page_no:page}
 	})
 	.done(function(res) {
+		$("#order_pagination").html(res.pagination)
 		if (parseInt(res.count) > 0) {
 			string = '';
 			payment_status_label = '';

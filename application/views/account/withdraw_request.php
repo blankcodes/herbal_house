@@ -113,7 +113,7 @@
                                                     <option disabled="" selected="" value="">Select Status</option>
                                                     <option value="processing">Processing</option>
                                                     <option value="complete">Complete</option>
-                                                    <option value="close">Closed</option>
+                                                    <option value="closed">Closed</option>
                                                     <option value="pending">Pending</option>
                                                 </select>
                                                <label for="_rw_status" class="fw-400 mb-2">Update the request Status after Payment.</label>

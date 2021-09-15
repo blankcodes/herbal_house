@@ -95,6 +95,39 @@
                         </div><!-- /.modal-dialog -->
                     </div><!-- /.modal -->
 
+                    <div id="update_product_cat_modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg ">
+                            <div class="modal-content">
+                                <div class="modal-header bg-success">
+                                    <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-tag me-2"></i> Add Product Category</h4>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                </div>
+                                <form class="ps-3 pe-3" action="#" id="_update_product_cat_form">
+                                    <div class="modal-body">
+                                        <div class="mb-3 col-lg-6">
+                                            <div class="col-md-12 col-xs-12">
+                                                <img src="<?=base_url('assets/images/thumbnail.png')?>" alt="thumbnail" id="prodct_cat_img_thumbnail" width="150" class="img-fluid br-10">
+                                            </div>
+                                            <label for="product_cat_image" class="form-label">Product Category Image</label>
+                                            <input onchange="readURL(this)" type="file" id="_edit_product_cat_image" name="product_cat_image" class="form-control">
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="product_name" class="form-label">Product Category Name</label>
+                                            <input class="form-control" type="text" id="_edit_product_cat_name" name="product_cat_name" required="" placeholder="Product Category Name">
+                                        </div>
+                                        <input type="hidden" id="csrf_token" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                        <input type="hidden" name="pc_id" id="_edit_pc_id" />
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-rounded btn-light" data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-rounded btn-success" id="update_product_cat_btn">Update Product Category</button>
+                                    </div>
+                                </form>
+                            </div><!-- /.modal-content -->
+                        </div><!-- /.modal-dialog -->
+                    </div><!-- /.modal -->
+
                 </div> <!-- content -->
 
             </div>

@@ -25,24 +25,12 @@
 
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <div class="card text-white bg-success overflow-hidden">
-                                            <div class="card-body">
-                                                <h4 class="header-title mb-2 text-capitalize">Total Sales</h4>
-
-                                                <div class="toll-free-box text-center pt-2 pb-2">
-                                                    <h2 class="font-28"> <i class="uil-usd-circle"></i> <span id="_total_sales">₱ 0.00</span></h2>
-                                                </div>
-                                            </div> <!-- end card-body-->
-                                        </div>
-                                    </div> <!-- end col-->
-
-                                    <div class="col-lg-6">
                                         <div class="card text-white bg-success">
                                             <div class="card-body">
                                                 <div class="dropdown float-end">
-                                                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <!-- <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
                                                         <i class="mdi mdi-dots-vertical"></i>
-                                                    </a>
+                                                    </a> -->
                                                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated">
                                                         <li onclick="sortMonthSales('01', 'January')" class="dropdown-item pointer-cursor">January</li>
                                                         <li onclick="sortMonthSales('02','February')" class="dropdown-item pointer-cursor">February</li>
@@ -58,13 +46,55 @@
                                                         <li onclick="sortMonthSales('12','December')" class="dropdown-item pointer-cursor">December</li>
                                                     </div>
                                                 </div>
-                                                <h4 class="header-title mb-2 text-capitalize">Monthly Sales (<span id="_month"></span>)</h4>
+                                                <h4 class="header-title mb-2 text-capitalize">Total Investment Profit<span id="__month"></span></h4>
                                                 <div class="toll-free-box text-center pt-2 pb-2">
-                                                    <h2 class="font-28"> <i class="uil-usd-circle  "></i> <span id="_monthly_sales">₱ 0.00</span></h2>
+                                                    <h2 class="font-28"> <i class="mdi mdi-cash-multiple  "></i> <span id="_investment">₱ 0.00</span></h2>
                                                 </div>
                                             </div> <!-- end card-body-->
                                         </div>
                                     </div> <!-- end col-->
+
+                                    <!-- <div class="col-lg-4">
+                                        <div class="card text-white bg-success overflow-hidden">
+                                            <div class="card-body">
+                                                <h4 class="header-title mb-2 text-capitalize">Total Sales</h4>
+
+                                                <div class="toll-free-box text-center pt-2 pb-2">
+                                                    <h2 class="font-28"> <i class="uil-usd-circle"></i> <span id="_total_sales">₱ 0.00</span></h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> -->
+
+                                    <div class="col-lg-6">
+                                        <div class="card text-white bg-success">
+                                            <div class="card-body">
+                                                <div class="dropdown float-end">
+                                                    <a href="#" class="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <i class="mdi mdi-dots-vertical"></i>
+                                                    </a>
+                                                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated">
+                                                        <li onclick="sortMonthROI('01', 'January')" class="dropdown-item pointer-cursor">January</li>
+                                                        <li onclick="sortMonthROI('02','February')" class="dropdown-item pointer-cursor">February</li>
+                                                        <li onclick="sortMonthROI('03','March')" class="dropdown-item pointer-cursor">March</li>
+                                                        <li onclick="sortMonthSales('04','April')" class="dropdown-item pointer-cursor">April</li>
+                                                        <li onclick="sortMonthROI('05','May')" class="dropdown-item pointer-cursor">May</li>
+                                                        <li onclick="sortMonthROI('06','June')" class="dropdown-item pointer-cursor">June</li>
+                                                        <li onclick="sortMonthROI('07','July')" class="dropdown-item pointer-cursor">July</li>
+                                                        <li onclick="sortMonthROI('08','August')" class="dropdown-item pointer-cursor">August</li>
+                                                        <li onclick="sortMonthROI('09','September')" class="dropdown-item pointer-cursor">September</li>
+                                                        <li onclick="sortMonthROI('10','October')" class="dropdown-item pointer-cursor">October</li>
+                                                        <li onclick="sortMonthROI('11','November')" class="dropdown-item pointer-cursor">November</li>
+                                                        <li onclick="sortMonthROI('12','December')" class="dropdown-item pointer-cursor">December</li>
+                                                    </div>
+                                                </div>
+                                                <h4 class="header-title mb-2 text-capitalize">Monthly Profit (<span id="_month"></span>)</h4>
+                                                <div class="toll-free-box text-center pt-2 pb-2">
+                                                    <h2 class="font-28"> <i class="mdi mdi-home-currency-usd  "></i> <span id="_monthly_sales">₱ 0.00</span></h2>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div> 
 
                                 </div> <!-- end row -->
 
@@ -76,7 +106,7 @@
                             <div class="col-xl-12 col-lg-12">
                                 <div class="card card-h-100">
                                     <div class="card-body">
-                                        <h3 class="header-title mb-2 text-capitalize font-20">Sales Statistics</h3>
+                                        <h3 class="header-title mb-2 text-capitalize font-20"><i class=" uil-chart-line "></i> Profit Statistics</h3>
 
                                        <div class=" mb-3">
                                             <form >
@@ -149,7 +179,7 @@
                                                     <th>Date</th>
                                                     <th>Product Name</th>
                                                     <th>Product Category</th>
-                                                    <th>Quantity</th>
+                                                    <th>Earned</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="_product_purchase_tbl">

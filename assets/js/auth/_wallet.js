@@ -174,7 +174,6 @@ $("#_withdrawal_request_form").on('submit', function(e){
 		return false;
 	}
 
-
 	if (_payment_method == '' || !_payment_method) {
 		$.NotificationApp.send("Oh, Snap!","Payment Method is required!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
@@ -185,8 +184,14 @@ $("#_withdrawal_request_form").on('submit', function(e){
 		return false;
 	}
 
-	if (_account_number == '' || !_account_number) {
+	if (_account_number == '' || !_account_number ) {
 		$.NotificationApp.send("Oh, Snap!","Account Number is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	check_acct = _account_number.substring(0,2);
+	if (_account_number.length < 11 || check_acct !== '09') {
+		$.NotificationApp.send("Oh, Snap!","Please Enter a Correct Account Number!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
 	}
 

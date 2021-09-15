@@ -30,11 +30,17 @@
                     <ul class="side-nav">
 
                         <li class="side-nav-title side-nav-item">Navigation</li>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url()?>" class="side-nav-link">
+                                <i class="uil-globe"></i>
+                                <span> Home </span>
+                            </a>
+                        </li>
 
                         <li class="side-nav-item">
                             <a href="<?=base_url()?>account" class="side-nav-link">
                                 <i class="uil-home-alt"></i>
-                                <span> Dashboards </span>
+                                <span> Dashboard </span>
                             </a>
                         </li>
 
@@ -55,9 +61,9 @@
                             </a>
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
-                                    <!-- <li>
+                                    <li>
                                         <a href="<?=base_url('ecom/walkin-buyers')?>">Walk-in Buyers</a>
-                                    </li> -->
+                                    </li>
                                    <li>
                                         <a href="<?=base_url('ecom/orders')?>">Orders</a>
                                     </li>

@@ -162,7 +162,7 @@
                             <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                             <div class="modal-body mb-3">
                                 <div class="alert alert-light bg-light text-dark border-0" role="alert">
-                                    Notice: ₱ 50.00 will be deducted for processing fee. Withdrawal request will be processed within 24 hours.
+                                    Notice: ₱ 50.00 will be deducted for processing fee. Withdrawal request will be processed within 24 hours. 
                                 </div>
 
                                 <div class="mt-1">
@@ -170,7 +170,7 @@
                                 </div>
 
                                 <div class="mt-3">
-                                    <label class="fw-400">Input the amount you want to withdraw. Must be a whole number!</label>
+                                    <label class="fw-400">Enter the amount you want to withdraw. Must be a whole number!</label>
                                 </div>
 
                                 <div class="form-floating mt-1">
@@ -194,10 +194,12 @@
                                     <label for="_account_name" class="fw-400">Account Name</label>
                                 </div>
 
+
                                 <div class="form-floating mt-2">
                                     <input type="text" class="form-control" name="account_number" id="_account_number" placeholder="Ex. 10085298452" required=""/>
-                                    <label for="_withdraw_amount" class="fw-400">Account Number</label>
+                                    <label for="_account_number" class="fw-400">Account Number</label>
                                 </div>
+
                                
                             </div>
                             <div class="modal-footer mb-2">

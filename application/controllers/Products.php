@@ -136,8 +136,16 @@ class Products extends CI_Controller {
 		$data = $this->products_model->addProductCategory();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
+	public function updateProductCategory() {
+		$data = $this->products_model->updateProductCategory();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+	}
 	public function getProductCategory() {
 		$data = $this->products_model->getProductCategory();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+	}
+	public function getProductCategoryByID() {
+		$data = $this->products_model->getProductCategoryByID();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 	public function getProductDataByID() {

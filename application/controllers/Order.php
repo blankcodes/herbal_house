@@ -153,7 +153,7 @@ class Order extends CI_Controller {
                 $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
                 return false;
             }
-            else{
+            else if ($checkOrderData['status'] == 'shipped') {
                 $dataStat = array(
                     'status'=>$status,
                     'updated_at'=>date('Y-m-d H:i:s'),
@@ -161,14 +161,15 @@ class Order extends CI_Controller {
                 );
                 $this->db->WHERE('order_id', $order_id)
                     ->UPDATE('order_tbl', $dataStat);
+                    
                 $response['status'] = 'success';
                 $response['message'] = 'Order Status updated to '.$status.' and is now Complete!';
 
                 /* UPDATE PAYMENT TO PAID */ 
-                 $this->order_model->changePaymentStatus($order_id);
+                $this->order_model->changePaymentStatus($order_id);
 
-                /* INSERT UNILEVEL POINTS TO YOURSELF */ 
-                 $this->products_model->insertUnilevelAfterShopPurchase($order_id);
+                /* INSERT UNILEVEL POINTS */ 
+                $this->products_model->insertUnilevelAfterShopPurchase($order_id);
 
                 $activity = ucwords($status);
                 $this->order_model->shipmentTracking($order_id, $activity); /* insert shipment track details*/
@@ -177,6 +178,12 @@ class Order extends CI_Controller {
                 $this->order_model->insertOrderEventLogs($logs);
 
                 $this->order_model->sendOrderDeliveredEmailNotification($order_id);
+            }
+            else {
+                $response['status'] = 'failed';
+                $response['message'] = 'Error occured!';
+                $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+                return false;
             }
 
         }

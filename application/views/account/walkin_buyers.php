@@ -84,21 +84,10 @@
                                                Walk-in product repeat purchase. Choose what product to purchase, input the quantity, and search or scan the QR code of the user.
                                             </div>
 
-                                            <div class="mt-2">
-                                                <label>Product Name</label>
-                                                <select class="form-control select2" name="product" data-toggle="select2" id="_select_product">
-                                                    <option disabled="" selected="">Select Product</option>
-                                                </select>
-                                            </div>
-
-
-                                            <div class="mt-2">
-                                                <label>Quantity</label>
-                                                <input type="number" class="form-control mt-2" id="qty" name="qty" placeholder="Quantity" value="1">
-                                            </div>
 
                                             <div class="dropdown mt-3">
-                                                <input type="text" class="form-control dropdown-toggle mt-2" id="search_code_name" name="code_name" placeholder="Search Name/User ID/Mobile number">
+                                                <label>Search User</label>
+                                                <input type="text" class="form-control dropdown-toggle mt-1" id="search_code_name" name="code_name" placeholder="Search Name/User ID/Mobile number">
                                                  <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-user-dropdown" id="search_user_dropdown">
                                                     <div id="_member_search" class="mb-1 mt-1">
                                                         <!-- item-->
@@ -107,6 +96,20 @@
                                                 <button type="submit" class="btn btn-success rounded mt-1 float-right"><i class="uil-search"></i> Search</button>
                                                 <button type="submit" class="btn btn-success rounded mt-1 float-right"><i class="mdi mdi-qrcode"></i> Scan QR Code</button>
                                             </div>
+
+                                            <div class="mt-3">
+                                                <label>Product Name</label>
+                                                <select class="form-control select2" name="product" data-toggle="select2" id="_select_product">
+                                                    <option disabled="" selected="">Select Product</option>
+                                                </select>
+                                            </div>
+
+
+                                            <div class="mt-3">
+                                                <label>Product Qty</label>
+                                                <input type="number" class="form-control mt-1" id="qty" name="qty" placeholder="Product Qty" value="1">
+                                            </div>
+
                                             <hr>
                                             <div class="mt-3">
                                                 <label>User Full Name</label>

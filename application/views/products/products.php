@@ -133,10 +133,10 @@
                                                 <input class="form-control" type="number" id="points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
 
-                                            <!-- <div class="mb-3 col-lg-6">
-                                                <label for="qty" class="form-label">Profit Sharing Points</label>
-                                                <input class="form-control" type="number" id="profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
-                                            </div> -->
+                                            <div class="mb-3 col-lg-6">
+                                                <label for="qty" class="form-label">Investment Points</label>
+                                                <input class="form-control" type="number" id="investment_point" name="investment_point" required="" placeholder="Points/Peso allocated for Investors">
+                                            </div>
                                         </div>
 
 
@@ -222,10 +222,11 @@
                                                 <label for="qty" class="form-label">Unilevel Points</label>
                                                 <input class="form-control" type="number" id="_edit_points" name="points" required="" placeholder="Points Earned when a member purchase this product.">
                                             </div>
-                                            <!-- <div class="mb-3 col-lg-6">
-                                                <label for="qty" class="form-label">Profit Sharing Points</label>
-                                                <input class="form-control" type="number" id="_edit_profit_sharing_points" name="profit_sharing_points" required="" placeholder="Points allocated to profit sharing">
-                                            </div> -->
+
+                                            <div class="mb-3 col-lg-6">
+                                                <label for="qty" class="form-label">Investment Points</label>
+                                                <input class="form-control" type="number" id="_edit_investment_point" name="investment_point" required="" placeholder="Points/Peso allocated for Investors">
+                                            </div>
                                         </div>
 
                                         <div class="mb-3" >

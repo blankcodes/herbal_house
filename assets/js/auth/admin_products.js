@@ -50,6 +50,10 @@ function readURL(input) {
             $('#_edit_prodct_img_thumbnail')
                 .attr('src', e.target.result)
                 .width(200)
+
+            $('#prodct_cat_img_thumbnail')
+                .attr('src', e.target.result)
+                .width(200)
         };
 
         reader.readAsDataURL(input.files[0]);
@@ -356,6 +360,7 @@ function showProductsCategory(page_no){
 		$("#_products_category_tbl").html('<tr class="text-center"><td colspan="7">No records found!</td></tr>');
 	})
 }
+
 function changeProductCategoryStatus(pc_id, status) {
 	ch_status = 'inactive';
 	if (status == 'inactive') {
@@ -420,6 +425,7 @@ function getProductDataByID(p_id) {
 		$("#_edit_priority").val(res.data.priority)
 		$("#_edit_profit_sharing_points").val(res.data.profit_sharing_points)
 		$("#_edit_points").val(res.data.points)
+		$("#_edit_investment_point").val(res.data.investment_point)
 		$(tinymce.get('_edit_editor_description').getBody()).html(res.data.description);
 		$("#_edit_prodct_img_thumbnail").attr('src', base_url+''+res.data.image)
 		$("#_edit_product_url").val(res.data.url)
@@ -827,3 +833,61 @@ function showWalkinTx(page_no){
 		$("#_walkin_tx_tbl").html('<tr class="text-center"><td colspan="6">No records found!</td></tr>');
 	})
 }
+function editProductCategory(pc_id){
+	$("#loader").removeAttr('hidden','hidden');
+	$.ajax({
+		url: base_url+'api/v1/product/_get_product_category_data',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {pc_id:pc_id}
+	})
+	.done(function(res) {
+		$("#prodct_cat_img_thumbnail").attr('src', res.data.image)
+		$("#_edit_pc_id").val(res.data.pc_id)
+		$("#_edit_product_cat_name").val(res.data.name)
+		$("#update_product_cat_modal").modal('toggle');
+		$("#loader").attr('hidden','hidden');
+		newCsrfData();
+	})
+}
+$("#_update_product_cat_form").on('submit', function(e) {
+	e.preventDefault();
+	$("#update_product_cat_btn").attr('disabled','disabled').text('Updating...');
+	var formData = new FormData(this);
+	var product_cat_image = $("#_edit_product_cat_image").val();
+
+	if (!product_cat_image || product_cat_image == '') {
+		$.NotificationApp.send("Oh Snap!","Product image is required!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	$.ajax({
+		url: base_url+'api/v1/product/_update_product_category',
+		type: 'POST',
+		dataType: 'JSON',
+		data: formData,
+		cache       : false,
+	    contentType : false,
+	    processData : false,
+	    statusCode: {
+		    403: function() {
+		     	$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+		    }
+		}
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$('#_update_product_cat_form input' ).val('');
+			$("#update_product_cat_modal").modal('hide');	
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			showProductsCategory(1);
+		}
+		else{
+			$.NotificationApp.send("Oh snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+		}
+		$("#update_product_cat_btn").removeAttr('disabled').text('Update Product');
+	})
+	.fail(function(){
+		$("#update_product_cat_btn").removeAttr('disabled').text('Update Product');
+	})
+})

@@ -4,20 +4,21 @@ if (page == 'investor_dashboard') {
 	f = $('#_pp_from').val();
 	t = $('#_pp_to').val();
 
-	getTotalSales()
+	getTotalROI()
 	getProductPurchase(1, f, t)
 }
 $("#_sort_btn").on('click', function() {
+	$("#_sales_chart").html('');
 	f = $('#_from').val();
 	t = $('#_to').val();
 
 	$("#_sort_btn").text('Getting data...').attr('disabled','disabled');
 	$.ajax({
-		url: base_url+'api/v1/stat/investor/_sales_sort_by_date', type: 'GET', dataType: 'JSON', data: {f:f,t,t}
+		url: base_url+'api/v1/stat/investor/_sort_roi_by_date', type: 'GET', dataType: 'JSON', data: {f:f,t,t}
 	})
 	.done(function(res) {
-		_title = 'Sales';
-		_salesAreaChart(res.data.sales, _title)
+		_title = 'Profit';
+		_salesAreaChart(res.data.roi, _title)
 		$("#_sort_btn").text('Sort').removeAttr('disabled');
 
 	})
@@ -25,31 +26,32 @@ $("#_sort_btn").on('click', function() {
 		
 	})
 })
-function sortMonthSales(m, F){
+function sortMonthROI(m, F){
 	$("#_monthly_sales").text('Loading...')
 	$("#_month").text('...')
 
 	$.ajax({
-		url: base_url+'api/v1/stat/investor/_monthly_sales', type: 'GET', dataType: 'JSON', data: {m:m,F,F}
+		url: base_url+'api/v1/stat/investor/_sort_monthly_roi', type: 'GET', dataType: 'JSON', data: {m:m,F,F}
 	})
 	.done(function(res) {
-		$("#_monthly_sales").text(res.data.sales)
+		$("#_monthly_sales").text(res.data.roi)
 		$("#_month").text(F)
 	})
 	.fail(function() {
 		
 	})
 }
-function getTotalSales(){
-	_title = '3 Month Sales';
+function getTotalROI(){
+	_title = '3 Month Profit';
 	$.ajax({
-		url: base_url+'api/v1/stat/investor/_total_order_sales', type: 'GET', dataType: 'JSON', data: {range:_title}
+		url: base_url+'api/v1/stat/investor/_total_roi', type: 'GET', dataType: 'JSON', data: {range:_title}
 	})
 	.done(function(res) {
+		$("#_investment").text(res.data.investment)
 		$("#_total_sales").text(res.data.total_sales)
 		$("#_monthly_sales").text(res.data.monthly_sales)
 		$("#_month").text(res.data.month_name)
-		_salesAreaChart(res.data.sales, _title)
+		_salesAreaChart(res.data.roi, _title)
 		$("#loader").attr('hidden','hidden');
 	})
 	.fail(function() {
@@ -58,15 +60,15 @@ function getTotalSales(){
 }
 function _salesAreaChart(data, _title){
 	date = [];
-	sales = [];
+	amount = [];
 	for(var i in data){
         date.push(data[i].date);
-        sales.push(data[i].sales);
+        amount.push(data[i].amount);
     }
 	var options = {
         	series: [{
-        	name: "Sales",
-        	data: sales
+        	name: "Profit",
+        	data: amount
       	}],
         chart: {
           	type: 'area',
@@ -134,7 +136,7 @@ function getProductPurchase(page, f, t){
                    	+'<span class=""><a href="'+result[i].category_url+'" target="_blank">'+result[i].category+'</a></span>'
                	+'</td>'
                	+'<td>'
-                   	+'<span class="">'+result[i].qty+'</span>'
+                   	+'<span class="">'+result[i].earned+'</span>'
                +'</td>'
            	+'</tr>'
 		}

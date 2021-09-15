@@ -325,16 +325,25 @@
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
                         <i class="uil-home-alt"></i> 
+                        <div class="mt--28 ">
+                            <small>Home</small>
+                        </div>
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
                         <i class="uil-user"></i>
+                        <div class="mt--28">
+                            <small>Account</small>
+                        </div>
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">       
                     <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
-                        <i class="dripicons-cart"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                        <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
+                        <div class="mt--28">
+                            <small>Cart</small>
+                        </div>
                     </div>
                 </div>
             </nav>

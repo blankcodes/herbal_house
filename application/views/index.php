@@ -279,6 +279,7 @@
                                     <small class="text-capitalize fw-400 font-14">Your Partner in Good Health.</small>
                                     <div>
                                         <a href="#_watch_video" class="btn btn-outline-light rounded mt-2">Watch Video</a>
+                                        <a href="<?=base_url()?>account/signup?utm_source=herbalhouse&utm_medium=join_now_btn&utm_campaign=home_page" class="btn btn-outline-light rounded mt-2">Join</a>
                                     </div>
                                 </h1>
                             </div>

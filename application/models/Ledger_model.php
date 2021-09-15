@@ -480,7 +480,9 @@ class Ledger_model extends CI_Model {
 				if ($status == 'complete') {
 					$this->sendCompleteWithdrawEmailNotificationToUser($user_id, $ref_no, $amount);
 				}
-
+				// else if( == 'return'){
+				// 	$this->sendCompleteWithdrawEmailNotificationToUser($user_id, $ref_no, $amount);
+				// }
 				$response['status'] = 'success';
 	    		$response['message'] ='Request '.$this->input->post('ref_no').' is updated to '.ucwords($this->input->post('status')).'!';
 				return $response;

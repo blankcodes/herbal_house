@@ -53,6 +53,7 @@ class Products_model extends CI_Model {
 						'description'=>$this->input->post('description'),
 						'points'=>$this->input->post('points'),
 						'p_pub_id'=>$this->productPublicID(),
+						'investment_point'=>$this->input->post('investment_point'),
 						// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 						'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_name'), 0, 35) )).'-'.$this->productUrlGenerator(),
 						'sku'=>$this->skuGenerator(),
@@ -105,6 +106,7 @@ class Products_model extends CI_Model {
 							'priority'=>$this->input->post('priority'),
 							'points'=>$this->input->post('points'),
 							'description'=>$this->input->post('description'),
+							'investment_point'=>$this->input->post('investment_point'),
 							// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 							'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 							'updated_at'=>date('Y-m-d H:i:s'),
@@ -130,6 +132,7 @@ class Products_model extends CI_Model {
 					'description'=>$this->input->post('description'),
 					'priority'=>$this->input->post('priority'),
 					'points'=>$this->input->post('points'),
+					'investment_point'=>$this->input->post('investment_point'),
 					// 'profit_sharing_points'=>$this->input->post('profit_sharing_points'),
 					'url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_url'), 0, 45) )),
 					'updated_at'=>date('Y-m-d H:i:s'),
@@ -253,10 +256,60 @@ class Products_model extends CI_Model {
 		}
 		return $response;
     }
+    public function updateProductCategory(){
+    	$path = "assets/images/category/"; // upload directory
+		$valid_extensions = array('jpeg', 'jpg', 'png', 'gif', 'webp'); // valid image extnsion
+
+		if (isset($_FILES['product_cat_image'])) {
+			$img = str_replace(' ', '-', $_FILES['product_cat_image']['name']);
+			$tmp = $_FILES['product_cat_image']['tmp_name'];
+
+			// get uploaded file's extension
+			$ext = pathinfo($img, PATHINFO_EXTENSION);
+
+			// can upload same image using rand functions
+			$final_image = rand(1000,1000000).'-'.$img;
+
+			// check's valid format
+			if(in_array($ext, $valid_extensions)) { 
+				$path = $path.strtolower($final_image); 
+
+				if(move_uploaded_file($tmp, $path)) {
+					$data = array(
+						'image'=>$path,
+			    		'name'=>$this->input->post('product_cat_name'),
+						'category_url'=>str_replace(' ', '-', strtolower(substr($this->input->post('product_cat_name'), 0, 11))).'-'.$this->productUrlGenerator(),
+			    		'status'=>'inactive',
+			    		'created_at'=>date('Y-m-d H:i:s')
+			    	);
+			    	$this->db->WHERE('pc_id',$this->input->post('pc_id'))->UPDATE('product_category_tbl', $data);
+			    	$response['status'] = 'success';
+					$response['message'] = ' Product Category Updated!';
+				}
+			}
+			else {
+				$response['status'] = 'not_img';
+				$response['message'] = 'File not an image! Try again!';
+			}
+		}
+		else {
+			$response['status'] = 'failed';
+			$response['message'] = 'Something went wrong! Try again!';
+		}
+		return $response;
+    }
     public function getProductCategory(){
     	$query = $this->db->SELECT('pc_id, name')
     		->ORDER_BY('name', 'asc')
     		->GET('product_category_tbl')->result_array();
+    	return $query ;
+    }
+    public function getProductCategoryByID(){
+    	$query = $this->db->SELECT('name, pc_id, image')
+    		->ORDER_BY('name', 'asc')
+    		->WHERE('pc_id',$this->input->get('pc_id'))
+    		->GET('product_category_tbl')->row_array();
+    	$query['image']=base_url().$query['image'];
     	return $query ;
     }
     public function getProductCategoryHome(){
@@ -306,6 +359,7 @@ class Products_model extends CI_Model {
 			$data['points'] = $q['points'];
 			$data['sku'] = $q['sku'];
 			$data['profit_sharing_points'] = $q['profit_sharing_points'];
+			$data['investment_point'] = $q['investment_point'];
 			$data['url'] = $q['url'];
 			$data['created_at'] = date('m/d/Y', strtotime($q['created_at']));
 
@@ -649,30 +703,36 @@ class Products_model extends CI_Model {
 			$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
 
 			/* CHECK IF THE CURRENT PRODUCT CODE IS MORE THAN THE REQUEST QTY OF THE PURCHASE*/ 
-			if ($productCodeCount > $qty) {
-				for ($x = 0; $x < $qty; $x++) {
-					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->row_array(); /* GET PRODUCTS CODE THAT IS NOT USED */
+			
+			// if ($productCodeCount > $qty) {
+			$this->generateProductCodeShopPurchase($qty, $p_id, 'Walk-in Purchase');
+			for ($x = 0; $x < $qty; $x++) {
+				$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->row_array(); /* GET PRODUCTS CODE THAT IS NOT USED */
 
-					$dataArr = array('status'=>'used');
-					$this->db->WHERE('pc_id',$productCode['pc_id'])
+				$dataArr = array('status'=>'used');
+				$this->db->WHERE('pc_id',$productCode['pc_id'])
 						->UPDATE('product_code_tbl', $dataArr);
 
-					$this->insertNewProductWalkinTransaction($p_id, $user_code, $productCode['pc_id']);
+				$this->insertNewProductWalkinTransaction($p_id, $user_code, $productCode['pc_id']);
 
-					/* INSERT UNILEVEL POINTS TO YOURSELF */ 
-					$this->insertUnilevelPointsWallet($p_id, $user_code);
+				/* INSERT UNILEVEL POINTS TO YOURSELF */ 
+				$this->insertUnilevelPointsWallet($p_id, $user_code);
 
 
-					/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
-					$this->insertReferralUnilvlPoints($p_id, $userData['sponsor_id']);
-				}
-				$response['status'] = 'success';
-				$response['message'] = 'Successfully Processed!';
+				/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
+				$this->insertReferralUnilvlPoints($p_id, $userData['sponsor_id']);
+
+				/* INSERT POINTS ALLOCATED FOR INVESTMENT*/ 
+				$this->insertInvestmentPoints($p_id, $p_id);
+
 			}
-			else{
-				$response['status'] = 'failed';
-				$response['message'] = 'Generate Product Code for this Product first!';
-			}
+			$response['status'] = 'success';
+			$response['message'] = 'Successfully Processed!';
+			// }
+			// else{
+			// 	$response['status'] = 'failed';
+			// 	$response['message'] = 'Generate Product Code for this Product first!';
+			// }
 			return $response;
     	}
 	}
@@ -681,12 +741,13 @@ class Products_model extends CI_Model {
 			$sales = $this->db->WHERE('order_id', $order_id)->GET('sales_tbl')->result_array();
 
 			foreach ($sales as $s) { /* LOOP FOR HOW MANY PRODUCTS IN AN ORDER */
-				for ($x = 0; $x < $s['qty']; $x++) { /* LOOP FOR HOW MANY QTY FOR EVERY PRODUCT PURCHASE */
-					$userData = $this->db->WHERE('user_id', $s['user_id'])->GET('user_tbl')->row_array();
-					$orderData = $this->db->WHERE('order_id', $order_id)->GET('order_tbl')->row_array();
+				/* GENERATE NEW PRODUCT CODES */ 
+				$this->generateProductCodeShopPurchase($s['qty'], $s['p_id'], 'Shop Purchase');
 
-					/* GENERATE NEW PRODUCT CODES */ 
-					$this->generateProductCodeShopPurchase($s['qty'], $s['p_id']);
+				$userData = $this->db->WHERE('user_id', $s['user_id'])->GET('user_tbl')->row_array();
+				$orderData = $this->db->WHERE('order_id', $order_id)->GET('order_tbl')->row_array();
+
+				for ($x = 0; $x < $s['qty']; $x++) { /* LOOP FOR HOW MANY QTY FOR EVERY PRODUCT PURCHASE */
 
 					/* GET THE NEW GENERATED PRODUCT CODE*/ 
 					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $s['p_id'])->GET('product_code_tbl')->row_array();
@@ -694,8 +755,14 @@ class Products_model extends CI_Model {
 					$orderStatArr = array('status'=>'used');
 					$this->db->WHERE('pc_id', $productCode['pc_id'])->UPDATE('product_code_tbl', $orderStatArr);
 
+					
+
 					/* BOUGHT WITH A MEMBER ACCOUNT */
-					if (isset($userData)) {
+					if (!empty($userData) && isset($userData['user_code'])) {
+						echo 'y';
+						/* INSERT POINTS ALLOCATED FOR INVESTMENT*/ 
+						$this->insertInvestmentPoints($order_id, $s['p_id']);
+
 						$this->insertNewShopPurchaseTransaction($s['p_id'], $userData['user_code'], $productCode['pc_id']);
 
 						/* INSERT UNILEVEL POINTS TO YOURSELF */ 
@@ -706,7 +773,11 @@ class Products_model extends CI_Model {
 					}
 
 					/* BOUGHT WITH A NON-MEMBER ACCOUNT BUT REFERRED */
-					else if (isset($orderData['referrer']) || $orderData['referrer'] !== '') {
+					else if (!empty($userData) && isset($userData['referrer'])) {
+						echo 'n';
+						/* INSERT POINTS ALLOCATED FOR INVESTMENT*/ 
+						$this->insertInvestmentPoints($order_id, $s['p_id']);
+
 						$userReferrer = $this->db->WHERE('username', $orderData['referrer'])->GET('user_tbl')->row_array();
 
 						$this->insertNewShopPurchaseTransaction($s['p_id'], $userReferrer['user_code'], $productCode['pc_id']);
@@ -716,6 +787,18 @@ class Products_model extends CI_Model {
 
 						/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
 						$this->insertReferralUnilvlPoints($s['p_id'], $userReferrer['sponsor_id']);
+					}
+					else{
+						echo 'x';
+						/* INSERT POINTS ALLOCATED FOR INVESTMENT*/ 
+						$this->insertInvestmentPoints($order_id, $s['p_id']);
+
+						/* INSERT POINT TO SPECIAL TYPE USER SUCH ADMIN/OWNER/MANAGER/INVESTOR*/
+						$u_data = $this->db->SELECT('user_code, user_id')->WHERE('type', 'special')->GET('user_tbl')->result_array();
+
+						foreach ($u_data as $u) {
+							$this->insertNewShopPurchaseTransaction($s['p_id'], $u['user_code'], $productCode['pc_id']);
+						}
 					}
 				}
 			}
@@ -748,21 +831,22 @@ class Products_model extends CI_Model {
 
 		}
 	}
-	public function generateProductCodeShopPurchase($qty, $p_id) {
-		for($x = 0; $x < $qty; $x++){
-			$this->generateBulkProductCodeShopPurchase($p_id);
+	public function generateProductCodeShopPurchase($qty, $p_id, $activity) {
+		if (isset($this->session->user_id)) {
+			for($x = 0; $x < $qty; $x++){
+				$this->generateBulkProductCodeShopPurchase($p_id);
+			}
+
+		   	$activity_log = array(
+		   		'user_id'=>$this->session->user_id, 
+		   		'message_log'=>'Generated '.$qty.' Product Codes '.$activity, 
+		   		'ip_address'=>$this->input->ip_address(), 
+		   		'platform'=>$this->agent->platform(), 
+		   		'browser'=>$this->agent->browser(),
+		   		'created_at'=>date('Y-m-d H:i:s')
+		   	); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
 		}
-
-	   	$activity_log = array(
-	   		'user_id'=>$this->session->user_id, 
-	   		'message_log'=>'Generated '.$qty.' Product Codes - Shop Purchase', 
-	   		'ip_address'=>$this->input->ip_address(), 
-	   		'platform'=>$this->agent->platform(), 
-	   		'browser'=>$this->agent->browser(),
-	   		'created_at'=>date('Y-m-d H:i:s')
-	   	); 
-		$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
-
 	}
 	public function generateBulkProductCodeShopPurchase($p_id, $length = 15){
 		$characters = '0123456789ABCDEF';
@@ -1054,5 +1138,18 @@ class Products_model extends CI_Model {
 			->WHERE('status','active')
 			->ORDER_BY('name', 'asc')
 			->GET('product_category_tbl')->result_array();
+	}
+	public function insertInvestmentPoints($order_id, $p_id) {
+		if (isset($this->session->user_id)) {
+			$p_data = $this->db->SELECT('investment_point')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				// 'order_id'=>$order_id,
+				'p_id'=>$p_id,
+				'amount'=>$p_data['investment_point'],
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('investment_points_tbl', $dataArr);
+		}
 	}
 }

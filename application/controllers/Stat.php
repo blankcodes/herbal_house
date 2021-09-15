@@ -18,33 +18,33 @@ class Stat extends CI_Controller {
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function getTotalOrderSales(){
+    public function getTotalROI(){
         $data = array(
             'status'=>'error',
             'message'=>'Action not allowed!',
         );
         if (isset($this->session->investor)) {
-            $data = $this->stat_model->getTotalOrderSales();
+            $data = $this->stat_model->getTotalROI();
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function getMonthlySales(){
+    public function sortMonthlyROI(){
         $data = array(
             'status'=>'error',
             'message'=>'Action not allowed!',
         );
         if (isset($this->session->investor)) {
-            $data = $this->stat_model->getMonthlySales();
+            $data = $this->stat_model->sortMonthlyROI();
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
-    public function getSalesByDate(){
+    public function getROIByDate(){
         $data = array(
             'status'=>'error',
             'message'=>'Action not allowed!',
         );
         if (isset($this->session->investor)) {
-            $data = $this->stat_model->getSalesByDate();
+            $data = $this->stat_model->getROIByDate();
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
