@@ -250,9 +250,16 @@ class Ledger_model extends CI_Model {
 			$result = array();
 
 			foreach($query as $q){
+				if (substr($q['amount'], 0 , 1) == '-') {
+					$amt = '-₱ '.number_format(substr($q['amount'], 1), 2);
+				}
+				else{
+					$amt = '+₱ '.number_format($q['amount'], 2);
+				}
+
 				$array = array(
 					'activity'=>$q['activity'],
-					'amount'=>'₱ '.number_format($q['amount'], 2),
+					'amount'=>$amt,
 					'date'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);
 				array_push($result, $array);
