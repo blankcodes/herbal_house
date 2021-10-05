@@ -277,9 +277,15 @@
                         <form id="_transfer_amnt_form">
                             <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                             <div class="modal-body mb-3">
-                                <div class="alert alert-light bg-light text-dark border-0" role="alert">
+                                <div class="alert alert-success bg-success text-white border-0" role="alert">
+                                    Transfer your Indirect Referral Points to Main wallet every 15th of the month. And Transfer your Unilevel Points every end date of the month.
+                                </div>
+
+                                <div class="alert alert-success bg-success text-white border-0" role="alert">
                                     Transfer your balance from Indirect referral and Unilevel Balance to your Main Wallet.<br> Minimum of <span class="fw-500">₱ 300.00</span>
                                 </div>
+
+                                
 
                                 <div class="mt-3">
                                     <label class="fw-400">Input the amount you want to transfer. Must be a whole number!</label>

@@ -433,28 +433,9 @@ class Ledger extends CI_Controller {
             return false;
         }
 
-        $dateNow = date('d');
-        $monthNow = date('m');
-        if ($monthNow !== '02' && $wallet_type == 'unilevel_bonus') {
-           if ($dateNow !== '30' || $dateNow !== '31') {
-                $response['status'] = 'failed';
-                $response['message'] = 'You can only transfer your Unilevel Points on the 30th or 31st of the month!';
-           }
-        }
-        else if ($monthNow == '02' && $wallet_type == 'unilevel_bonus') {
-           if ($dateNow !== '28' || $dateNow !== '29') {
-                $response['status'] = 'failed';
-                $response['message'] = 'You can only transfer your Unilevel Points on the 28th or 29th of them month!';
-           }
-        }
+        
 
-        else  if ($wallet_type == 'indirect_referral' && $dateNow !== '15') {
-            $response['status'] = 'failed';
-            $response['message'] = 'You can only transfer your Indirect Referral Points on the 15th of the month!';
-        }
-       
-
-        else if(is_float($tranfer_amt)) {
+        if(is_float($tranfer_amt)) {
             $response['status'] = 'failed';
             $response['message'] = 'Amount is not a whole number!';
         }
@@ -471,24 +452,60 @@ class Ledger extends CI_Controller {
             $response['message'] = 'Request amount is greater than what you have!';
         }
         else if ($walletBalance['balance'] >= $tranfer_amt) {
-            $this->ledger_model->transferWalletBalance();
+            $dateNow = date('d');
+            $monthNow = date('m');
 
-             $activity_log = array(
-                'user_id'=>$this->session->user_id, 
-                'message_log'=>'Transfered amount of ₱'.number_format($tranfer_amt, 2).' from '.ucwords($this->input->post('wallet_type')). ' Wallet to Main Wallet',
-                'ip_address'=>$this->input->ip_address(), 
-                'platform'=>$this->agent->platform(), 
-                'browser'=>$this->agent->browser(), 
-                'created_at'=>date('Y-m-d H:i:s')
-            ); 
-            $this->member_model->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+            if ($monthNow !== '02' && $wallet_type == 'unilevel_bonus') {
+               if ($dateNow == '30' || $dateNow == '31') {
+                    $this->transferWalletBalanceConfirm($tranfer_amt, $wallet_type);
+                    $response['status'] = 'success';
+                    $reponse['message'] = 'Amount transfered successfully!';
+               }
+               else{
+                    $response['status'] = 'failed';
+                    $response['message'] = 'You can only transfer your Unilevel Points on the 30th or 31st of the month!';
+               }
+            }
 
+            else if ($monthNow == '02' && $wallet_type == 'unilevel_bonus') {
+               if ($dateNow == '28' || $dateNow == '29') {
+                    $this->transferWalletBalanceConfirm($tranfer_amt, $wallet_type);
+                    $response['status'] = 'success';
+                    $reponse['message'] = 'Amount transfered successfully!';
+               }
+               else{
+                    $response['status'] = 'failed';
+                    $response['message'] = 'You can only transfer your Unilevel Points on the 28th or 29th of the month!';
+               }
+            }
 
-            $response['status'] = 'success';
-            $reponse['message'] = 'Amount transfered successfully!';
+            else if ($wallet_type == 'indirect_referral') {
+                if ($dateNow == '15') {
+                    $this->transferWalletBalanceConfirm($tranfer_amt, $wallet_type);
+                    $response['status'] = 'success';
+                    $reponse['message'] = 'Amount transfered successfully!';
+                }
+                else{
+                    $response['status'] = 'failed';
+                    $response['message'] = 'You can only transfer your Indirect Referral Points on the 15th of the month!';
+               }
+            }
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
         }
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
 
+    }
+    public function transferWalletBalanceConfirm($tranfer_amt, $wallet_type){
+        $this->ledger_model->transferWalletBalance();
+        $activity_log = array(
+            'user_id'=>$this->session->user_id, 
+            'message_log'=>'Transfered amount of ₱'.number_format($tranfer_amt, 2).' from '.ucwords($wallet_type). ' Wallet to Main Wallet',
+            'ip_address'=>$this->input->ip_address(), 
+            'platform'=>$this->agent->platform(), 
+            'browser'=>$this->agent->browser(), 
+            'created_at'=>date('Y-m-d H:i:s')
+        ); 
+        $this->member_model->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
     }
     public function updateUserPackage() {
         $data = $this->ledger_model->updateUserPackage();        

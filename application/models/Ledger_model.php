@@ -216,14 +216,26 @@ class Ledger_model extends CI_Model {
 			$result = array();
 
 			foreach($query as $q){
+				if (substr($q['amount'], 0 , 1) == '-') {
+					$amt = '-₱ '.number_format(substr($q['amount'], 1), 2);
+				}
+				else{
+					$amt = '+₱ '.number_format($q['amount'], 2);
+				}
 				$array = array(
 					'activity'=>$q['activity'],
-					'amount'=>'₱ '.number_format($q['amount'], 2),
+					'amount'=>$amt,
 					'date'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);
 				array_push($result, $array);
 			}
 			return $result;
+		}
+	}
+	public function getWalletRecentActivityCount(){
+		if ($this->session->user_id) {
+			return $this->db->WHERE('user_code',$this->session->user_code)
+				->GET('wallet_activity_tbl')->num_rows();
 		}
 	}
 	public function getWalletRecentActivityAdmin($row_per_page, $row_no){
@@ -254,12 +266,7 @@ class Ledger_model extends CI_Model {
 				->GET('wallet_activity_tbl')->num_rows();
 		}
 	}
-	public function getWalletRecentActivityCount(){
-		if ($this->session->user_id) {
-			return $this->db->WHERE('user_code',$this->session->user_code)
-				->GET('wallet_tbl')->num_rows();
-		}
-	}
+	
 	public function requestWitdraw(){
 		if (isset($this->session->user_id)) {
 			$ref_no = $this->generateWithdrawRequestRefNo();
@@ -561,7 +568,7 @@ class Ledger_model extends CI_Model {
 				'reference_no'=> $ref_no,
 				'user_code'=> $this->session->user_code,
 				'amount'=>'-'.$this->input->post('transfer_amnt'),
-				'activity'=>'Balance deducted from '.ucwords($this->input->post('wallet_type')),
+				'activity'=>'Balance deducted from '.ucwords(str_replace('_',' ', $this->input->post('wallet_type'))),
 				'created_at'=>date('Y-m-d H:i:s'),
 			);
 			$this->db->INSERT('wallet_activity_tbl', $txDataArr);
@@ -571,7 +578,7 @@ class Ledger_model extends CI_Model {
 				'reference_no'=> $ref_no,
 				'user_code'=> $this->session->user_code,
 				'amount'=>$this->input->post('transfer_amnt'),
-				'activity'=>'Transfered amount from '.ucwords($this->input->post('wallet_type')). ' Wallet to Main Wallet',
+				'activity'=>'Transfered amount from '.ucwords(str_replace('_',' ', $this->input->post('wallet_type'))). ' Wallet to Main Wallet',
 				'created_at'=>date('Y-m-d H:i:s'),
 			);
 			$this->db->INSERT('wallet_activity_tbl', $newTxDataArr);
@@ -580,7 +587,7 @@ class Ledger_model extends CI_Model {
 			/* INSERT TRANSACTION ACTIVITY */ 
 			$txDataArr = array(
 				'reference_no'=>$ref_no,
-				'activity'=>'Transfer amount from'.ucwords($this->input->post('type')).' Wallet to Main wallet',
+				'activity'=>'Transfer amount from'.ucwords(str_replace('_',' ', $this->input->post('wallet_type'))).' Wallet to Main wallet',
 				'created_at'=>date('Y-m-d H:i:s')
 			);
 			$this->db->INSERT('transaction_tbl', $txDataArr);

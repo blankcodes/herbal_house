@@ -19,6 +19,30 @@
                             </div>
                         </div>     
                         <!-- end page title --> 
+                        <?php if (date('m') !== '02') { 
+                            if (date('d') == '30' || date('d') == '31') { ?>
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <strong>Notice: </strong> You can now transfer your Unilevel Points to your Main Wallet! Go to <a href="member/ewallet">Wallet page </a>.
+                                </div>
+                        <?php } 
+                        } 
+                        else{
+                            if (date('d') == '28' || date('d') == '29') { ?>
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <strong>Notice: </strong> You can now transfer your Unilevel Points to your Main Wallet! Go to <a href="member/ewallet">Wallet page </a>.
+                                </div>
+                            <?php }
+                        } ?>
+
+                        <?php if (date('d') == '15') { ?>
+                             <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Notice: </strong> You can now transfer your Indirect Referral Points to your Main Wallet! Go to <a href="member/ewallet">Wallet page </a>.
+                            </div>
+                        <?php } ?>
+
                         <?php if ($userData['website_invites_status'] == 'inactive'){ ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
