@@ -19,6 +19,14 @@
                         </div>     
                         <!-- end page title --> 
 
+                        <?php if ($userData['status'] == 'disabled'){ ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Notice: </strong> Your account's withdrawal has been disabled! If you think this is a mistake, kindly message us to update your status</a>.
+                            </div>
+                        <?php } ?>
+
+
                         <?php if ($userData['website_invites_status'] == 'inactive'){ ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -111,9 +119,9 @@
                             </div> <!-- end col-->
 
                             <div>
-                                <button class="btn btn-primary rounded mt-1" id="_withdraw_request_btn"><i class="uil-money-withdrawal" ></i> Withdrawal Request</button>
+                                <button class="btn btn-primary rounded mt-1 <?= ($userData['status'] == 'disabled') ? 'disabled' : '' ?>"  id="_withdraw_request_btn"><i class="uil-money-withdrawal" ></i> Withdrawal Request</button>
 
-                                 <button class="btn btn-primary rounded mt-1" id="_tranfer_bal_btn"><i class="uil-exchange-alt"></i> Transfer Balance</button>
+                                 <button class="btn btn-primary rounded mt-1 <?= ($userData['status'] == 'disabled') ? 'disabled' : '' ?>" id="_tranfer_bal_btn"><i class="uil-exchange-alt"></i> Transfer Balance</button>
                             </div>
 
                             <div class="col-lg-12">

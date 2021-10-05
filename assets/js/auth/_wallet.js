@@ -19,8 +19,13 @@ $("#_withdraw_request_btn").on('click', function() {
 		dataType: 'JSON',
 	})
 	.done(function(res) {
-		$("#_balance").text(res.data.balance);
-		$("#withdrawal_req_modal").modal('show');
+		if (res.data.status == 'allow') {
+			$("#_balance").text(res.data.balance);
+			$("#withdrawal_req_modal").modal('show');
+		}
+		else if (res.data.status == 'disabled_account') {
+			$.NotificationApp.send("Oh, Snap!","Account is currently Disabled! Withdrawal is not allowed!","top-right","rgba(0,0,0,0.2)","error");
+		}
 	})
 	.fail(function() {
 		console.log("error");
@@ -360,7 +365,11 @@ $("#_transfer_amnt_form").on('submit', function(e){
 		}
 	})
 	.done(function(res) {
-		if (res.data.status == 'success') {
+		if (res.data.status == 'disabled_account') {
+			$("#tranfer_bal_modal").modal('hide');
+			$.NotificationApp.send("Oh, Snap!","Account is currently Disabled! Withdrawal is not allowed!","top-right","rgba(0,0,0,0.2)","error");
+		}
+		else if (res.data.status == 'success') {
 			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 			$("#tranfer_bal_modal").modal('hide');
 			$('#form_input input' )

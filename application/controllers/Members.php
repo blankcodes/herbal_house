@@ -27,6 +27,14 @@ class Members extends CI_Controller {
         $data = $this->member_model->deleteUser();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
+    public function disableUser(){
+        $data = $this->member_model->disableUser();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function enableUser(){
+        $data = $this->member_model->enableUser();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
     public function resetPassword(){
         $data = $this->member_model->resetPassword();
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));

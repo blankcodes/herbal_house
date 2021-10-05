@@ -75,7 +75,9 @@ function showMemberList (page_no) {
 }
 function displayUsersList (count, result) {
 		string = '';
+		status_type = '';
 		invite_status = '';
+		func_type = '';
 		$("#_member_count").text(count)
 		for(var i in result) {
 			if (result[i].invite_status == 'active') {
@@ -83,6 +85,15 @@ function displayUsersList (count, result) {
 			}
 			else{
 				invite_status = 'danger';
+			}
+
+			if (result[i].status == 'disabled') {
+				status_type = 'Enable Withdrawal';
+				func_type = 'enableUser';
+			}
+			else{
+				status_type = 'Disable Withdrawal';
+				func_type = 'disableUser';
 			}
 			string += '<tr>'
                     +'<td class="table-user">'
@@ -120,6 +131,7 @@ function displayUsersList (count, result) {
 						        // +'<a class="dropdown-item" href="#" onclick="changePackage(\''+res.result[i].user_code+'\')">Change Package</a>'
 						        +'<a class="dropdown-item" href="#delete_user" onclick="resetPassword(\''+result[i].user_code+'\',\''+result[i].name+'\')">Reset Password</a>'
 						        // +'<a class="dropdown-item" href="#">Deactivate</a>'
+						        +'<a class="dropdown-item" href="#disabled_account" onclick="'+func_type+'(\''+result[i].user_code+'\',\''+result[i].name+'\')">'+status_type+'</a>'
 						        +'<a class="dropdown-item" href="#delete_user" onclick="deleteUser(\''+result[i].user_code+'\',\''+result[i].name+'\')">Delete</a>'
 						    +'</div>'
 						+'</div>'
@@ -298,6 +310,80 @@ function deleteUser(user_code, name){
 		})
 		$("#loader").attr('hidden','hidden');
 
+	});
+}
+function disableUser(user_code, name){
+	sweetAlert({
+		title:'Disabled User?',
+		text: "User "+name+" will not be able to request to withdraw! This cannot be undone once proceed.",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/user/_disable_user',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {user_code:user_code, name:name}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				showMemberList(1)
+			}
+			else if (res.data.status == 'failed') {
+				$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+				showMemberList(1)
+			}
+			else{
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
+	});
+}
+function enableUser(user_code, name){
+	sweetAlert({
+		title:'Activate User?',
+		text: "User "+name+" will now be able to request to withdraw! This cannot be undone once proceed.",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/user/_enable_user',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {user_code:user_code, name:name}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				showMemberList(1)
+			}
+			else if (res.data.status == 'failed') {
+				$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+				showMemberList(1)
+			}
+			else{
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
 	});
 }
 function resetPassword(user_code, name){

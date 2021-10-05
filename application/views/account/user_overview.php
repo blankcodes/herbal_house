@@ -16,6 +16,7 @@
                                     </div>
                                     <h4 class="page-title text-capitalize"><i class="uil-user-square"></i> Overview of <?=$userDataOpt['fname'].' '.$userDataOpt['lname']?> (#<?=$userDataOpt['user_code']?>)
                                         <?= ($userDataOpt['website_invites_status'] == 'inactive') ? '<span class="badge bg-danger">Inactive</span>' : '<span class="badge bg-success">Active</span>'; ?>
+                                        <?= ($userDataOpt['status'] == 'disabled') ? '<span class="badge bg-danger">Withdrawal Disabled!</span>' : ''; ?>
                                     </h4>  
                                     
                                 </div>

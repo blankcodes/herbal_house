@@ -330,6 +330,17 @@ class Ledger extends CI_Controller {
     }
     public function reviewWithdrawRequest() {
         if (isset($this->session->user_id)) {
+
+            $userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+            if ($userData['status'] == 'disabled') {
+
+                $response['status'] = 'failed';
+                $response['message'] = 'Withdrawal Request is Disabled!!!';
+
+                $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+                return false;
+            }
+            
             $amount = $this->input->get('amount');
 
             $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
@@ -362,6 +373,16 @@ class Ledger extends CI_Controller {
             $amount = $this->input->post('amount');
 
             $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
+            $userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+            if ($userData['status'] == 'disabled') {
+
+                $response['status'] = 'failed';
+                $response['message'] = 'Withdrawal Request is Disabled!!!';
+
+                $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+                return false;
+            }
+
             if(is_float($amount)) {
                 $response['status'] = 'failed';
                 $response['message'] = 'Amount is not a whole number!';
@@ -403,14 +424,47 @@ class Ledger extends CI_Controller {
     public function tranferWalletBalance() {
         $tranfer_amt = $this->input->post('transfer_amnt');
         $walletBalance = $this->ledger_model->checkWalletBalance();
+        $wallet_type = $this->input->post('wallet_type');
 
-       if(is_float($tranfer_amt)) {
+        $userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+        if ($userData['status'] == 'disabled') {
+            $response = array('status'=>'disabled_account');
+            $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$response)));
+            return false;
+        }
+
+        $dateNow = date('d');
+        $monthNow = date('m');
+        if ($monthNow !== '02' && $wallet_type == 'unilevel_bonus') {
+           if ($dateNow !== '30' || $dateNow !== '31') {
+                $response['status'] = 'failed';
+                $response['message'] = 'You can only transfer your Unilevel Points on the 30th or 31st of the month!';
+           }
+        }
+        else if ($monthNow == '02' && $wallet_type == 'unilevel_bonus') {
+           if ($dateNow !== '28' || $dateNow !== '29') {
+                $response['status'] = 'failed';
+                $response['message'] = 'You can only transfer your Unilevel Points on the 28th or 29th of them month!';
+           }
+        }
+
+        else  if ($wallet_type == 'indirect_referral' && $dateNow !== '15') {
+            $response['status'] = 'failed';
+            $response['message'] = 'You can only transfer your Indirect Referral Points on the 15th of the month!';
+        }
+       
+
+        else if(is_float($tranfer_amt)) {
             $response['status'] = 'failed';
             $response['message'] = 'Amount is not a whole number!';
         }
         else if ($walletBalance['balance'] < 300) { /* MINIMUM AMOUNT TO TRANSFER */
             $response['status'] = 'failed';
             $response['message'] = "You don't have enough balance to transfer!";
+        }
+        else if ($tranfer_amt < 300) { /* MINIMUM AMOUNT TO TRANSFER */
+            $response['status'] = 'failed';
+            $response['message'] = "Minimum amount to transfer is ₱ 300.00";
         }
         else if ($tranfer_amt > $walletBalance['balance']) {
             $response['status'] = 'failed';

@@ -120,18 +120,45 @@ class Ledger_model extends CI_Model {
 
 	public function getWalletBalance(){
 		if (isset($this->session->user_id)) {
-			$query = $this->db->SELECT('balance')
-				->WHERE('user_code',$this->session->user_code)
-				->WHERE('type','main')
-				->GET('wallet_tbl')->row_array();
-
-			$balance = '₱ '.number_format($query['balance'], 2);
-			$status = 'not_allow';
-			if ($query['balance'] >= 50) {
-				$status = 'allow';
+			$userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+			if ($userData['status'] == 'disabled') {
+				$query = $this->db->SELECT('balance')
+					->WHERE('user_code',$this->session->user_code)
+					->WHERE('type','main')
+					->GET('wallet_tbl')->row_array();
+				$balance = '₱ '.number_format($query['balance'], 2);
+				
+				return array('status'=>'disabled_account', 'balance'=>$balance,);
 			}
-			return array('balance'=>$balance,'status'=>$status);
+			else{
+				$query = $this->db->SELECT('balance')
+					->WHERE('user_code',$this->session->user_code)
+					->WHERE('type','main')
+					->GET('wallet_tbl')->row_array();
+
+				$balance = '₱ '.number_format($query['balance'], 2);
+				$status = 'not_allow';
+				if ($query['balance'] >= 50) {
+					$status = 'allow';
+				}
+				return array('balance'=>$balance,'status'=>$status);
+			}
+			
 		}
+
+		// if (isset($this->session->user_id)) {
+		// 	$query = $this->db->SELECT('balance')
+		// 		->WHERE('user_code',$this->session->user_code)
+		// 		->WHERE('type','main')
+		// 		->GET('wallet_tbl')->row_array();
+
+		// 	$balance = '₱ '.number_format($query['balance'], 2);
+		// 	$status = 'not_allow';
+		// 	if ($query['balance'] >= 50) {
+		// 		$status = 'allow';
+		// 	}
+		// 	return array('balance'=>$balance,'status'=>$status);
+		// }
 	}
 	public function getIndirectWalletBalance(){
 		if (isset($this->session->user_id)) {

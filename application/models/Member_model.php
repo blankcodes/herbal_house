@@ -56,7 +56,61 @@ class Member_model extends CI_Model {
 			return $response;
     	}
     }
+    public function disableUser() {
+    	if (isset($this->session->admin) ) {
+    		$user_code = $this->input->post('user_code');
+    		$userData = $this->db->SELECT('user_type, user_code')->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
 
+    		if ($userData['user_type'] == 'admin') {
+    			$response['failed'] = 'failed';
+				$response['message'] = 'You cannot Disable an Admin User!';	
+    		}
+    		else if ($userData['user_code'] == '1000013792101') { /* main default user as Herbal House*/
+    			$response['failed'] = 'failed';
+				$response['message'] = 'You cannot Disable this User!';	
+    		}
+    		else{
+    			$dataArr = array('status'=>'disabled');
+    			$this->db->WHERE('user_code', $user_code)->UPDATE('user_tbl', $dataArr);
+
+	    		$activity_log = array(
+	    			'user_id'=>$this->session->user_id, 
+	    			'message_log'=>'Disabled user account User ID:'.$user_code.' User:'.$this->input->post('name'),
+	    			'ip_address'=>$this->input->ip_address(), 
+	    			'platform'=>$this->agent->platform(), 
+	    			'browser'=>$this->agent->browser(),
+	    			'created_at'=>date('Y-m-d H:i:s')
+	    		); 
+				$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+				$response['status'] = 'success';
+				$response['message'] = 'User '.$this->input->post('name').' Successfully Disabled!';	
+    		}
+			return $response;
+    	}
+    }
+	public function enableUser() {
+    	if (isset($this->session->admin) ) {
+    		$user_code = $this->input->post('user_code');
+    		
+    		$dataArr = array('status'=>'active');
+    		$this->db->WHERE('user_code', $user_code)->UPDATE('user_tbl', $dataArr);
+
+	    	$activity_log = array(
+	    		'user_id'=>$this->session->user_id, 
+	    		'message_log'=>'Change status to "Active" user account User ID:'.$user_code.' User:'.$this->input->post('name'),
+	    		'ip_address'=>$this->input->ip_address(), 
+	   			'platform'=>$this->agent->platform(), 
+	   			'browser'=>$this->agent->browser(),
+	   			'created_at'=>date('Y-m-d H:i:s')
+	    	); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+			$response['status'] = 'success';
+			$response['message'] = 'User '.$this->input->post('name').' Successfully Activated!';	
+			return $response;
+    	}
+    }
     public function resetPassword() {
     	if (isset($this->session->admin) ) {
     		$user_code = $this->input->post('user_code');
@@ -569,7 +623,7 @@ class Member_model extends CI_Model {
     }
     public function getAllMemberList ($row_per_page, $row_no) {
     	if ($this->session->user_type == 'admin') {
-    		$query = $this->db->SELECT('user_id, user_code, username, fname, lname, mobile_number, user_type, registration_type, website_invites_status, sponsor_id, created_at')
+    		$query = $this->db->SELECT('user_id, user_code, username, fname, lname, mobile_number, user_type, status, registration_type, website_invites_status, sponsor_id, created_at')
 	    		->FROM('user_tbl')
 				->ORDER_BY('created_at', 'DESC')
 				->LIMIT($row_per_page, $row_no)
@@ -588,6 +642,7 @@ class Member_model extends CI_Model {
 					'mobile_number'=>$q['mobile_number'],
 					'user_type'=>$q['user_type'],
 					'invite_status'=>$q['website_invites_status'],
+					'status'=>$q['status'],
 					'registration_type'=>$q['registration_type'],
 					'sponsor'=>($q['registration_type'] == 'website_invites') ? $sponsor['username'] : '',
 					'sponsor_id'=>($q['registration_type'] == 'website_invites') ? $sponsor['user_code'] : '',
@@ -601,7 +656,7 @@ class Member_model extends CI_Model {
     public function getSearchedUser($row_per_page, $row_no) {
     	if ($this->session->user_type == 'admin') {
     		$keyword = $this->input->get('query');
-    		$query = $this->db->SELECT('user_id, user_code, username, fname, lname, mobile_number, user_type, registration_type, website_invites_status, sponsor_id, created_at')
+    		$query = $this->db->SELECT('user_id, user_code, username, fname, lname, mobile_number, user_type, status, registration_type, website_invites_status, sponsor_id, created_at')
 				->ORDER_BY('created_at', 'DESC')
 				->LIKE('user_code', $keyword)
 				->OR_LIKE('username', $keyword)
@@ -625,6 +680,7 @@ class Member_model extends CI_Model {
 					'mobile_number'=>$q['mobile_number'],
 					'user_type'=>$q['user_type'],
 					'invite_status'=>$q['website_invites_status'],
+					'status'=>$q['status'],
 					'sponsor'=>($q['registration_type'] == 'website_invites') ? $sponsor['username'] : '',
 					'sponsor_id'=>($q['registration_type'] == 'website_invites') ? $sponsor['user_code'] : '',
 					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
