@@ -14,7 +14,7 @@
                                             <li class="breadcrumb-item"><a href="javascript: void(0);">Dashboard</a></li>
                                         </ol>
                                     </div>
-                                    <h4 class="page-title">Dashboard</h4> <?= date('m, d') ?>
+                                    <h4 class="page-title">Dashboard</h4>
                                 </div>
                             </div>
                         </div>     
