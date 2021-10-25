@@ -223,7 +223,7 @@ class Ledger_model extends CI_Model {
 					$amt = '+₱ '.number_format($q['amount'], 2);
 				}
 				$array = array(
-					'activity'=>$q['activity'],
+					'activity'=>str_replace('_',' ', $q['activity']),
 					'amount'=>$amt,
 					'date'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);
@@ -258,7 +258,7 @@ class Ledger_model extends CI_Model {
 				}
 
 				$array = array(
-					'activity'=>$q['activity'],
+					'activity'=>str_replace('_',' ', $q['activity']),
 					'amount'=>$amt,
 					'date'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);

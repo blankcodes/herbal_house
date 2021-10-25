@@ -99,7 +99,7 @@ $("#_send_multiple_codes_btn").on('click', function(){
 	}
 
 	if (!package || package == '') {
-		$.NotificationApp.send("Oh, snap!","Please choose a product!","top-right","rgba(0,0,0,0.2)","error");
+		$.NotificationApp.send("Oh, snap!","Please choose a Package!","top-right","rgba(0,0,0,0.2)","error");
 		return false;
 	}
 

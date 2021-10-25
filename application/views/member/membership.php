@@ -143,9 +143,9 @@
                                                     <div class="col-lg-8">
                                                         <h3 class="mb-3 text-start">Youtube Video</h3>
                                                         <label>Youtube Link</label>
-                                                        <input type="text" value="https://youtu.be/NniUoSJqiMY" class="mb-2 form-control">
+                                                        <input type="text" value="https://youtu.be/QQYOp95Qr84" class="mb-2 form-control">
                                                         <div class="ratio ratio-4x3 ">
-                                                            <iframe src="https://www.youtube.com/embed/NniUoSJqiMY?autohide=0&showinfo=0&controls=0" class="br-10 abt-img-shadow"></iframe>
+                                                            <iframe src="https://www.youtube.com/embed/QQYOp95Qr84?autohide=0&showinfo=0&controls=0" class="br-10 abt-img-shadow"></iframe>
                                                         </div>
                                                     </div>
 

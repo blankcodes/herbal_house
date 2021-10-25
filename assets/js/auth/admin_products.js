@@ -1,7 +1,6 @@
 var base_url;
 var page;
 
-
 if (page == 'admin_products') {
 	showProducts(1);
 }
@@ -14,6 +13,12 @@ else if (page == 'product_code_list') {
 else if (page == 'admin_walkin_buyers') {
 	showWalkinTx(1);
 }
+else if(page == 'stockist_admin'){
+	showStockistList(1);
+}
+$("#_add_stocks_btn").on('click', function() {
+	getProductList();	
+})
 $("#refresh_prodct_tbl").on('click', function() {
 	showProducts(1);	
 })
@@ -32,6 +37,11 @@ $('#product_pagination').on('click','a',function(e){
     e.preventDefault(); 
     var page_no = $(this).attr('data-ci-pagination-page');
     showProducts(page_no);
+});
+$('#_walkin_tx_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    showWalkinTx(page_no);
 });
 $('#product_category_pagination').on('click','a',function(e){
     e.preventDefault(); 
@@ -720,6 +730,37 @@ $("#search_code_name_form").on('submit', function(e) {
 		$("#_member_search").html(string);
 	})
 });
+$("#_search_stockist_name_form").on('submit', function(e) {
+	e.preventDefault();
+	keyword = $("#search_stockist_name").val();
+
+	if (!keyword || keyword == '' || keyword == ' ') {
+		return false;
+	}
+	$.ajax({
+		url: base_url+'api/v1/stockist/_search_user',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {keyword:keyword}
+	})
+	.done(function(res) {
+		string = '';
+		if (res.data.status == 'success') {
+			for(var i in res.data.search){
+				string+='<a href="#" onclick="searchUserCode(\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
+			}
+		}
+		else if(res.data.status == 'no_record'){
+			string = '<span class="margin-left-10">'+res.data.message+'</span>'
+		}
+		$("#search_user_dropdown").show()
+		$("#_member_search").html(string);
+	})
+	.fail(function() {
+		string = '<span class="margin-left-10">No records found!</span>'
+		$("#_member_search").html(string);
+	})
+});
 function searchUserCode(search_user_code, name){
 	$("#search_code_name").val('');
 	$("#_user_name").val(name);
@@ -741,6 +782,7 @@ function getProductList(){
 			}
 			$("#_select_product").html(string)
 			$("#generate_code_modal").modal('show');
+			$("#_add_stocks_modal").modal('show');
 		}
 		else{
 			$.NotificationApp.send("Oh, Snap!","Kindly add Product first","top-right","rgba(0,0,0,0.2)","error");
@@ -750,6 +792,60 @@ function getProductList(){
 		console.log("error");
 	})
 }
+$("#_add_multi_product").on('click', function(){
+
+	p_id = $("#_select_product").val(); /* user code, the receiver*/
+	qty = $("#qty").val();
+	_user_code = $("#_user_code").val();
+
+	if (!p_id || p_id == '') {
+		$.NotificationApp.send("Oh, snap!","Please choose a product!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	else if (!qty || qty == '' || qty == 0) {
+		$.NotificationApp.send("Oh, snap!","Quantity is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	else if (!_user_code || _user_code == '') {
+		$.NotificationApp.send("Oh, snap!","Stockist is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	$("#loader").removeAttr('hidden');
+	$.ajax({
+		url: base_url+'api/v1/stockist/_get_product_details',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {p_id:p_id, qty:qty, user_code:_user_code},
+	})
+	.done(function(res) {
+		data = '';
+		$("#_products_tbl").html('');
+		for(var i in res.data) {
+			if (res.data.length > 0) {
+				data +='<tr>'
+                    +'<td>'+res.data[i].name+'</td>'
+                    +'<td>'+res.data[i].qty+'</td>'
+       			+'</tr>'
+			}
+			else{
+				data = '<tr class="text-center"><td colspan="2">List is empty!</td></tr>';
+			}
+			$('#_products_tbl').html(data);
+		}
+
+		showStockistList(1);
+		// string ='<tr>'
+  //               +'<td><input type="text" class="form-control disabled" value="'+res.data.name+'" name="product_name[]" readonly></td>'
+  //              +'<td><input type="text" class="form-control disabled" value="'+qty+'" name="product_qty[]" readonly></td>'
+  //      		+'</tr>';
+		// $("#_products_tbl").html(string)
+		$("#loader").attr('hidden', 'hidden');
+	})
+	.fail(function() {
+		console.log("error");
+	})
+})
 $("#_send_product_code_btn").on('click', function(){
 	user_code = $("#_user_code").val(); /* user code, the receiver*/
 	qty = $("#qty").val(); /* user code, the receiver*/
@@ -797,7 +893,7 @@ function showWalkinTx(page_no){
 		data: {page_no:page_no}
 	})
 	.done(function(res) {
-		$('#product_code_pagination').html(res.pagination);
+		$('#_walkin_tx_pagination').html(res.pagination);
 		string = '';
 		bg_stat = 'info';
 
@@ -891,3 +987,58 @@ $("#_update_product_cat_form").on('submit', function(e) {
 		$("#update_product_cat_btn").removeAttr('disabled').text('Update Product');
 	})
 })
+function showStockistList(page_no){
+	$("#_stockist_tbl").html('<tr class="text-center"><td colspan="6">Loading data...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/stockist/_get_list', 
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$('#_stockist_pagination').html(res.pagination);
+		string = '';
+		stocks = '';
+
+		for(var i in res.result) {
+			if (res.result[i].stocks == null) {
+				stocks = 0;
+			}
+			else{
+				stocks = res.result[i].stocks;
+			}
+			if (parseInt(res.count) > 0) {
+				string +='<tr>'
+                 	+'<td>'
+	                    +'<div class="form-check">'
+	                        +'<input type="checkbox" class="form-check-input" id="customCheck2">'
+	                        +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
+	                    +'</div>'
+                    +'</td>'
+                    +'<td>'+res.result[i].name+'</td>'
+                    +'<td>'+res.result[i].user_code+'</td>'
+                    +'<td>'+res.result[i].sold+'</td>'
+                    +'<td>'+res.result[i].total_sales+'</td>'
+                    +'<td>'+stocks+'</td>'
+                    +'<td>'
+                        +'<div class="dropdown">'
+						    +'<button class="btn btn-light btn-sm dropdown-toggle font-12" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'
+						        +'Action'
+						    +'</button>'
+						    +'<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
+						        +'<a class="dropdown-item" href="#" onclick="">View Statistics</a>'
+						    +'</div>'
+						+'</div>'
+                    +'</td>'
+       			+'</tr>'
+			}
+			else{
+				string = '<tr class="text-center"><td colspan="6">No records found!</td></tr>';
+			}
+			$('#_stockist_tbl').html(string);
+		}
+	})
+	.fail(function() {
+		$("#_stockist_tbl").html('<tr class="text-center"><td colspan="6">No records found!</td></tr>');
+	})
+}

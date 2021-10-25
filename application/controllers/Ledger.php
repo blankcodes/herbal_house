@@ -332,6 +332,9 @@ class Ledger extends CI_Controller {
         if (isset($this->session->user_id)) {
 
             $userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
+            $amount = $this->input->get('amount');
+            $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
+            
             if ($userData['status'] == 'disabled') {
 
                 $response['status'] = 'failed';
@@ -341,10 +344,8 @@ class Ledger extends CI_Controller {
                 return false;
             }
             
-            $amount = $this->input->get('amount');
-
-            $check = $this->db->WHERE('user_code', $this->session->user_code)->WHERE('type','main')->GET('wallet_tbl')->row_array();
-            if(is_float($amount)) {
+            
+            else if(is_float($amount)) {
                 $response['status'] = 'failed';
                 $response['message'] = 'Amount is not a whole number!';
             }

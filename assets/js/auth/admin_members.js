@@ -78,6 +78,8 @@ function displayUsersList (count, result) {
 		status_type = '';
 		invite_status = '';
 		func_type = '';
+		stockist_func = '';
+		stockist_label = '';
 		$("#_member_count").text(count)
 		for(var i in result) {
 			if (result[i].invite_status == 'active') {
@@ -95,6 +97,16 @@ function displayUsersList (count, result) {
 				status_type = 'Disable Withdrawal';
 				func_type = 'disableUser';
 			}
+
+			if (result[i].type == 'stockist') {
+				stockist_func = 'removeStockist';
+				stockist_label = 'Remove as a Stockist';
+			}
+			else{
+				stockist_func = 'makeStockist';
+				stockist_label = 'Make A Stockist';
+			}
+			
 			string += '<tr>'
                     +'<td class="table-user">'
                         +'<a href="javascript:void(0);" class="text-body"">'+result[i].user_code+'</a>'
@@ -130,7 +142,7 @@ function displayUsersList (count, result) {
 						        // +'<a class="dropdown-item" href="#">Edit</a>'
 						        // +'<a class="dropdown-item" href="#" onclick="changePackage(\''+res.result[i].user_code+'\')">Change Package</a>'
 						        +'<a class="dropdown-item" href="#delete_user" onclick="resetPassword(\''+result[i].user_code+'\',\''+result[i].name+'\')">Reset Password</a>'
-						        // +'<a class="dropdown-item" href="#">Deactivate</a>'
+						        +'<a class="dropdown-item" href="#stockist" onclick="'+stockist_func+'(\''+result[i].user_code+'\',\''+result[i].name+'\')">'+stockist_label+'</a>'
 						        +'<a class="dropdown-item" href="#disabled_account" onclick="'+func_type+'(\''+result[i].user_code+'\',\''+result[i].name+'\')">'+status_type+'</a>'
 						        +'<a class="dropdown-item" href="#delete_user" onclick="deleteUser(\''+result[i].user_code+'\',\''+result[i].name+'\')">Delete</a>'
 						    +'</div>'
@@ -634,4 +646,76 @@ function getPackageList() {
 	.fail(function() {
 		console.log("error");
 	})
+}
+function makeStockist(user_code, name){
+	sweetAlert({
+		title:'New Stockist?',
+		text: "This make "+name+" as a Stockist and will be able to access special features of a stockist! ",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/user/_new_stockist',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {user_code:user_code, name:name}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				showMemberList(1)
+			}
+			else if (res.data.status == 'failed') {
+				$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+				showMemberList(1)
+			}
+			
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
+
+	});
+}
+function removeStockist(user_code, name){
+	sweetAlert({
+		title:'Remove Stockist?',
+		text: "This will remove "+name+" as a Stockist. ",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/user/_remove_stockist',
+			type: 'POST',
+			dataType: 'JSON',
+			data: {user_code:user_code, name:name}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				showMemberList(1)
+			}
+			else if (res.data.status == 'failed') {
+				$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+				showMemberList(1)
+			}
+			
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
+
+	});
 }

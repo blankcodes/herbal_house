@@ -1,3 +1,5 @@
+var user_code;
+
 if (page == 'member_code_list') {
 	showMemberCodes(1, user_code)
 	showAvailCodeCredit();
@@ -17,6 +19,34 @@ else if (page == 'my_orders') {
 else if (page == 'customer_orders') {
 	showAllOrders(1)
 }
+else if (page == 'stockist') {
+	productsAvail(1)
+	stockistTransactionHistory(1)
+}
+$("#_non_member_buyer_btn").on('click', function() {
+	$("#_non_member_buyer").removeAttr('hidden');
+	$("#_choose_btn_wrapper").attr('hidden','hidden');
+	$("#_user_member").attr('hidden','hidden');
+	$("#_type").val('non_member_purchase');
+	$("#_process_purchase_stockist_non_member_btn").removeAttr('hidden','hidden');
+	$("#_process_purchase_stockist_btn").attr('hidden','hidden');
+})
+$("#_member_buyer_btn").on('click', function() {
+	$("#_type").val('member_purchase');
+	$("#_user_member").removeAttr('hidden');
+	$("#_choose_btn_wrapper").attr('hidden','hidden');
+	$("#_non_member_buyer").attr('hidden','hidden');
+	$("#_process_purchase_stockist_non_member_btn").attr('hidden','hidden');
+	$("#_process_purchase_stockist_btn").removeAttr('hidden','hidden');
+})
+$("#_process_purchase_btn").on('click', function() {
+	$("#_user_member").attr('hidden','hidden');
+	$("#_non_member_buyer").attr('hidden','hidden');
+	$("#_choose_btn_wrapper").removeAttr('hidden','hidden');
+
+	getStockistProductList();
+	$("#_process_purchase_modal").modal('toggle');
+})
 $("#show_password").on('click', function() {
 	$("#_account_password_form input[type=password]").attr('type','text');
 	$(this).attr('hidden','hidden');
@@ -27,11 +57,20 @@ $("#hide_password").on('click', function() {
 	$(this).attr('hidden','hidden');
 	$("#show_password").removeAttr('hidden');
 })
-
+$('#_tx_tbl_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    stockistTransactionHistory(page_no);
+})
 $('#_avail_code_pagination').on('click','a',function(e){
     e.preventDefault(); 
     var page_no = $(this).attr('data-ci-pagination-page');
     showMemberCodes(page_no, user_code);
+});
+$('#_products_tbl_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    productsAvail(page_no, user_code);
 });
 $('#my_order_pagination').on('click','a',function(e){
     e.preventDefault(); 
@@ -858,5 +897,283 @@ function updateOrderStatusModal(reference_no, order_id){
  	})
 	.fail(function() {
 	    console.log("error");
+	})
+}
+function getProductList(){
+	$.ajax({
+		url: base_url+'api/v1/product/_get_list',
+		type: 'GET',
+		dataType: 'JSOn',
+	})
+	.done(function(res) {
+		string = '<option disabled="" selected="">Select Product</option>';
+		if (res.data.length > 0) {
+			for(var i in res.data) {
+				string += '<option value="'+res.data[i].p_id+'">'+res.data[i].name+'</option>'
+			}
+			$("#_select_product").html(string)
+			$("#_select_product2").html(string)
+			$("#generate_code_modal").modal('show');
+		}
+		else{
+			$.NotificationApp.send("Oh, Snap!","Kindly add Product first","top-right","rgba(0,0,0,0.2)","error");
+		}
+	})
+	.fail(function() {
+		console.log("error");
+	})
+}
+
+function getStockistProductList(){
+	$.ajax({
+		url: base_url+'api/v1/stockist/_get_product_list',
+		type: 'GET',
+		dataType: 'JSOn',
+	})
+	.done(function(res) {
+		string = '<option disabled="" selected="">Select Product</option>';
+		if (res.data.length > 0) {
+			for(var i in res.data) {
+				string += '<option value="'+res.data[i].p_id+'">'+res.data[i].name+'</option>'
+			}
+			$("#_select_product").html(string)
+			$("#__select_product2").html(string)
+			$("#generate_code_modal").modal('show');
+		}
+		else{
+			$.NotificationApp.send("Oh, Snap!","Kindly add Product first","top-right","rgba(0,0,0,0.2)","error");
+		}
+	})
+	.fail(function() {
+		console.log("error");
+	})
+}
+function productsAvail(page_no){
+	$("#_products_tbl").html('<tr class="text-center"><td colspan="4">Getting Products...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/stockist/_get_products',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$("#_products_tbl_pagination").html(res.pagination)
+		string = '';
+		if (parseInt(res.count) > 0) {
+			products = res.result.products;
+			$("#_available_stocks").text(res.result.total_qty);
+			$("#_sold_products").text(res.result.sold_products);
+			$("#_sales").text(res.result.total_sales);
+			for(var i in products) {
+				status = products[i].status;
+				payment_status = products[i].payment_status;
+				string +='<tr>'
+                        +'<td><a target="_blank" href="'+products[i].url+'" class="text-body fw-bold cursor-pointer">'+products[i].name+'</a> </td>'
+                        +'<td><a target="_blank" href="'+products[i].category_url+'" class="text-body fw-bold cursor-pointer">'+products[i].category+'</a> </td>'
+                        +'<td>'+products[i].srp_price+'</td>'
+                        +'<td>'+products[i].qty+'</small></td>'
+                    +'</tr>'
+			}
+		}
+		else{
+			string = '<tr class="text-center"><td colspan="4">No Products Found!</td></tr>'
+		}
+		$('#_products_tbl').html(string)
+	})
+	.fail(function() {
+		$("#_products_tbl").html('<tr class="text-center"><td colspan="4">No Products Found!</td></tr>');
+	})
+}
+$("#_search_user_form").on('submit', function(e) {
+	e.preventDefault();
+	keyword = $("#search_code_name").val();
+
+	if (!keyword || keyword == '' || keyword == ' ') {
+		return false;
+	}
+	$.ajax({
+		url: base_url+'api/v1/users/_search_members',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {keyword:keyword}
+	})
+	.done(function(res) {
+		string = '';
+		if (res.data.status == 'success') {
+			for(var i in res.data.search){
+				string+='<a href="#" onclick="searchUserCode(\''+user_code+'\',\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
+			}
+		}
+		else if(res.data.status == 'no_record'){
+			string = '<span class="margin-left-10">'+res.data.message+'</span>'
+		}
+		$("#search_user_dropdown").show()
+		$("#_member_search").html(string);
+	})
+	.fail(function() {
+		string = '<span class="margin-left-10">No records found!</span>'
+		$("#_member_search").html(string);
+	})
+});
+$("#_process_purchase_stockist_btn").on('click',function() {
+
+	_user_code = $("#_user_code").val();
+	_select_product = $("#_select_product").val();
+	_qty = $("#_qty").val();
+	type = $("#_type").val();
+
+	if (!_qty || _qty == '' || _qty == 0 || _qty < 0) {
+		$.NotificationApp.send("Oh Snap!","Quantity is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	if (_user_code == '' || !_user_code){
+		$.NotificationApp.send("Oh Snap!","User is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	if (_select_product == '' || !_select_product){
+		$.NotificationApp.send("Oh Snap!","Product is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	sweetAlert({
+		title:'Confirm Purchase?',
+		text: "Click Proceed if you want to proceed this purchase!",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden');
+		$.ajax({
+	    	url: base_url+'api/v1/stockist/_cofirm_purchase',
+	    	type: 'POST',
+	    	dataType: 'JSON',
+	    	data: {user_code:_user_code, product:_select_product, qty:_qty, type:type},
+	    	statusCode: {
+				403: function() {
+					$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+				}
+			}
+	    })
+	    .done(function(res) {
+	    	if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				$("#_user_name").val('');
+				$("#_user_code").val('');
+				$("#_select_product").val('');
+				$("#qty").val('');
+				$("#_process_purchase_modal").modal('hide')
+				productsAvail(1);
+				stockistTransactionHistory(1)
+	    	}
+	    	else if (res.data.status == 'failed'){
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+	    	}
+	    	$("#loader").attr('hidden','hidden');
+	    })
+	    .fail(function() {
+	    	console.log("error");
+	    })
+	});
+})
+$("#_process_purchase_stockist_non_member_btn").on('click',function() {
+
+	_select_product = $("#__select_product2").val();
+	_qty = $("#__qty").val();
+	_type = $("#_type").val();
+
+	if (!_qty || _qty == '' || _qty == 0 || _qty < 0) {
+		$.NotificationApp.send("Oh Snap!","Quantity is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	if (_select_product == '' || !_select_product){
+		$.NotificationApp.send("Oh Snap!","Product is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	sweetAlert({
+		title:'Confirm Purchase?',
+		text: "Click Proceed if you want to proceed this purchase!",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden');
+		$.ajax({
+	    	url: base_url+'api/v1/stockist/_cofirm_purchase',
+	    	type: 'POST',
+	    	dataType: 'JSON',
+	    	data: {product:_select_product, qty:_qty, type:_type},
+	    	statusCode: {
+				403: function() {
+					$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+				}
+			}
+	    })
+	    .done(function(res) {
+	    	if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				$("#_user_name").val('');
+				$("#_user_code").val('');
+				$("#_select_product").val('');
+				$("#qty").val('');
+				productsAvail(1);
+				stockistTransactionHistory(1);
+				$("#_process_purchase_modal").modal('hide');
+	    	}
+	    	else if (res.data.status == 'failed'){
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+	    	}
+	    	$("#loader").attr('hidden','hidden');
+	    })
+	    .fail(function() {
+	    	console.log("error");
+	    })
+	});
+})
+function stockistTransactionHistory(page_no){
+	$("#_tx_tbl").html('<tr class="text-center"><td colspan="5">Getting transaction list...</td></tr>');
+	$.ajax({
+		url: base_url+'api/v1/stockist/_get_tx_history',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no}
+	})
+	.done(function(res) {
+		$("#_tx_tbl_pagination").html(res.pagination)
+		string = '';
+		_user_code = '';
+		if (parseInt(res.count) > 0) {
+			for(var i in res.result) {
+				if (res.result[i].user_code == '') {
+					_user_code = 'Non-Member'
+				}
+				else {
+					_user_code = res.result[i].user_code;
+				}
+				string +='<tr>'
+                        +'<td>#'+res.result[i].reference_id+'</a> </td>'
+                        +'<td>'+_user_code+'</td>'
+                        +'<td><a target="_blank" href="'+res.result[i].url+'" class="text-body fw-bold cursor-pointer">'+res.result[i].name+'</a> </td>'
+                       
+                        +'<td><span class="badge bg-success text-capitalize">'+res.result[i].status+'</span></td>'
+                        +'<td>'+res.result[i].created_at+'</small></td>'
+                    +'</tr>'
+			}
+		}
+		else{
+			string = '<tr class="text-center"><td colspan="5">No Records Found!</td></tr>'
+		}
+		$('#_tx_tbl').html(string)
+	})
+	.fail(function() {
+		$("#_tx_tbl").html('<tr class="text-center"><td colspan="5">No Records Found!</td></tr>');
 	})
 }

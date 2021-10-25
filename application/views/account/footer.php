@@ -59,6 +59,7 @@
         <?php }else if($page == 'admin_ledger') { ?><script src="<?=base_url()?>assets/js/auth/admin_ledger.js"></script>
         <?php }else if($page == 'admin_walkin_buyers') { ?><script src="<?=base_url()?>assets/js/auth/admin_products.js"></script>
         <?php }else if($page == 'dashboard') { ?><script src="<?=base_url()?>assets/js/jquery.cookie.js"></script>
+        <?php }else if($page == 'stockist_admin') { ?><script src="<?=base_url()?>assets/js/auth/admin_products.js"></script>
     <?php } ?>
     <script src="<?=base_url()?>assets/js/auth/my_account.js"></script>
         

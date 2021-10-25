@@ -2086,3 +2086,8 @@ body{
 .mt--28{
   margin-top: -28px;
 }
+#_products_tbl .disabled {
+    background-color: transparent;
+    opacity: 1;
+    border: none;
+}

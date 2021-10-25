@@ -62,9 +62,12 @@
                             <div class="collapse" id="sidebarEcommerce">
                                 <ul class="side-nav-second-level">
                                     <li>
+                                        <a href="<?=base_url('ecom/stockist')?>">Stockist</a>
+                                    </li>
+                                    <li>
                                         <a href="<?=base_url('ecom/walkin-buyers')?>">Walk-in Buyers</a>
                                     </li>
-                                   <li>
+                                    <li>
                                         <a href="<?=base_url('ecom/orders')?>">Orders</a>
                                     </li>
                                     <li>
@@ -121,7 +124,15 @@
                        
                         
                         <?php } else if ($this->session->user_type == 'member'){ ?>
+                        <?php if ($userData['type'] == 'stockist'){ ?>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url('member/stockist')?>" class="side-nav-link">
+                                <i class="uil-archive"></i>
+                                <span> Stockist Account</span>
+                            </a>
+                        </li>
 
+                        <?php } ?>
                         <li class="side-nav-item">
                             <a data-bs-toggle="collapse" href="#sidebarEcommerce" aria-expanded="false" aria-controls="sidebarEcommerce" class="side-nav-link">
                                 <i class="uil-store"></i>

@@ -1004,6 +1004,7 @@ class Products_model extends CI_Model {
 
 		}
 	}
+
 	public function generateProductPurchaseRefNo($ref_id, $length = 6){
 		$characters = '0123456789ABCDEF';
 	    $charactersLength = strlen($characters);
@@ -1151,5 +1152,279 @@ class Products_model extends CI_Model {
 			);
 			$this->db->INSERT('investment_points_tbl', $dataArr);
 		}
+	}
+	public function getProductData(){
+		if (isset($this->session->admin)) {
+			$user_code = $this->input->get('user_code');
+			$p_id = $this->input->get('p_id');
+			$qty = $this->input->get('qty');
+			$check = $this->db->WHERE('user_code', $user_code)->WHERE('p_id', $p_id)->GET('stockist_stocks_tbl')->row_array();
+
+			if ($check > 0) {
+				$total_qty = $check['qty'] + $this->input->get('qty');
+				$dataArr = array(
+					'p_id'=>$p_id,
+					'qty'=>$total_qty,
+				);
+				$this->db->WHERE('p_id', $p_id)->UPDATE('stockist_stocks_tbl', $dataArr);
+			}
+			else{
+				$dataArr = array(
+					'p_id'=>$p_id,
+					'qty'=>$this->input->get('qty'),
+					'user_code'=>$user_code,
+				);
+				$this->db->INSERT('stockist_stocks_tbl', $dataArr);
+			}
+
+			$query = $this->db->SELECT('pt.name, sst.p_id, sst.qty')
+				->FROM('stockist_stocks_tbl as sst')
+				->JOIN('products_tbl as pt', 'pt.p_id=sst.p_id')
+				->WHERE('user_code', $this->input->get('user_code'))
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'p_id'=>$q['qty'],
+					'name'=> ( strlen($q['name']) > 30 ) ? substr($q['name'], 0, 27).'...' : $q['name'],
+					'qty'=>$q['qty']
+				);
+				array_push($result, $array);
+			}
+			return $result;
+		}
+	}
+	public function getStockistProducts($row_per_page, $row_no){
+		if (isset($this->session->user_id)) {
+			$total_qty = 0;
+    		$query = $this->db->SELECT('pt.p_id, pt.name, pt.url, pt.srp_price, pct.name as category, pct.category_url, sst.qty')
+	    		->FROM('stockist_stocks_tbl as sst')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=sst.p_id')
+	    		->JOIN('product_category_tbl as pct', 'pct.pc_id=pt.pc_id')
+	    		->WHERE('sst.user_code', $this->session->user_code)
+				->ORDER_BY('sst.qty', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			$sold_prod = $this->db->WHERE('stockist_user_code', $this->session->user_code)
+				->WHERE('status','complete')->GET('stockist_transactions_tbl')->num_rows();
+
+			$total_sales = $this->db->SELECT('SUM(pt.srp_price) as sales')
+				->FROM('stockist_transactions_tbl as stt')
+				->JOIN('products_tbl as pt', 'pt.p_id = stt.p_id')
+				->WHERE('stt.stockist_user_code', $this->session->user_code)
+				->WHERE('stt.status','complete')->GET()->row_array();
+
+			foreach($query as $q){
+				$qty = $q['qty'];
+				$total_qty += $qty;
+				$array = array(
+					'p_id'=>$q['p_id'],
+					'name'=> ( strlen($q['name']) > 28 ) ? substr($q['name'], 0, 25).'...' : $q['name'],
+					'url'=>base_url('product/').$q['url'],
+					'category'=>$q['category'],
+					'category_url'=>base_url('product/category/').$q['category_url'],
+					'srp_price'=>'₱ '. number_format($q['srp_price'], 2),
+					'qty'=>$q['qty'],
+				);
+				array_push($result, $array);
+			}
+
+			$data['products'] = $result;
+			$data['total_qty'] = $total_qty;
+			$data['sold_products'] = $sold_prod;
+			$data['total_sales'] = '₱ '. number_format($total_sales['sales'], 2);
+			return $data;
+    	}
+	}
+	public function getStockistProductsCount(){
+		if (isset($this->session->user_id)) {
+    		$query = $this->db->FROM('stockist_stocks_tbl')
+	    		->WHERE('user_code', $this->session->user_code)
+				->GET()->num_rows();
+			return $query;
+    	}
+	}
+	public function confirmStockistPurchase() {
+		if (isset($this->session->user_id) && $this->session->type == 'stockist') {
+			$type = $this->input->post('type');
+			if ($type == 'member_purchase') {
+				$user_code = $this->input->post('user_code');
+				$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
+			}
+			else{
+			}
+
+			$qty = $this->input->post('qty');
+			$p_id = $this->input->post('product');
+
+			/* check stockist product stock */ 
+			$productsCount = $this->db->WHERE('p_id', $p_id)->WHERE('user_code', $this->session->user_code)->GET('stockist_stocks_tbl')->row_array();
+
+			/* CHECK IF THE CURRENT PRODUCT CODE IS MORE THAN THE REQUEST QTY OF THE PURCHASE*/ 
+			
+			
+			if ($productsCount['qty'] < $qty) {
+				$response['status'] = 'failed';
+				$response['message'] = "You don't have enough stocks for this product!";
+			}
+			else if($productsCount['qty'] == 0) {
+				$response['status'] = 'failed';
+				$response['message'] = "You have zero stocks for this of product!";
+			}
+			else if($qty == 0 || $qty === null || $qty < 0) {
+				$response['status'] = 'failed';
+				$response['message'] = "Something went wrong. Please try again!";
+			}
+			else if ($productsCount['qty'] >= $qty) {
+				$this->generateProductCodeShopPurchase($qty, $p_id, 'From Stockist Purchase');
+
+				for ($x = 0; $x < $qty; $x++) {
+					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->row_array(); /* GET PRODUCTS CODE THAT IS NOT USED (GENERATED EARLIER) */
+
+					/* UPDATE PRODUCT CODE AS USED*/ 
+					$dataArr = array('status'=>'used');
+					$this->db->WHERE('pc_id',$productCode['pc_id'])
+							->UPDATE('product_code_tbl', $dataArr);
+
+					if ($type == 'member_purchase') {
+						$this->insertNewProductStockistTransaction($p_id, $user_code, $productCode['pc_id']);
+						$this->insertNewStockistTx($p_id, $user_code, $type);
+
+						/* INSERT UNILEVEL POINTS TO YOURSELF */ 
+						$this->insertUnilevelPointsWallet($p_id, $user_code);
+
+						/* INSERT UNILEVEL POINTS TO INDIRECT REFERRAL */ 
+						$this->insertReferralUnilvlPoints($p_id, $userData['sponsor_id']);
+					}
+					else{
+						$this->insertNewStockistTx($p_id, '', $type);
+					}
+
+					/* INSERT POINTS ALLOCATED FOR INVESTMENT*/ 
+					$this->insertInvestmentPoints($p_id, $p_id);
+
+				}
+				/* subtract qty */ 
+				$prodQty = array('qty'=>$productsCount['qty'] - $qty);
+				$this->db->WHERE('p_id', $p_id)->UPDATE('stockist_stocks_tbl',$prodQty);
+
+				$response['status'] = 'success';
+				$response['message'] = 'Purchase Successfully Processed!';
+			}
+			return $response;
+    	}
+	}
+
+	public function insertNewProductStockistTransaction($p_id, $user_code, $pc_id){
+		if (isset($this->session->user_id)) {
+			$getProdPoints = $this->db->SELECT('points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+
+			$dataArr = array(
+				'p_id'=>$p_id,
+				'pc_id'=>$pc_id,
+				'status'=>'complete',
+				'unilevel_points'=>$getProdPoints['points'], /* total points earnd for product unilevel */
+				'user_code'=>$user_code,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('repeat_purchase_history_tbl',$dataArr);
+			$id = $this->db->insert_id();
+			$ref_no = $this->generateProductPurchaseRefNo($id);
+
+			/* INSERT TRANSACTION ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=>$ref_no,
+				'activity'=>'Repeat Purchase - Stockist Purchase',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('transaction_tbl', $txDataArr);
+
+
+		}
+	}
+	public function insertNewStockistTx($p_id, $user_code){
+		if (isset($this->session->user_id)) {
+			$dataArr = array(
+				'p_id'=>$p_id,
+				'status'=>'complete',
+				'stockist_user_code'=>$this->session->user_code,
+				'buyer_user_code'=>$user_code,
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('stockist_transactions_tbl',$dataArr);
+			$st_id = $this->db->insert_id();
+			$ref_no = $this->generateStockistTransaction($st_id);
+
+			/* INSERT TRANSACTION ACTIVITY */ 
+			$txDataArr = array(
+				'reference_no'=>$ref_no,
+				'activity'=>'Non-Member Purchase - Stockist Purchase',
+				'created_at'=>date('Y-m-d H:i:s')
+			);
+			$this->db->INSERT('transaction_tbl', $txDataArr);
+
+		}
+	}
+	public function generateStockistTransaction($st_id, $length = 9){
+		$characters = '0123456789';
+	    $charactersLength = strlen($characters);
+	    $temp_ref_no = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $temp_ref_no .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    $ref_num = '1000SP'.$st_id.$temp_ref_no;
+
+	    $check = $this->db->WHERE('reference_id', $ref_num)->GET('stockist_transactions_tbl')->num_rows();
+	    if ($check > 0) {
+	    	$this->generateStockistTransaction($st_id);
+	    }
+	    else{
+	    	$dataArr = array('reference_id'=>$ref_num);
+	    	$this->db->WHERE('st_id', $st_id)->UPDATE('stockist_transactions_tbl', $dataArr);
+	    	return $ref_num;
+	    }
+	}
+	public function getStockistProductList(){
+		return $this->db->SELECT('pt.p_id, name')
+			->FROM('products_tbl as pt')
+			->JOIN('stockist_stocks_tbl as sst', 'sst.p_id=pt.p_id')
+			->ORDER_BY('name', 'ASC')
+			->WHERE('status', 'active')
+			->GET()->result_array();
+	}
+	public function getStockistTxHistory($row_per_page, $row_no){
+		if (isset($this->session->user_id)) {
+    		$query = $this->db->SELECT('pt.name, pt.url, stt.status, stt.created_at, stt.buyer_user_code, stt.stockist_user_code, stt.reference_id')
+	    		->FROM('stockist_transactions_tbl as stt')
+	    		->JOIN('products_tbl as pt', 'pt.p_id=stt.p_id')
+	    		->WHERE('stockist_user_code', $this->session->user_code)
+				->ORDER_BY('stt.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'name'=> ( strlen($q['name']) > 28 ) ? substr($q['name'], 0, 25).'...' : $q['name'],
+					'url'=>base_url('product/').$q['url'],
+					'reference_id'=>$q['reference_id'],
+					'status'=>$q['status'],
+					'user_code'=>$q['buyer_user_code'],
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+	}
+	public function getStockistTxHistoryCount(){
+		if (isset($this->session->user_id)) {
+    		$query = $this->db->WHERE('stockist_user_code', $this->session->user_code)
+				->GET('stockist_transactions_tbl')->num_rows();
+			return $query;
+    	}
 	}
 }
