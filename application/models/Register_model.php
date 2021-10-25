@@ -487,54 +487,63 @@ class Register_model extends CI_Model {
 			/* 11th Generation*/
 			$gen11thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen10thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen11thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen11thData['sponsor_id'], $referred_id, 12);
 			}
 
 			/* 12th Generation*/
 			$gen12thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen11thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen12thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen12thData['sponsor_id'], $referred_id, 13);
 			}
 
 			/* 13th Generation*/
 			$gen13thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen12thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen13thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen13thData['sponsor_id'], $referred_id, 14);
 			}
 
 			/* 14th Generation*/
 			$gen14thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen13thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen14thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen14thData['sponsor_id'], $referred_id, 15);
 			}
 
 			/* 15th Generation*/
 			$gen15thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen14thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen15thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen15thData['sponsor_id'], $referred_id, 16);
 			}
 
 			/* 16th Generation*/
 			$gen16thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen15thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen16thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen16thData['sponsor_id'], $referred_id, 17);
 			}
 
 			/* 17th Generation*/
 			$gen17thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen16thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen17thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen17thData['sponsor_id'], $referred_id, 18);
 			}
 
 			/* 18th Generation*/
 			$gen18thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen17thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen18thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen18thData['sponsor_id'], $referred_id, 19);
 			}
 
 			/* 19th Generation*/
 			$gen19thData = $this->db->SELECT('user_code, sponsor_id')->WHERE('user_code', $gen18thData['sponsor_id'])->GET('user_tbl')->row_array();
 			if (!empty($gen19thData['sponsor_id'])) {
+				$this->insertWalletInDirectReferral($gen10thData['sponsor_id'], $packageData['indirect_points']);
 				$this->insertUnilevel($gen19thData['sponsor_id'], $referred_id, 20);
 			}
 
