@@ -748,6 +748,27 @@ class Home extends CI_Controller {
 			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
+	public function adminViewStockist ($user_code){
+		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+        $data['userData'] = $this->my_account_model->getUserData();
+		$data['userDataOpt'] = $this->my_account_model->getUserDataOpt($user_code);
+
+		if (isset($this->session->admin) && $data['userDataOpt']['type'] == 'stockist') {
+			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
+            $data['page'] = 'stockist_overview';
+            $data['user_code'] = $user_code;
+            $data['title'] = 'Stockist Overview '.ucwords($data['userDataOpt']['fname'].' '.$data['userDataOpt']['lname']);
+            $this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+            $this->load->view('account/navbar');
+            $this->load->view('account/stockist_overview');
+            $this->load->view('member/footer');
+		}
+		else{
+			header('location:'.base_url('/login?r=').uri_string());
+		}
+	}
 	/* members pages end */
 	public function cart (){
 		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';

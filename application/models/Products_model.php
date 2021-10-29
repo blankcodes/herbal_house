@@ -1195,26 +1195,26 @@ class Products_model extends CI_Model {
 			return $result;
 		}
 	}
-	public function getStockistProducts($row_per_page, $row_no){
-		if (isset($this->session->user_id)) {
+	public function getStockistProducts($row_per_page, $row_no, $user_code){
+		if ($this->session->type == 'stockist' || isset($this->session->admin)) {
 			$total_qty = 0;
     		$query = $this->db->SELECT('pt.p_id, pt.name, pt.url, pt.srp_price, pct.name as category, pct.category_url, sst.qty')
 	    		->FROM('stockist_stocks_tbl as sst')
 	    		->JOIN('products_tbl as pt', 'pt.p_id=sst.p_id')
 	    		->JOIN('product_category_tbl as pct', 'pct.pc_id=pt.pc_id')
-	    		->WHERE('sst.user_code', $this->session->user_code)
+	    		->WHERE('sst.user_code', $user_code)
 				->ORDER_BY('sst.qty', 'DESC')
 				->LIMIT($row_per_page, $row_no)
 				->GET()->result_array();
 			$result = array();
 
-			$sold_prod = $this->db->WHERE('stockist_user_code', $this->session->user_code)
+			$sold_prod = $this->db->WHERE('stockist_user_code', $user_code)
 				->WHERE('status','complete')->GET('stockist_transactions_tbl')->num_rows();
 
 			$total_sales = $this->db->SELECT('SUM(pt.srp_price) as sales')
 				->FROM('stockist_transactions_tbl as stt')
 				->JOIN('products_tbl as pt', 'pt.p_id = stt.p_id')
-				->WHERE('stt.stockist_user_code', $this->session->user_code)
+				->WHERE('stt.stockist_user_code', $user_code)
 				->WHERE('stt.status','complete')->GET()->row_array();
 
 			foreach($query as $q){
@@ -1239,10 +1239,10 @@ class Products_model extends CI_Model {
 			return $data;
     	}
 	}
-	public function getStockistProductsCount(){
-		if (isset($this->session->user_id)) {
+	public function getStockistProductsCount($user_code){
+		if ($this->session->type == 'stockist' || isset($this->session->admin)) {
     		$query = $this->db->FROM('stockist_stocks_tbl')
-	    		->WHERE('user_code', $this->session->user_code)
+	    		->WHERE('user_code', $user_code)
 				->GET()->num_rows();
 			return $query;
     	}
@@ -1255,6 +1255,7 @@ class Products_model extends CI_Model {
 				$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
 			}
 			else{
+				$user_code = '';
 			}
 
 			$qty = $this->input->post('qty');
@@ -1270,6 +1271,10 @@ class Products_model extends CI_Model {
 				$response['status'] = 'failed';
 				$response['message'] = "You don't have enough stocks for this product!";
 			}
+			else if (is_numeric($qty)) {
+				$response['status'] = 'failed';
+				$response['message'] = "Quantity should be above zero!";
+			}
 			else if($productsCount['qty'] == 0) {
 				$response['status'] = 'failed';
 				$response['message'] = "You have zero stocks for this of product!";
@@ -1280,6 +1285,7 @@ class Products_model extends CI_Model {
 			}
 			else if ($productsCount['qty'] >= $qty) {
 				$this->generateProductCodeShopPurchase($qty, $p_id, 'From Stockist Purchase');
+				$this->insertStockistPuchaseNewActivity($p_id, $type, $user_code, $qty);
 
 				for ($x = 0; $x < $qty; $x++) {
 					$productCode = $this->db->WHERE('status','new')->WHERE('p_id', $p_id)->GET('product_code_tbl')->row_array(); /* GET PRODUCTS CODE THAT IS NOT USED (GENERATED EARLIER) */
@@ -1316,8 +1322,32 @@ class Products_model extends CI_Model {
 			}
 			return $response;
     	}
+    	else{
+    		$response = array('status'=>401, 'message'=>'Not Allowed!');
+    		return $response;
+    	}
 	}
+	public function insertStockistPuchaseNewActivity($p_id, $type, $user_code, $qty) {
+		$user = $this->db->SELECT('username')->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
+		$product = $this->db->SELECT('name')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+		if ($type == 'member_purchase') {
+			$message = 'User <a target="_blank" href="'.base_url('user/overview/').$user_code.'">'.$user['username'].'</a> purchase '.$qty.' '.$product['name'].' from Stockist.';
+		}
+		else {
+			$message = 'Non-member purchase '.$qty.' '.$product['name'].' from Stockist.';
+		}
+		$activity_log = array(
+			'user_id'=>$this->session->user_id, 
+			'message_log'=>$message, 
+			'ip_address'=>$this->input->ip_address(), 
+			'platform'=>$this->agent->platform(), 
+			'browser'=>$this->agent->browser(),
+			'created_at'=>date('Y-m-d H:i:s')
+		); 
+		$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
 
+		
+	}
 	public function insertNewProductStockistTransaction($p_id, $user_code, $pc_id){
 		if (isset($this->session->user_id)) {
 			$getProdPoints = $this->db->SELECT('points')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
@@ -1345,7 +1375,7 @@ class Products_model extends CI_Model {
 
 		}
 	}
-	public function insertNewStockistTx($p_id, $user_code){
+	public function insertNewStockistTx($p_id, $user_code, $type){
 		if (isset($this->session->user_id)) {
 			$dataArr = array(
 				'p_id'=>$p_id,
@@ -1358,10 +1388,17 @@ class Products_model extends CI_Model {
 			$st_id = $this->db->insert_id();
 			$ref_no = $this->generateStockistTransaction($st_id);
 
+
 			/* INSERT TRANSACTION ACTIVITY */ 
+			if ($type == 'member_purchase') {
+				$activity = 'Member Purchase - Stockist Purchase';
+			}
+			else{
+				$activity = 'Non-Member Purchase - Stockist Purchase';
+			}
 			$txDataArr = array(
 				'reference_no'=>$ref_no,
-				'activity'=>'Non-Member Purchase - Stockist Purchase',
+				'activity'=>$activity,
 				'created_at'=>date('Y-m-d H:i:s')
 			);
 			$this->db->INSERT('transaction_tbl', $txDataArr);
@@ -1395,12 +1432,12 @@ class Products_model extends CI_Model {
 			->WHERE('status', 'active')
 			->GET()->result_array();
 	}
-	public function getStockistTxHistory($row_per_page, $row_no){
-		if (isset($this->session->user_id)) {
+	public function getStockistTxHistory($row_per_page, $row_no, $user_code){
+		if ($this->session->type == 'stockist' || isset($this->session->admin)) {
     		$query = $this->db->SELECT('pt.name, pt.url, stt.status, stt.created_at, stt.buyer_user_code, stt.stockist_user_code, stt.reference_id')
 	    		->FROM('stockist_transactions_tbl as stt')
 	    		->JOIN('products_tbl as pt', 'pt.p_id=stt.p_id')
-	    		->WHERE('stockist_user_code', $this->session->user_code)
+	    		->WHERE('stockist_user_code', $user_code)
 				->ORDER_BY('stt.created_at', 'DESC')
 				->LIMIT($row_per_page, $row_no)
 				->GET()->result_array();
@@ -1420,9 +1457,9 @@ class Products_model extends CI_Model {
 			return $result;
     	}
 	}
-	public function getStockistTxHistoryCount(){
-		if (isset($this->session->user_id)) {
-    		$query = $this->db->WHERE('stockist_user_code', $this->session->user_code)
+	public function getStockistTxHistoryCount($user_code){
+		if ($this->session->type == 'stockist' || isset($this->session->admin)) {
+    		$query = $this->db->WHERE('stockist_user_code', $user_code)
 				->GET('stockist_transactions_tbl')->num_rows();
 			return $query;
     	}

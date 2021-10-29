@@ -587,6 +587,7 @@ class Products extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 	public function getStockistProducts(){
+    	$user_code = $this->input->get('user_code');
     	$row_no = $this->input->get('page_no');
 		// Row per page
     	$row_per_page = 10;
@@ -597,10 +598,10 @@ class Products extends CI_Controller {
 	    }
 
 	    // All records count
-    	$all_count = $this->products_model->getStockistProductsCount();
+    	$all_count = $this->products_model->getStockistProductsCount($user_code);
 
     	// Get records
-		$products = $this->products_model->getStockistProducts($row_per_page, $row_no);
+		$products = $this->products_model->getStockistProducts($row_per_page, $row_no, $user_code);
 
    		// Pagination Configuration
 	    $config['base_url'] = base_url().'api/v1/product/_get_repeat_purchase_record';
@@ -648,6 +649,7 @@ class Products extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
     }
     public function getStockistTxHistory(){
+    	$user_code = $this->input->get('user_code');
     	$row_no = $this->input->get('page_no');
 		// Row per page
     	$row_per_page = 10;
@@ -658,10 +660,10 @@ class Products extends CI_Controller {
 	    }
 
 	    // All records count
-    	$all_count = $this->products_model->getStockistTxHistoryCount();
+    	$all_count = $this->products_model->getStockistTxHistoryCount($user_code);
 
     	// Get records
-		$products = $this->products_model->getStockistTxHistory($row_per_page, $row_no);
+		$products = $this->products_model->getStockistTxHistory($row_per_page, $row_no, $user_code);
 
    		// Pagination Configuration
 	    $config['base_url'] = base_url().'api/v1/stockist/_get_tx_history';

@@ -35,7 +35,7 @@
 		<script>
 			var base_url = '<?=base_url()?>';
             var page = '<?=$page?>';
-            var user_code = '<?=$userData['user_code']?>';
+            var user_code = '<?=($page == 'stockist_overview') ? $user_code : $userData['user_code'];?>';
             <?php if($page == 'member_products') { ?>
             var nonce = '<?=$nonce['hash'];?>';
         <?php } ?>

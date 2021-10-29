@@ -48,6 +48,11 @@ $('#product_category_pagination').on('click','a',function(e){
     var page_no = $(this).attr('data-ci-pagination-page');
     showProductsCategory(page_no);
 });
+$('#_stockist_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    showStockistList(page_no);
+});
 function readURL(input) {
     if (input.files && input.files[0]) {
         var reader = new FileReader();
@@ -1026,7 +1031,7 @@ function showStockistList(page_no){
 						        +'Action'
 						    +'</button>'
 						    +'<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
-						        +'<a class="dropdown-item" href="#" onclick="">View Statistics</a>'
+						        +'<a class="dropdown-item" target="_blank" href="'+base_url+'user/stockist/'+res.result[i].user_code+'" onclick="">View Statistics</a>'
 						    +'</div>'
 						+'</div>'
                     +'</td>'

@@ -19,7 +19,7 @@ else if (page == 'my_orders') {
 else if (page == 'customer_orders') {
 	showAllOrders(1)
 }
-else if (page == 'stockist') {
+else if (page == 'stockist' || page == 'stockist_overview') {
 	productsAvail(1)
 	stockistTransactionHistory(1)
 }
@@ -954,7 +954,7 @@ function productsAvail(page_no){
 		url: base_url+'api/v1/stockist/_get_products',
 		type: 'GET',
 		dataType: 'JSON',
-		data: {page_no:page_no}
+		data: {user_code:user_code, page_no:page_no}
 	})
 	.done(function(res) {
 		$("#_products_tbl_pagination").html(res.pagination)
@@ -1144,7 +1144,7 @@ function stockistTransactionHistory(page_no){
 		url: base_url+'api/v1/stockist/_get_tx_history',
 		type: 'GET',
 		dataType: 'JSON',
-		data: {page_no:page_no}
+		data: {user_code:user_code, page_no:page_no}
 	})
 	.done(function(res) {
 		$("#_tx_tbl_pagination").html(res.pagination)

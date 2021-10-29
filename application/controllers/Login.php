@@ -35,7 +35,8 @@ class Login extends CI_Controller {
                 $this->session->set_userdata('user_type', $checkUser['user_type']);
                 $this->session->set_userdata('user_code', $checkUser['user_code']);
                 $this->session->set_userdata('username', $checkUser['username']);
-              	$this->session->set_userdata('type', $checkUser['type']);
+                $this->session->set_userdata('type', $checkUser['type']);
+              	$this->session->set_userdata($checkUser['type'], $checkUser['type']);
 
                 if ($checkUser['user_type'] == 'admin') {
                     $this->session->set_userdata('admin', $checkUser['username']);
