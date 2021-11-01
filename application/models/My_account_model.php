@@ -311,8 +311,13 @@ class My_account_model extends CI_Model {
 			$result = array();
 
 			foreach($query as $q){
+				$username = $q['username'];
+				if ($q['username'] == null || $q['username'] == 'null') {
+					$username = 'Non-Member';
+				}
+				
 				$array = array(
-					'username'=>$q['username'],
+					'username'=>$username,
 					'user_code'=>$q['user_code'],
 					'activity'=> $q['message_log'],
 					'ip_address'=> $q['ip_address'],

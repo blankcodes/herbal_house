@@ -139,11 +139,22 @@ class Member_model extends CI_Model {
     	}
     }
 	public function sendMultipleCodes() {
-    	if ($this->session->user_id ) {
+    	if (isset($this->session->user_id) && isset($this->session->admin)) {
     		$qty = $this->input->get('qty');
 			for ($x = 0; $x < $qty; $x++) {
 				$this->generateSendMultipleActivationCode();
 			}
+			$package = $this->db->WHERE('p_id', $this->input->get('package'))->GET('package_tbl')->row_array();
+			$activity_log = array(
+	    		'user_id'=>$this->session->user_id, 
+	    		'message_log'=> 'Transfer of '.$qty.' "'.$package['name'].'" code to User <a target="_blank" href="'.base_url('user/overview/').$this->input->get('user_code').'">'.$this->input->get('user_code').'</a>.',
+	    		'ip_address'=>$this->input->ip_address(), 
+	    		'platform'=>$this->agent->platform(), 
+	    		'browser'=>$this->agent->browser(),
+	    		'created_at'=>date('Y-m-d H:i:s')
+	    	); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
 			$response['status'] = 'success';
 			$response['message'] = 'Successfully Processed!';
 			return $response;
@@ -1080,10 +1091,10 @@ class Member_model extends CI_Model {
     	}
 	}
 	public function stockistTotalSales($user_code) {
-		$this->db->SELECT('SUM(pt.srp_price) as total_sales')
-			->FROM('stockist_transactions_tbl as stt')
-			->JOIN('products_tbl as pt', 'stt.p_id=pt.p_id')
-			->WHERE('stockist_user_code', $user_code)
+		return $this->db->SELECT('SUM(pt.srp_price) as total_sales')
+			->FROM('products_tbl as pt')
+			->JOIN('stockist_transactions_tbl as stt', 'stt.p_id=pt.p_id')
+			->WHERE('stt.stockist_user_code', $user_code)
 			->GET()->row_array();
 	}
 

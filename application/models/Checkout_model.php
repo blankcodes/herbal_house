@@ -391,7 +391,7 @@ class Checkout_model extends CI_Model {
 
 		$activity_log = array(
 			'user_id'=>$user_id, 
-			'message_log'=>'Placed and order with a reference number '.$reference_no,
+			'message_log'=>'Placed and order with a reference number <a target="_blank" href="'.base_url('order/').$reference_no.'">'.$reference_no.'</a>.',
 			'ip_address'=>$this->input->ip_address(), 
 			'platform'=>$this->agent->platform(), 
 			'browser'=>$this->agent->browser(),

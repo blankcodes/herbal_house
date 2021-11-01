@@ -93,14 +93,12 @@ function getWalletActivity(page_no){
 		if (res.result.length > 0) {
 			for(var i in res.result) {
 				string += '<tr>'
-	                    +'<td>'
-	                        +'<div class="form-check">'
-	                            +'<input type="checkbox" class="form-check-input" id="customCheck2">'
-	                            +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
-	                        +'</div>'
-	                    +'</td>'
+	                    
 	                    +'<td>'
 	                        +'<span class="font-14">'+res.result[i].date+'</span>'
+	                    +'</td>'
+	                    +'<td>'
+	                        +'<span class="font-14">'+res.result[i].ref_no+'</span>'
 	                    +'</td>'
 	                    +'<td class="table-user">'
 	                        +'<a href="javascript:void(0);" class="text-body"font-14">'+res.result[i].activity+'</a>'

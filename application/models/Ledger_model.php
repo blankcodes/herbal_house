@@ -208,7 +208,7 @@ class Ledger_model extends CI_Model {
 		if (isset($this->session->user_id)) {
 			$activity = '';
 
-			$query = $this->db->SELECT('created_at, activity, reference_no, amount')
+			$query = $this->db->SELECT('reference_no, created_at, activity, reference_no, amount')
 				->ORDER_BY('wa_id', 'DESC')
 				->WHERE('user_code',$this->session->user_code)
 				->LIMIT($row_per_page, $row_no)
@@ -217,12 +217,13 @@ class Ledger_model extends CI_Model {
 
 			foreach($query as $q){
 				if (substr($q['amount'], 0 , 1) == '-') {
-					$amt = '-₱ '.number_format(substr($q['amount'], 1), 2);
+					$amt = '- ₱ '.number_format(substr($q['amount'], 1), 2);
 				}
 				else{
-					$amt = '+₱ '.number_format($q['amount'], 2);
+					$amt = '+ ₱ '.number_format($q['amount'], 2);
 				}
 				$array = array(
+					'ref_no'=>$q['reference_no'],
 					'activity'=>str_replace('_',' ', $q['activity']),
 					'amount'=>$amt,
 					'date'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
@@ -524,6 +525,17 @@ class Ledger_model extends CI_Model {
 				// else if( == 'return'){
 				// 	$this->sendCompleteWithdrawEmailNotificationToUser($user_id, $ref_no, $amount);
 				// }
+
+				$activity_log = array(
+					'user_id'=>$this->session->user_id, 
+					'message_log'=>'Withdraw Request Status #'.$ref_no.' updated to "'.ucwords($status).'"',
+					'ip_address'=>$this->input->ip_address(), 
+					'platform'=>$this->agent->platform(), 
+					'browser'=>$this->agent->browser(),
+					'created_at'=>date('Y-m-d H:i:s')
+				); 
+				$this->insertActivityLog($activity_log);
+
 				$response['status'] = 'success';
 	    		$response['message'] ='Request '.$this->input->post('ref_no').' is updated to '.ucwords($this->input->post('status')).'!';
 				return $response;
@@ -534,6 +546,9 @@ class Ledger_model extends CI_Model {
     		$response['message'] ='Action is not allowed!';
 			return $response;
 		}
+	}
+	public function insertActivityLog ($activity_log) {
+		$this->db->INSERT('activity_logs_tbl', $activity_log);
 	}
 	public function insertNewNotification ($notif_log) {
 		$this->db->INSERT('notification_tbl', $notif_log);

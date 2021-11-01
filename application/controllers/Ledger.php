@@ -440,13 +440,13 @@ class Ledger extends CI_Controller {
             $response['status'] = 'failed';
             $response['message'] = 'Amount is not a whole number!';
         }
-        else if ($walletBalance['balance'] < 300) { /* MINIMUM AMOUNT TO TRANSFER */
-            $response['status'] = 'failed';
-            $response['message'] = "You don't have enough balance to transfer!";
-        }
         else if ($tranfer_amt < 300) { /* MINIMUM AMOUNT TO TRANSFER */
             $response['status'] = 'failed';
             $response['message'] = "Minimum amount to transfer is ₱ 300.00";
+        }
+        else if ($walletBalance['balance'] < 300) { /* MINIMUM AMOUNT TO TRANSFER */
+            $response['status'] = 'failed';
+            $response['message'] = "You don't have enough balance to transfer!";
         }
         else if ($tranfer_amt > $walletBalance['balance']) {
             $response['status'] = 'failed';
@@ -481,7 +481,7 @@ class Ledger extends CI_Controller {
             }
 
             else if ($wallet_type == 'indirect_referral') {
-                if ($dateNow == '15') {
+                if ($dateNow == '15' || $dateNow == '30' || $dateNow == '31') {
                     $this->transferWalletBalanceConfirm($tranfer_amt, $wallet_type);
                     $response['status'] = 'success';
                     $reponse['message'] = 'Amount transfered successfully!';

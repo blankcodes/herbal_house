@@ -25,6 +25,11 @@
                                     <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
                                     <strong>Notice: </strong> You can now transfer your Unilevel Points to your Main Wallet! Go to <a href="member/ewallet">Wallet page </a>.
                                 </div>
+
+                                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                                    <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                    <strong>Notice: </strong> You can now transfer your Indirect Referral Points to your Main Wallet! Go to <a href="member/ewallet">Wallet page </a>.
+                                </div>
                         <?php } 
                         } 
                         else{

@@ -1192,6 +1192,19 @@ class Products_model extends CI_Model {
 				);
 				array_push($result, $array);
 			}
+
+			$product = $this->db->SELECT('name')->WHERE('p_id', $p_id)->GET('products_tbl')->row_array();
+			$user = $this->db->SELECT('fname, lname, username')->WHERE('user_code',$user_code)->GET('user_tbl')->row_array();
+			$activity_log = array(
+				'user_id'=>$this->session->user_id, 
+				'message_log'=>'Restock products  of '.$qty.' '.$product['name'].' to Stockist: <a href="'.base_url('user/stockist/').$user_code.'" target="_blank">'.$user['fname'].' '.$user['lname'].':'.$user_code.'</a>.', 
+				'ip_address'=>$this->input->ip_address(), 
+				'platform'=>$this->agent->platform(), 
+				'browser'=>$this->agent->browser(),
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
 			return $result;
 		}
 	}
@@ -1271,7 +1284,7 @@ class Products_model extends CI_Model {
 				$response['status'] = 'failed';
 				$response['message'] = "You don't have enough stocks for this product!";
 			}
-			else if (is_numeric($qty)) {
+			else if ($qty <= 0) {
 				$response['status'] = 'failed';
 				$response['message'] = "Quantity should be above zero!";
 			}
