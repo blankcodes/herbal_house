@@ -77,7 +77,7 @@ class Home extends CI_Controller {
                 else if ($userData['user_type'] == 'investor') {
                     $this->session->set_userdata('investor', $userData['username']);
                 }
-       			header('location:'.base_url('account'));
+       			header('location:'.base_url('account?r=').uri_string());
     		}
     		else{
                 unset($_COOKIE['remember_login']); 
@@ -87,7 +87,7 @@ class Home extends CI_Controller {
     		}
 		}
 		else if (isset($this->session->user_id )) {
-       		$this->account();
+       		header('Location:'.base_url('account'));
        	}
        	else if (!isset($this->session->user_id )) {
        		delete_cookie("remember_login");
@@ -155,6 +155,16 @@ class Home extends CI_Controller {
 			$this->load->view('widget');
 			$this->load->view('account/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -172,6 +182,16 @@ class Home extends CI_Controller {
 			$this->load->view('products/navbar');
 			$this->load->view('products/product_code_list');
 			$this->load->view('products/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -193,6 +213,16 @@ class Home extends CI_Controller {
 			$this->load->view('widget');
 			$this->load->view('account/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('login'));
 		}
@@ -210,6 +240,16 @@ class Home extends CI_Controller {
 			$this->load->view('account/maintenance');
 			$this->load->view('widget');
 			$this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?').uri_string());
@@ -230,6 +270,16 @@ class Home extends CI_Controller {
 			$this->load->view('widget');
 			$this->load->view('products/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -247,6 +297,16 @@ class Home extends CI_Controller {
 			$this->load->view('account/navbar');
 			$this->load->view('account/ledger');
 			$this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -267,6 +327,16 @@ class Home extends CI_Controller {
 			$this->load->view('widget');
 			$this->load->view('products/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -284,6 +354,16 @@ class Home extends CI_Controller {
 			$this->load->view('account/navbar');
 			$this->load->view('account/walkin_buyers');
 			$this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -321,6 +401,16 @@ class Home extends CI_Controller {
 			$this->load->view('widget');
 			$this->load->view('products/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?').uri_string());
 		}
@@ -338,8 +428,28 @@ class Home extends CI_Controller {
 			$this->load->view('account/activity_logs');
 			$this->load->view('account/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
-			header('location:'.base_url('/login?').uri_string());
+			header('location:'.base_url('/login?r=').uri_string());
 		}
 	}
 	public function OrderDetailsAdmin($ref_no){
@@ -376,6 +486,16 @@ class Home extends CI_Controller {
             $this->load->view('account/order_details');
             $this->load->view('account/footer');
         }
+        else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
         else{
           	header('location:'.base_url('/login?r=').uri_string());
         }
@@ -409,6 +529,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('account/withdraw_request');
             $this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -449,6 +579,16 @@ class Home extends CI_Controller {
 			$this->load->view('shop/product_category');
 			$this->load->view('shop/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			$this->error404();
 		}
@@ -465,6 +605,16 @@ class Home extends CI_Controller {
 			$this->load->view('shop/navbar');
 			$this->load->view('shop/product_details');
 			$this->load->view('shop/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?').uri_string());
@@ -484,6 +634,16 @@ class Home extends CI_Controller {
             $this->load->view('member/binary_user_code');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -502,6 +662,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('account/user_overview');
             $this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -530,6 +700,16 @@ class Home extends CI_Controller {
 				header('location: '.base_url().'member/invites-list');
 			}
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -547,6 +727,16 @@ class Home extends CI_Controller {
             $this->load->view('member/code_list');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -563,6 +753,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/binary');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -582,6 +782,16 @@ class Home extends CI_Controller {
             $this->load->view('member/binary_direct_user');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -598,6 +808,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/direct_invites');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -616,6 +836,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/profit_sharing');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -636,6 +866,16 @@ class Home extends CI_Controller {
             $this->load->view('member/member_products');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -653,6 +893,16 @@ class Home extends CI_Controller {
             $this->load->view('member/customer_orders');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -669,6 +919,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/my_orders');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -688,6 +948,16 @@ class Home extends CI_Controller {
             $this->load->view('member/settings');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -705,6 +975,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/ewallet');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -725,6 +1005,16 @@ class Home extends CI_Controller {
             $this->load->view('member/membership');
             $this->load->view('member/footer');
 		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
 		}
@@ -743,6 +1033,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('member/stockist');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -764,6 +1064,16 @@ class Home extends CI_Controller {
             $this->load->view('account/navbar');
             $this->load->view('account/stockist_overview');
             $this->load->view('member/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
 		}
 		else{
 			header('location:'.base_url('/login?r=').uri_string());
@@ -843,5 +1153,23 @@ class Home extends CI_Controller {
 		$data['page'] = '404_page';
 		$this->load->view('errors/error_404', $data);
 	}
-	
+	public function loginViaCookieRememberLogin($userData){
+		$this->session->set_userdata('user_id', $userData['user_id']);
+        $this->session->set_userdata('user_type', $userData['user_type']);
+        $this->session->set_userdata('user_code', $userData['user_code']);
+       	$this->session->set_userdata('username', $userData['username']);
+
+        if ($userData['user_type'] == 'admin') {
+            $this->session->set_userdata('admin', $userData['username']);
+        }
+        else if ($userData['user_type'] == 'investor') {
+            $this->session->set_userdata('investor', $userData['username']);
+        }
+        header('location:'.base_url().uri_string());
+	}
+	public function logoutUnset($remember_login){
+		unset($_COOKIE['remember_login']); 
+        delete_cookie("remember_login");
+        header('location:'.base_url('login'));
+	}
 }
