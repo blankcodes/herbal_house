@@ -1167,7 +1167,7 @@ class Home extends CI_Controller {
         }
         header('location:'.base_url().uri_string());
 	}
-	public function logoutUnset($remember_login){
+	public function logoutUnset(){
 		unset($_COOKIE['remember_login']); 
         delete_cookie("remember_login");
         header('location:'.base_url('login'));
