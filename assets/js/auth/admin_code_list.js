@@ -176,6 +176,7 @@ function showMemberCodes(page_no){
 		string ='';
 		stat_label = '';
 		btn_disabled = '';
+		user = '';
 		$('#_code_pagination').html(res.pagination);
 		if (parseInt(res.count) > 0) {
 			for(var i in res.result) {
@@ -193,6 +194,12 @@ function showMemberCodes(page_no){
 					btn_disabled = 'disabled="disabled"';
 				}
 
+				if (res.result[i].user_code == null) {
+					user = '<a href="#generated">Generated</a>';
+				}
+				else{
+					user = '<a target="_blank" href="'+base_url+'user/overview/'+res.result[i].user_code+'">'+res.result[i].username+'</a>';
+				}
 				string +='<tr>'
                         +'<td>'
                             +'<div class="form-check">'
@@ -202,6 +209,7 @@ function showMemberCodes(page_no){
                         +'</td>'
                         +'<td>'+res.result[i].code+'</td>'
                         +'<td>'+res.result[i].package_name+'</td>'
+                        +'<td>'+user+'</td>'
                         +'<td><span class="badge badge-'+stat_label+'-lighten text-capitalize">'+res.result[i].status+'</span></td>'
                         +'<td>'+res.result[i].created_at+'</td>'
                         +'<td width="200">'

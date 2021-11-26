@@ -32,6 +32,7 @@ else if (page == 'user_overview') {
 	showInDirectList(2, user_code, 1)
 	showProductUnilevelPointsOpt(1, user_code)
 	getWalletActivity(1, user_code)
+	showCodeHistory(1, user_code)
 }
 else if (page == 'activity_logs') {
 	getActivityLogs(1);
@@ -798,5 +799,45 @@ function searchActivityLogs(page, keyword){
 	})
 	.fail(function() {
 		$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">No Records found!</td></tr>');
+	})
+}
+function showCodeHistory(page_no, user_code) {
+	$("#_code_history_tbl").html('<tr class="text-center"><td colspan="6">Getting code history...</td></tr>');
+
+	$.ajax({
+		url: base_url+'api/v1/code/_get_history',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {page_no:page_no, user_code:user_code}
+	})
+	.done(function(res) {
+		string ='';
+		stat_label = '';
+		btn_disabled = '';
+		$('#_code_pagination').html(res.pagination);
+		if (parseInt(res.count) > 0) {
+			for(var i in res.result) {
+				string +='<tr>'
+                        +'<td>'
+                            +'<div class="form-check">'
+                                +'<input type="checkbox" class="form-check-input" id="customCheck2">'
+                                +'<label class="form-check-label" for="customCheck2">&nbsp;</label>'
+                            +'</div>'
+                        +'</td>'
+                        +'<td>'+res.result[i].package_name+'</td>'
+                        +'<td>'+res.result[i].code+'</td>'
+                        +'<td>'+res.result[i].date_purchased+'</td>'
+                        +'<td>'+res.result[i].date_used+'</td>'
+                        +'<td><a target="_blank" href="'+base_url+'user/overview/'+res.result[i].user_code+'">'+res.result[i].used_by+'</a></td>'
+					+'</tr>'
+			}
+		}
+		else{
+			string = '<tr class="text-center"><td colspan="6">No Records Found!</td></tr>';
+		}
+		$("#_code_history_tbl").html(string);
+	})
+	.fail(function() {
+		$("#_code_history_tbl").html('<tr class="text-center"><td colspan="6">No Records Found!</td></tr>');
 	})
 }

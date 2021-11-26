@@ -51,6 +51,7 @@
                                                         </th>
                                                         <th>Code</th>
                                                         <th>Package Name</th>
+                                                        <th>User</th>
                                                         <th>Status</th>
                                                         <th>Date Added</th>
                                                         <th style="width: 75px;">Action</th>

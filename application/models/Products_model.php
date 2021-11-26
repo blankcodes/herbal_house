@@ -927,6 +927,66 @@ class Products_model extends CI_Model {
 			if (!empty($gen10thData['sponsor_id'])) {
 				$this->insertUnilevelPointsWallet($p_id, $gen10thData['sponsor_id']);
 			}
+
+			/* 11th Generation*/
+			$gen11thData = $this->db->WHERE('user_code', $gen10thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen11thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen11thData['sponsor_id']);
+			}
+
+			/* 12th Generation*/
+			$gen12thData = $this->db->WHERE('user_code', $gen11thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen12thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen12thData['sponsor_id']);
+			}
+
+			/* 13th Generation*/
+			$gen13thData = $this->db->WHERE('user_code', $gen12thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen13thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen13thData['sponsor_id']);
+			}
+
+			/* 14th Generation*/
+			$gen14thData = $this->db->WHERE('user_code', $gen13thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen14thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen14thData['sponsor_id']);
+			}
+
+			/* 15th Generation*/
+			$gen15thData = $this->db->WHERE('user_code', $gen14thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen15thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen15thData['sponsor_id']);
+			}
+
+			/* 16th Generation*/
+			$gen16thData = $this->db->WHERE('user_code', $gen15thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen16thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen16thData['sponsor_id']);
+			}
+
+			/* 17th Generation*/
+			$gen17thData = $this->db->WHERE('user_code', $gen16thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen17thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen17thData['sponsor_id']);
+			}
+
+			/* 18th Generation*/
+			$gen18thData = $this->db->WHERE('user_code', $gen17thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen18thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen18thData['sponsor_id']);
+			}
+
+			/* 19th Generation*/
+			$gen19thData = $this->db->WHERE('user_code', $gen18thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen19thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen19thData['sponsor_id']);
+			}
+
+			/* 20th Generation*/
+			$gen20thData = $this->db->WHERE('user_code', $gen19thData['sponsor_id'])->GET('user_tbl')->row_array();
+			if (!empty($gen20thData['sponsor_id'])) {
+				$this->insertUnilevelPointsWallet($p_id, $gen20thData['sponsor_id']);
+			}
 		} //
 	}
 	public function insertUnilevelPointsWallet($p_id, $user_id) {

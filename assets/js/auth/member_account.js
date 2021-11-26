@@ -976,7 +976,16 @@ function productsAvail(page_no){
 			}
 		}
 		else{
-			string = '<tr class="text-center"><td colspan="4">No Products Found!</td></tr>'
+			string = '<tr class="text-center"><td colspan="4">No Products Found!</td></tr>';
+		}
+
+		if (res.result.products == null) {
+			swal({
+			  	title: "Something went wrong!",
+			 	text: "Please Re-login again!",
+				icon: 'error',
+			  	button: "Okay",
+			});
 		}
 		$('#_products_tbl').html(string)
 	})

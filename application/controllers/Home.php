@@ -1158,6 +1158,8 @@ class Home extends CI_Controller {
         $this->session->set_userdata('user_type', $userData['user_type']);
         $this->session->set_userdata('user_code', $userData['user_code']);
        	$this->session->set_userdata('username', $userData['username']);
+        $this->session->set_userdata('type', $userData['type']);
+        $this->session->set_userdata($userData['type'], $userData['type']);
 
         if ($userData['user_type'] == 'admin') {
             $this->session->set_userdata('admin', $userData['username']);

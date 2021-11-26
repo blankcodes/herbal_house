@@ -374,11 +374,14 @@ class Member_model extends CI_Model {
 			$result = array();
 
 			foreach($query as $q){
+				$user = $this->getUserNameUserCode($q['code']);
 				$array = array(
 					'ac_id'=>$q['ac_id'],
 					'code'=>$q['code'],
 					'status'=>$q['status'],
 					'package_name'=>$q['name'],
+					'username'=>$user['username'],
+					'user_code'=>$user['user_code'],
 					'cost'=>'₱ '.number_format($q['cost'], 2),
 					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
 				);
@@ -386,6 +389,14 @@ class Member_model extends CI_Model {
 			}
 			return $result;
     	}
+    }
+    public function getUserNameUserCode($code){
+    	return $this->db->SELECT('ut.username, ut.user_code')
+    		->FROM('user_code_tbl as uct')
+    		->JOIN('user_tbl as ut', 'ut.user_code=uct.user_code')
+    		->WHERE('uct.code', $code)
+    		->GET()->row_array();
+
     }
     public function deleteCode () {
 		$this->db->WHERE('ac_id', $this->input->post('id'))->DELETE('activation_code_tbl');
@@ -1097,5 +1108,42 @@ class Member_model extends CI_Model {
 			->WHERE('stt.stockist_user_code', $user_code)
 			->GET()->row_array();
 	}
+	public function adminGetUserCodeHistory ($row_per_page, $row_no) {
+    	if (isset($this->session->admin)){
+    		$query = $this->db->SELECT('uct.code, ut.fname, ut.lname, ut.user_code, pt.name as package_name, uct.created_at as date_purchased, uct.updated_at as date_used')
+	    		->FROM('user_code_tbl as uct')
+	    		->JOIN('user_tbl as ut', 'ut.member_code = uct.code', 'left')
+	    		->JOIN('activation_code_tbl as act', 'act.code = uct.code', 'left')
+	    		->JOIN('package_tbl as pt', 'pt.p_id = act.p_id', 'left')
+				->WHERE('ut.sponsor_id', $this->input->get('user_code'))
+				->WHERE('uct.status', 'used')
+				->ORDER_BY('ut.created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'code'=>$q['code'],
+					'package_name'=>$q['package_name'],
+					'date_purchased'=>date('m/d/Y h:i A', strtotime($q['date_purchased'])),
+					'date_used'=>date('m/d/Y h:i A', strtotime($q['date_used'])),
+					'used_by'=>$q['fname'].' '.$q['lname'],
+					'user_code'=>$q['user_code']
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+    }
+    public function adminGetUserCodeHistoryCount () {
+    	if (isset($this->session->admin)){
+    		return $this->db->FROM('user_code_tbl as uct')
+	    		->JOIN('user_tbl as ut', 'ut.member_code = uct.code', 'left')
+				->WHERE('ut.sponsor_id', $this->input->get('user_code'))
+				->WHERE('uct.status', 'used')
+				->GET()->num_rows();
+    	}
+    }
 
 }
