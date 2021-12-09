@@ -37,7 +37,7 @@
         <!-- end page -->
 
         <footer class="footer footer-alt">
-            <?=date('Y')?> &copy; Herbal House BHP
+            <?=date('Y')?> &copy; <?=$siteSetting['website_name'];?>
         </footer>
 
         <!-- bundle -->

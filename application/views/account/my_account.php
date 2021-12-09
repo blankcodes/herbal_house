@@ -19,6 +19,13 @@
                             </div>
                         </div>     
                         <!-- end page title --> 
+                        <!-- <?php if ($siteSetting['system_maintenance'] == 'enabled') {  ?>
+                        <div id="_system_maintenance_alert">
+                            <div class="alert alert-danger fade show" role="alert">
+                                <strong><i class="uil-exclamation-triangle font-20"></i> </strong> System Maintenance is Enabled. Members cannot access their accounts at this time! Check <a href="<?=base_url('website-settings')?>">Website Settings</a>.
+                            </div>
+                        </div> 
+                        <?php } ?> -->
 
                         <div id="_to_do_order">
                             

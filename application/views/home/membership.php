@@ -253,7 +253,7 @@
                         <div class="mt-4 row">
                             <h3 class="mb-3 text-center"> Watch this Video on how you can Earn at Herbal House Philippines.</h3>
                             <div class="ratio ratio-4x3 ">
-                                <iframe src="https://www.youtube.com/embed/NniUoSJqiMY?autohide=0&showinfo=0&controls=0" class="br-10 abt-img-shadow"></iframe>
+                                <iframe src="https://www.youtube.com/embed/QQYOp95Qr84?autohide=0&showinfo=0&controls=0" class="br-10"></iframe>
                             </div>
                         </div>
 

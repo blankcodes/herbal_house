@@ -32,6 +32,8 @@
         </div>
         <!-- END wrapper -->
 
+        
+
 		<script>
 			var base_url = '<?=base_url()?>';
             var page = '<?=$page?>';
@@ -50,7 +52,19 @@
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
-        
+        <?php if ($siteSetting['system_maintenance'] == 'enabled') {  ?>
+        <script>
+            $.toast({
+                heading: 'Warning!!!',
+                text: '<strong><i class="uil-exclamation-triangle font-20"></i> </strong> System Maintenance is Enabled. Members cannot access their accounts at this time! Check <a href="<?=base_url('website-settings')?>">Website Settings</a>.',
+                icon: 'error',
+                loader: true,        // Change it to false to disable loader
+                loaderBg: '#05cb62',  // To change the background
+                hideAfter: false,
+                position: 'top-right',
+            })
+        </script>
+        <?php } ?>
         <?php if ($page=='code_list'){ ?>
         <script src="<?=base_url()?>assets/js/auth/admin_code_list.js"></script>
         <?php }else if($page == 'order_details_admin') { ?>
