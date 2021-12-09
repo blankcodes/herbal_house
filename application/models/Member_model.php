@@ -644,7 +644,7 @@ class Member_model extends CI_Model {
 			->GET('user_tbl')->num_rows();
     }
     public function getInDirectListByUserCode ($row_per_page, $row_no) {
-    	$query = $this->db->SELECT('ut.user_code, ut.fname, ut.lname, ut.created_at')
+    	$query = $this->db->SELECT('ut.user_code, ut.fname, ut.lname, ut.created_at, ut.username')
     		->FROM('unilevel_tbl as unt')
     		->JOIN('user_tbl as ut', 'unt.referred_id = ut.user_code')
 			->ORDER_BY('ut.created_at', 'DESC')
@@ -659,6 +659,7 @@ class Member_model extends CI_Model {
 			$array = array(
 				'user_code'=>$q['user_code'],
 				'name'=>ucwords($q['fname'].' '.$q['lname']),
+				'username'=>$q['username'],
 				'created_at'=>date('F d, Y h:i A', strtotime($q['created_at'])),
 			);
 			array_push($result, $array);
@@ -921,6 +922,8 @@ class Member_model extends CI_Model {
     		$data['user_id'] = $q['user_id'];
 			$data['username'] = ucwords($q['username']);
 			$data['name'] = ucwords($q['fname'].' '.$q['lname']);
+			$data['fname'] = ucwords($q['fname']);
+			$data['lname'] = ucwords($q['lname']);
 			$data['email_address'] = $q['email_address'];
 			$data['user_type'] = $q['user_type'];
 			$data['address'] = $q['address'];
@@ -1145,5 +1148,30 @@ class Member_model extends CI_Model {
 				->GET()->num_rows();
     	}
     }
+    public function updateUserFullName () {
+    	if (isset($this->session->admin)){
+    		$user_code = $this->input->get('user_code');
+    		$dataArr = array(
+    			'fname'=> $this->input->get('fname'),
+    			'lname'=> $this->input->get('lname'),
+    		);
+    		$this->db->WHERE('user_code', $user_code)
+				->UPDATE('user_tbl', $dataArr);
 
+			$activity_log = array(
+	    		'user_id'=>$this->session->user_id, 
+	    		'message_log'=> 'User: <a target="_blank" href="'.base_url('user/overview/').$user_code.'">'.$user_code.'</a> Full name has been Updated!',
+	    		'ip_address'=>$this->input->ip_address(), 
+	    		'platform'=>$this->agent->platform(), 
+	    		'browser'=>$this->agent->browser(),
+	    		'created_at'=>date('Y-m-d H:i:s')
+	    	); 
+			$this->insertActivityLog($activity_log); /* INSERT new ACIVITY LOG */
+
+			$data['status'] = 'success';
+            $data['message'] =  'User Full Name successfully Updated!';
+
+            return $data;
+    	}
+    }
 }

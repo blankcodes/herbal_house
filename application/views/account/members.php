@@ -194,7 +194,7 @@
                                     </div>
                                     <div id="">
                                         <div class="modal-body mb-3">
-                                            <form id="_user_payment_status_form">
+                                            <form id="">
                                                 <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                                 <div id="_status_wrapper">
                                                 
@@ -211,8 +211,23 @@
                                                 User ID: <br><span id="_user_id" class="font-23 fw-600"> </span>
                                             </div>
 
-                                            <div class="mt-2">
-                                                Full Name: <br><span id="_full_name" class="font-23 fw-600"> </span>
+                                            <div class="mt-1">
+                                                <form id="_edit_full_name_form">
+                                                    <div class="row">
+                                                        <div class="col-lg-6">
+                                                            <input type="hidden" id="_input_fname" placeholder="First Name" class="form-control mb-1" name="fname">
+                                                        </div>
+                                                        <div class="col-lg-6">
+                                                            <input type="hidden" id="_input_lname" placeholder="Last Name" class="form-control mb-1" name="lname">
+                                                        </div>
+                                                        <input type="hidden" id="_input_user_code" name="user_code">
+                                                        <div class="mt-1 mb-2" id="_name_btns_div">
+                                                            <button type="submit" hidden="hidden" class="btn btn-round btn-success btn-sm" id="_save_name_btn">Save</button>
+                                                            <button type="button" hidden="hidden" class="btn btn-round btn-light btn-sm" id="_close_name_btn">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                Full Name: <br><span id="_full_name" class="font-23 fw-600"> </span> &nbsp; <button class="btn btn-light rounded btn-sm" id="_edit_full_name"> <i class="uil-edit text-success"></i></button>
                                             </div>
 
                                             <div class="mt-2">

@@ -17,6 +17,19 @@ class Ledger_model extends CI_Model {
 	    }
 	    return $ref_no;
 	}
+
+	public function generateManualProcessRefNo ( $length = 9) {
+	    $characters = '0123456789ABCDEF';
+	    $charactersLength = strlen($characters);
+	    $randomString = '';
+	    for ($i = 0; $i < $length; $i++) {
+	        $randomString .= $characters[rand(0, $charactersLength - 1)];
+	    }
+	    $ref_no = '100MFR'.$randomString;
+
+	    return $ref_no;
+	}
+
 	public function generateTxRefNo ( $length = 6) {
 	    $characters = '0123456789';
 	    $charactersLength = strlen($characters);
@@ -121,7 +134,16 @@ class Ledger_model extends CI_Model {
 	public function getWalletBalance(){
 		if (isset($this->session->user_id)) {
 			$userData = $this->db->SELECT('status')->WHERE('user_id', $this->session->user_id)->GET('user_tbl')->row_array();
-			if ($userData['status'] == 'disabled') {
+			$site_settings = $this->db->GET('site_settings_tbl')->row_array();
+			if ($site_settings['withdrawal'] == 'disabled') {
+				$query = $this->db->SELECT('balance')
+					->WHERE('user_code',$this->session->user_code)
+					->WHERE('type','main')
+					->GET('wallet_tbl')->row_array();
+				$balance = '₱ '.number_format($query['balance'], 2);
+				return array('status'=>'withdrawal_disabled', 'balance'=>$balance,);
+			}
+			else if ($userData['status'] == 'disabled') {
 				$query = $this->db->SELECT('balance')
 					->WHERE('user_code',$this->session->user_code)
 					->WHERE('type','main')
@@ -625,5 +647,183 @@ class Ledger_model extends CI_Model {
 			return $this->db->WHERE('status','pending')->OR_WHERE('status','processing')->GET('withdraw_request_tbl')->num_rows();
 		}
 	}
+	public function updateWebsiteWithdrawalStatus(){
+		if (isset($this->session->admin)) {
+			$status = $this->input->get('status');
 
+			$dataArr = array('withdrawal'=>$status);
+
+			$this->db->UPDATE('site_settings_tbl', $dataArr);
+
+			$activity_log = array(
+				'user_id'=>$this->session->user_id, 
+				'message_log'=>'System Notice: Withdrawal Status Updated to "'.ucwords($status).'"',
+				'ip_address'=>$this->input->ip_address(), 
+				'platform'=>$this->agent->platform(), 
+				'browser'=>$this->agent->browser(),
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertActivityLog($activity_log);
+
+			$activity_log = array(
+				'user_id'=>$this->session->user_id, 
+				'message_log'=>'Withdrawal Status Updated to "'.ucwords($status).'"',
+				'created_at'=>date('Y-m-d H:i:s')
+			); 
+			$this->insertSiteSettingsLog($activity_log);
+
+
+			$response['status'] = 'success';
+	    	$response['message'] ='Withdrawal Status changed to '.ucwords($status).'!';
+			return $response;
+		}
+	}
+	public function insertSiteSettingsLog ($activity_log) {
+		$this->db->INSERT('site_settings_logs_tbl', $activity_log);
+	}
+	public function processFinanceRequest () {
+		if (isset($this->session->admin)) {
+			$user_code = $this->input->post('user_code');
+			$description = $this->input->post('description');
+			$wallet_type = $this->input->post('wallet_type');
+			$type = $this->input->post('type');
+			$amount = $this->input->post('amount');
+
+			$status = 1;
+			$userData = $this->db->WHERE('user_code', $user_code)->GET('user_tbl')->row_array();
+
+			if ($wallet_type == '') {
+				$response['status'] = 'failed';
+	    		$response['message'] ="Kindly choose a Wallet Type first! ";
+	    		$status = 0;
+			}
+
+			else if (empty($userData['user_code'])) {
+				$response['status'] = 'failed';
+	    		$response['message'] ="User doesn't exist. Please try again!";
+	    		$status = 0;
+			}
+			
+			else if ($type == '') {
+				$response['status'] = 'failed';
+	    		$response['message'] ="Type is required!";
+	    		$status = 0;
+			}
+			else if ($amount <= 0) {
+				$response['status'] = 'failed';
+	    		$response['message'] ="Amount should not be equal to zero";
+	    		$status = 0;
+			}
+			else if ($status == 1){
+				$ref_no = $this->generateManualProcessRefNo();
+
+				$getWalletData = $this->db->WHERE('user_code',$userData['user_code'])->WHERE('type', $wallet_type)->GET('wallet_tbl')->row_array();
+				# ADD OR DEDUCT WALLET BALANCE
+				if ($type == 'deduct') {
+					$final_amount = $getWalletData['balance'] - $amount;
+					$tmp_amnt = '-'.$amount;
+				}
+				else if ($type == 'add') {
+					$final_amount = $getWalletData['balance'] + $amount;
+					$tmp_amnt = $amount;
+				}
+
+				if (empty($getWalletData)) {
+					# INSERT NEW BALANCE IN WALLET TBL
+					$dataArr = array(
+						'user_code' => $user_code,
+						'balance' => $final_amount,
+						'type' => $wallet_type,
+						'created_at' => date('Y-m-d H:i:s'),
+					);
+					$this->db->INSERT('wallet_tbl', $dataArr);
+				}
+				else{
+					# UPDATE WALLET BALANCE TBL
+					$dataArr = array(
+						'balance' => $final_amount,
+					);
+					$this->db->WHERE('user_code',$userData['user_code'])->WHERE('type', $wallet_type)->UPDATE('wallet_tbl', $dataArr);
+				}
+				
+
+				# INSERT ACTIVITY LOG
+				$activity_log = array(
+					'user_id'=>$this->session->user_id, 
+					'message_log'=>'Wallet Notice: '.$description.' for User: <a target="_blank" href="'.base_url('user/overview/').$userData['user_code'].'">'.$userData['user_code'].'</a>',
+					'ip_address'=>$this->input->ip_address(), 
+					'platform'=>$this->agent->platform(), 
+					'browser'=>$this->agent->browser(),
+					'created_at'=>date('Y-m-d H:i:s')
+				); 
+				$this->insertActivityLog($activity_log);
+
+				# INSERT WALLET ACTIVITY
+				$txDataArr = array(
+					'reference_no'=> $ref_no,
+					'user_code'=> $userData['user_code'],
+					'amount'=>$tmp_amnt,
+					'activity'=>$description,
+					'created_at'=>date('Y-m-d H:i:s'),
+				);
+				$this->db->INSERT('wallet_activity_tbl', $txDataArr);
+
+				# INSERT TRANSACTION ACTIVITY
+				$txDataArr = array(
+					'reference_no'=>$ref_no,
+					'activity'=>'Wallet Notice: '.$description.' for User: <a target="_blank" href="'.base_url('user/overview/').$userData['user_code'].'">'.$userData['user_code'].'</a>',
+					'created_at'=>date('Y-m-d H:i:s')
+				);
+				$this->db->INSERT('transaction_tbl', $txDataArr);
+				$response['status'] = 'success';
+	    		$response['message'] ="Request Successfully Processed!";
+			}
+
+			return $response;
+		}
+		else{
+			$response['status'] = 'error';
+	    	$response['message'] ="Action Not Allowed!";
+			return $response;
+		}
+	}
+	public function getWalletRefNoData(){
+		if (isset($this->session->user_id)) {
+			$ref_no = $this->input->get('ref_no');
+
+			$query = $this->db->WHERE('reference_no', $ref_no)
+				->ORDER_BY('created_at','desc')
+				->GET('wallet_activity_tbl')->result_array();
+
+			$result = array();
+
+			foreach($query as $q){
+				if (substr($q['amount'], 0 , 1) == '-') {
+					$amt = '- ₱ '.number_format(substr($q['amount'], 1), 2);
+					$type = 'sub';
+				}
+				else{
+					$amt = '+ ₱ '.number_format($q['amount'], 2);
+					$type = 'add';
+				}
+
+				if ($q['activity'] == 'Direct Referral Bonus') {
+					$act = 'Direct Referral Bonus';
+				}
+				else if($q['activity'] == ''){
+					
+				}
+				$array = array(
+					'reference_no'=>$q['reference_no'],
+					'amount'=>$amt,
+					'activity'=>$q['activity'],
+					'type'=>$type,
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+					'updated_at'=>date('m/d/Y h:i A', strtotime($q['updated_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+		}
+	}
 }

@@ -137,7 +137,7 @@ function displayUsersList (count, result) {
 						        +'Action'
 						    +'</button>'
 						    +'<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">'
-						        +'<a class="dropdown-item" href="#" onclick="viewInfo(\''+result[i].user_code+'\')">View Info</a>'
+						        +'<a class="dropdown-item" href="#view_info" onclick="viewInfo(\''+result[i].user_code+'\')">View Info</a>'
 						        +'<a class="dropdown-item" target="_blank" href="'+base_url+'user/overview/'+result[i].user_code+'">View Stats</a>'
 						        // +'<a class="dropdown-item" href="#">Edit</a>'
 						        // +'<a class="dropdown-item" href="#" onclick="changePackage(\''+res.result[i].user_code+'\')">Change Package</a>'
@@ -579,14 +579,15 @@ function viewInfo(user_id) {
 			$("#_package_wrapper").html('')
             $("#_referrer_wrapper").html('')
 		}
-
 		$("#_modal_title").text(res.data.name+' Information')
+		$("#_input_fname").val(res.data.fname)
+		$("#_input_lname").val(res.data.lname)
 		$("#_full_name").text(res.data.name)
 		$("#_user_id").text(res.data.user_code)
 		$("#_mobile_number").text(res.data.mobile_number)
 		$("#_email_address").text(res.data.email_address)
 		$("#_address").text(res.data.address)
-
+		$("#_input_user_code").val(res.data.user_code)
 
 		$("#user_info_modal").modal('show');
 		$("#loader").attr('hidden','hidden');
@@ -595,6 +596,57 @@ function viewInfo(user_id) {
 
 	})
 }
+$("#_edit_full_name").on('click', function() {
+	$("#_name_btns_div button").removeAttr('hidden', 'hidden')
+	$("#_input_fname").attr('type','text')
+	$("#_input_lname").attr('type','text')
+});
+$("#_close_name_btn").on('click', function() {
+	$("#_name_btns_div button").attr('hidden', 'hidden')
+	$("#_input_fname").attr('type','hidden')
+	$("#_input_lname").attr('type','hidden')
+})
+$("#_edit_full_name_form").on('submit', function(e) {
+	e.preventDefault();
+	$("#_save_name_btn").attr('disabled','disabled').text('Saving...');
+	_fname = $("#_input_fname").val();
+	_lname = $("#_input_lname").val();
+	_user_code = $("#_input_user_code").val();
+
+	if (!_fname || _fname == '') {
+		$.NotificationApp.send("Oh Snap!","First Name is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+	if (!_lname || _lname == '') {
+		$.NotificationApp.send("Oh Snap!","Last Name is required!","top-right","rgba(0,0,0,0.2)","error");
+		return false;
+	}
+
+	$.ajax({
+		url: base_url+'api/v1/user/_update_user_full_name',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {fname:_fname, lname:_lname, user_code:_user_code}
+	})
+	.done(function(res) {
+		if (res.data.status == 'success') {
+			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$("#_name_btns_div button").attr('hidden', 'hidden');
+			$("#_input_fname").attr('type','hidden');
+			$("#_input_lname").attr('type','hidden');
+			$("#_full_name").text(_fname+' '+_lname)
+
+		}
+		else{
+			$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+		}
+		$("#loader").attr('hidden','hidden');
+		newCsrfData();
+		$("#_save_name_btn").removeAttr('disabled','disabled').text('Save');
+	})
+	.fail(function(){
+	})
+})
 $("#_user_payment_status_form").on('submit', function(e) {
 	status = $('#_user_payment_status').val();
 

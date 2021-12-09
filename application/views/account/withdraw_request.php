@@ -26,7 +26,7 @@
                                     <div class="card-body">
                                         <div class="row mb-2">
                                             <div class="col-sm-6">
-                                                
+                                                <button class="btn btn-success rounded mb-2" id="_manual_process_btn">Manual Process </button>
                                             </div>
 
                                             <div class="col-sm-6">
@@ -35,6 +35,10 @@
                                                     <button type="button" class="btn btn-light mb-2">Export</button>
                                                 </div>
                                             </div><!-- end col-->
+
+                                            <div class="font-12">
+                                                *Manual Process can <b>Add</b> or <b>Deduct</b> Wallet Balance on every user depends on its purpose.
+                                            </div>
                                         </div>
                 
                                         <div class="mt-3">
@@ -132,6 +136,92 @@
                         </div><!-- /.modal -->
                         
 
+                        <div id="_manual_process_modal" data-bs-backdrop="static" data-bs-keyboard="false" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg ">
+                                <div class="modal-content">
+                                    <div class="modal-header bg-success">
+                                        <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-money-withdrawal "></i> <span id="_modal_title">Processing Finance</span></h4>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    </div>
+                                    <form id="_finance_manual_process_form">
+                                        <div class="modal-body mb-3">
+                                            <div class="alert alert-light bg-light text-dark border-0" role="alert">
+                                               Here you can Add and Deduct users' balance.
+                                            </div>
+
+
+                                            <div class="dropdown mt-3">
+                                                <label>Search User</label>
+                                                <input type="text" class="form-control dropdown-toggle mt-1" id="search_code_name" name="" placeholder="Search Name/User ID/Mobile number">
+                                                 <div class="dropdown-menu dropdown-menu-animated dropdown-lg search-user-dropdown" id="search_user_dropdown">
+                                                    <div id="_member_search" class="mb-1 mt-1">
+                                                        <!-- item-->
+                                                    </div>
+                                                </div>
+                                                <button type="button" id="_search_user_finance_btn" class="btn btn-success rounded mt-1 float-right"><i class="uil-search"></i> Search</button>
+                                                <button type="button" class="btn btn-success rounded mt-1 float-right disabled"><i class="mdi mdi-qrcode"></i> Scan QR Code</button>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mt-2 col-lg-6">
+                                                    <label>User's Name</label>
+                                                    <input type="text" class="form-control" id="_user_name" name="user_name" placeholder="User Full Name" readonly="">
+                                                </div>
+
+                                                <div class="mt-2 col-lg-6">
+                                                    <label>User ID</label>
+                                                    <input type="text" class="form-control" id="_user_code" name="user_code" placeholder="User ID" readonly="">
+                                                </div>
+                                            </div>
+
+                                            <hr>
+
+                                            <div class="mt-3">
+                                                <label>Description</label>
+                                                <select class="form-control select2" name="description" data-toggle="select2" id="_select_description">
+                                                    <option disabled="" selected="">Select Description</option>
+                                                    <option value="System Notice: Fix for Indirect Referral Bonus">System Fix for Indirect Referral Bonus</option>
+                                                    <option value="System Notice: Fix for Unilevel Bonus">System Fix for Unilevel Bonus</option>
+                                                    <option value="System Notice: Fix for Main Wallet Balance">System Fix for Main Wallet Balance</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <label>Wallet Type</label>
+                                                <select class="form-control select2" name="wallet_type" data-toggle="select2" id="_wallet_type">
+                                                    <option disabled="">Select Wallet Type</option>
+                                                    <option value="main" >Main Wallet</option>
+                                                    <option value="indirect_referral" >Indirect Referral</option>
+                                                    <option value="unilevel_bonus" >Unilevel Bonus</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="mt-3 col-lg-6">
+                                                    <label> Type</label>
+                                                    <select class="form-control select2 " name="type" data-toggle="select2" id="_type">
+                                                        <option disabled="" selected="">Select Type</option>
+                                                        <option value="add" >Add</option>
+                                                        <option value="deduct" >Deduct</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="mt-3 col-lg-6">
+                                                    <label>Amount</label>
+                                                    <input type="number" class="form-control" id="_amount" name="amount" placeholder="Amount to be added or deduct..." value="500">
+                                                </div>
+
+                                            </div>
+                                            <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-success rounded mt-1" id="_process_finance_btn">Process </button>
+                                            <button type="button" class="btn rounded btn-light" data-bs-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal --> 
                     </div> <!-- container -->
 
                 </div> <!-- content -->

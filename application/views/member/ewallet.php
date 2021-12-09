@@ -19,6 +19,13 @@
                         </div>     
                         <!-- end page title --> 
 
+                        <?php if ($siteSetting['withdrawal'] == 'disabled'){ ?>
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <strong>Notice: </strong> Website Withdrawal has been Disabled as of the moment! Kindly wait for further announcement! Thank you!
+                            </div>
+                        <?php } ?>
+
                         <?php if ($userData['status'] == 'disabled'){ ?>
                             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                 <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -319,6 +326,72 @@
                                 <button type="button" class="btn rounded btn-light font-15" data-bs-dismiss="modal">Close</button>
                             </div>
                         </form>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+
+            <div id="_show_wallet_activity_modal" class="modal fade" tabindex="" role="dialog" aria-labelledby="fullWidthModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-lg ">
+                    <div class="modal-content">
+                        <div class="modal-header bg-success">
+                            <h4 class="modal-title c-white" id="fullWidthModalLabel"><i class="uil-money-withdrawal"></i> <span id="_wallet_activity_title">Wallet Activity</span></h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                        <div class="container-fluid">
+                            <div class="card mt-2">
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <h1 id="_wallet_amnt"></h1>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="margin-top: -15px;">
+                                <div class="card-body">
+                                    <div class=" mt-2">
+                                        <table class="table mb-0 order-item-tbl">
+                                            <thead class="table-light">
+                                            
+                                            </thead>
+                                            <tbody id="">
+                                                <tr>
+                                                    <td>Reference No: </td>
+                                                    <td><span class="font-14" id="_ref_no"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Create Time: </td>
+                                                    <td><span class="font-14" id="_created_at"></span></td>
+                                                </tr>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card" style="margin-top: -15px;">
+                                <div class="card-body">
+                                    <h4 class="font-15 fw-500">Details: </h4>
+                                    <div class="table-responsive mt-2">
+                                        <table class="table mb-0 order-item-tbl">
+                                            <thead class="table-light">
+                                            <tr>
+                                        <th>Date & Time</th>
+                                            <th>Activity</th>
+                                        </tr>
+                                        </thead>
+                                            <tbody id="_event_logs">
+                                                
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn rounded btn-light font-15" data-bs-dismiss="modal">Close</button>
+                        </div>
                     </div><!-- /.modal-content -->
                 </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->

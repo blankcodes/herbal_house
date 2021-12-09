@@ -687,4 +687,8 @@ class Members extends CI_Controller {
         $data['count'] = $all_count;
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+    public function updateUserFullName(){
+        $data = $this->member_model->updateUserFullName();
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
 }

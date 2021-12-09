@@ -116,9 +116,9 @@
                         </li>
                         <?php } ?>
                         <li class="side-nav-item">
-                            <a href="<?=base_url()?>settings/maintenance" class="side-nav-link">
+                            <a href="<?=base_url()?>website-settings" class="side-nav-link">
                                 <i class="uil-cog"></i>
-                                <span> Maintenance </span>
+                                <span> Website Settings </span>
                             </a>
                         </li>
                        

@@ -330,4 +330,31 @@ class My_account_model extends CI_Model {
 			return $result;
     	}
     }
+
+    public function getSettingsWithdrawalLogs ($row_per_page, $row_no) {
+    	if (isset($this->session->admin)) {
+    		$query = $this->db->SELECT('ut.username, sslt.*')
+    			->FROM('site_settings_logs_tbl as sslt')
+    			->JOIN('user_tbl as ut', 'ut.user_id = sslt.user_id')
+    			->ORDER_BY('created_at', 'DESC')
+				->LIMIT($row_per_page, $row_no)
+				->GET()->result_array();
+			$result = array();
+
+			foreach($query as $q){
+				$array = array(
+					'username'=>$q['username'],
+					'message_log'=> $q['message_log'],
+					'created_at'=>date('m/d/Y h:i A', strtotime($q['created_at'])),
+				);
+				array_push($result, $array);
+			}
+			return $result;
+    	}
+    }
+    public function getSettingsWithdrawalLogsCount () {
+    	if (isset($this->session->admin)) {
+    		return $this->db->GET('site_settings_logs_tbl')->num_rows();
+    	}
+    }
 }

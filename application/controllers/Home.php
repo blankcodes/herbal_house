@@ -7,6 +7,7 @@ class Home extends CI_Controller {
 	function __construct (){
         parent::__construct();
         $this->load->model('csrf_model');
+        $this->load->model('site_settings_model');
         $this->load->model('products_model');
         $this->load->model('my_account_model');
         $this->load->model('cart_model');
@@ -238,6 +239,35 @@ class Home extends CI_Controller {
 			$this->load->view('account/leftside-menu');
 			$this->load->view('account/navbar');
 			$this->load->view('account/maintenance');
+			$this->load->view('widget');
+			$this->load->view('account/footer');
+		}
+		else if(isset($_COOKIE['remember_login'])) {
+    		$userData = $this->login_model->checkCookie($_COOKIE['remember_login']); //check if cookie token is the same on server
+    		
+    		if (isset($userData)) {
+    			$this->loginViaCookieRememberLogin($userData);
+    		}
+    		else{
+    			$this->logoutUnset();
+    		}
+		}
+		else{
+			header('location:'.base_url('/login?').uri_string());
+		}
+    }
+    public function webSettings(){
+    	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+    	if (isset($this->session->admin)) {
+			$data['title'] = 'Website Settings';
+            $data['siteSetting'] = $this->site_settings_model->siteSettings();
+			$data['page'] = 'website_settings';
+			$data['userData'] = $this->my_account_model->getUserData();
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('account/navbar');
+			$this->load->view('account/web_settings');
 			$this->load->view('widget');
 			$this->load->view('account/footer');
 		}
@@ -520,6 +550,7 @@ class Home extends CI_Controller {
 	 public function withdrawRequest (){
 	 	$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
 		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+		$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
 		if ($this->session->user_type == 'admin') {
             $data['userData'] = $this->my_account_model->getUserData();
             $data['page'] = 'withdraw_request';
@@ -967,6 +998,7 @@ class Home extends CI_Controller {
 		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if (isset($this->session->user_id)) {
             $data['userData'] = $this->my_account_model->getUserData();
+            $data['siteSetting'] = $this->site_settings_model->siteSettings();
 			$data['csrf'] = $this->csrf_model->getCsrfData(); /* get CSRF data */
             $data['page'] = 'wallet';
             $data['title'] = 'Wallet';

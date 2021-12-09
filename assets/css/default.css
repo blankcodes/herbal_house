@@ -2091,3 +2091,6 @@ body{
     opacity: 1;
     border: none;
 }
+.cursor-pointer{
+  cursor: pointer;
+}

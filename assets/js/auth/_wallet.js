@@ -26,6 +26,9 @@ $("#_withdraw_request_btn").on('click', function() {
 		else if (res.data.status == 'disabled_account') {
 			$.NotificationApp.send("Oh, Snap!","Account is currently Disabled! Withdrawal is not allowed!","top-right","rgba(0,0,0,0.2)","error");
 		}
+		else if (res.data.status == 'withdrawal_disabled') {
+			$.NotificationApp.send("Oh, Snap!","Withdrawal Status is Disabled!","top-right","rgba(0,0,0,0.2)","error");
+		}
 	})
 	.fail(function() {
 		console.log("error");
@@ -47,6 +50,7 @@ function getWalletBalance() {
 		}
 		else{
 			$("#_withdraw_request_btn").attr('disabled','disabled');
+			$("#_tranfer_bal_btn").attr('disabled','disabled');
 		}
 	})
 	.fail(function() {
@@ -92,7 +96,7 @@ function getWalletActivity(page_no){
 		$("#_wallet_activity_pagination").html(res.pagination)
 		if (res.result.length > 0) {
 			for(var i in res.result) {
-				string += '<tr>'
+				string += '<tr class="cursor-pointer" onclick="getWalletActivityRef(\''+res.result[i].ref_no+'\')">'
 	                    
 	                    +'<td>'
 	                        +'<span class="font-14">'+res.result[i].date+'</span>'
@@ -387,3 +391,53 @@ $("#_transfer_amnt_form").on('submit', function(e){
 	})
 
 })
+function getWalletActivityRef (ref_no) {
+	$("#loader").removeAttr('hidden','hidden');
+	$.ajax({
+		url: base_url+'api/v1/wallet/_get_wallet_ref_no_data',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {ref_no:ref_no},
+		statusCode: {
+		403: function() {
+			  	$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+			}
+		}
+	})
+	.done(function(res) {
+		$("#_wallet_activity_title").text('#'+ref_no+' Wallet Activity')
+		string = '';
+		type = '';
+		if (res.data.length > 0) {
+
+			for(var i in res.data) {
+				if (res.data[i].type == 'add') {
+					type = 'success';
+				}
+				else{
+					type = '';
+				}
+				created_at = res.data[i].created_at
+				amount = res.data[i].amount
+				string += '<tr>'
+	                    +'<td>'
+	                        +'<span class="font-14">'+res.data[i].created_at+'</span>'
+	                    +'</td>'
+	                    +'<td class="table-user">'
+	                        +'<a href="javascript:void(0);" class="text-body"font-14">'+res.data[i].activity+'</a>'
+	                    +'</td>'
+	           	+'</tr>';
+			}
+		}
+		$("#_ref_no").text(ref_no)
+		$("#_created_at").text(created_at)
+		$("#_wallet_amnt").html('<span class="text-'+type+'">'+amount+'</span>')
+		$("#_event_logs").html(string);
+		$("#_show_wallet_activity_modal").modal('toggle');
+		$("#loader").attr('hidden','hidden');
+	})
+	.fail(function() {
+		console.log("error");
+		$("#loader").attr('hidden','hidden');
+	})
+}

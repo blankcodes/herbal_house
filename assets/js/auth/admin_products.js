@@ -4,6 +4,9 @@ var page;
 if (page == 'admin_products') {
 	showProducts(1);
 }
+else if (page == 'rooms') {
+	showProducts(1);
+}
 else if (page == 'admin_products_category') {
 	showProductsCategory(1);
 }
@@ -310,7 +313,7 @@ $("#_add_product_cat_form").on('submit', function(e) {
 	})
 })
 function showProductCategorySelect() {
-	$("#product_category").html('Loading...');
+	$("#_room_category").html('Loading...');
 	$.ajax({
 		url: base_url+'products/getProductCategory',
 		type: 'GET',

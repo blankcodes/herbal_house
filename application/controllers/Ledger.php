@@ -515,4 +515,16 @@ class Ledger extends CI_Controller {
     public function insertNewNotification ($notif_log) {
         $this->db->INSERT('notification_tbl', $notif_log);
     }
+    public function updateWebsiteWithdrawalStatus() {
+        $data = $this->ledger_model->updateWebsiteWithdrawalStatus();        
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function processFinanceRequest() {
+        $data = $this->ledger_model->processFinanceRequest();        
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
+    public function getWalletRefNoData() {
+        $data = $this->ledger_model->getWalletRefNoData();        
+        $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
 }

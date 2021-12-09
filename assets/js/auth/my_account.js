@@ -37,6 +37,10 @@ else if (page == 'user_overview') {
 else if (page == 'activity_logs') {
 	getActivityLogs(1);
 }
+else if (page == 'website_settings') {
+	getSettingsWithdrawalStatusLogs(1);
+}
+
 $(".close-jq-toast-single").on('click', function() {
 	$("#_alert_web_message").fadeOut(500)
 })
@@ -245,7 +249,7 @@ function showWithdrawRequest(page_no){
 				if (res.result[i].status == 'complete') {
 					btn_stat = 'success';
 					option_list = '';
-					option_text = '--';
+					option_text = 'No action needed';
 				}
 				else if (res.result[i].status == 'pending') {
 					btn_stat = 'primary';
@@ -255,7 +259,7 @@ function showWithdrawRequest(page_no){
 				else if (res.result[i].status == 'closed') {
 					btn_stat = 'danger';
 					option_list = '';
-					option_text = '--';
+					option_text = 'No action needed';
 				}
 				else if (res.result[i].status == 'processing') {
 					btn_stat = 'warning';
@@ -535,6 +539,7 @@ function showInDirectList(level, user_code, page_no){
 
 				string +='<tr>'
 	                    +'<td>'+res.result[i].user_code+'</td>'
+	                    +'<td>'+res.result[i].username+'</td>'
 	                    +'<td><a href="'+base_url+'user/overview/'+res.result[i].user_code+'">'+res.result[i].name+'</a></td>'
 	                    +'<td>'+res.result[i].created_at+'</td>'
 				+'</tr>'
@@ -841,3 +846,208 @@ function showCodeHistory(page_no, user_code) {
 		$("#_code_history_tbl").html('<tr class="text-center"><td colspan="6">No Records Found!</td></tr>');
 	})
 }
+function webWithdrawalStatus(status){
+	sweetAlert({
+		title:'Please Confirm!',
+		text: "Change Withdrawal Status to "+status+" ?",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#3699ff',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/withdrawal/_update_status',
+			type: 'GET',
+			dataType: 'JSON',
+			data: {status:status}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			}
+			else if (res.data.status == 'failed') {
+				$.NotificationApp.send("Error!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			else{
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			if(status == 'disabled') {
+				$("#_withdrawal_status_badge").removeClass('bg-success').text('Enabled');
+				$("#_withdrawal_status_badge").addClass('bg-danger').text('Disabled');
+			}
+			else{
+				$("#_withdrawal_status_badge").addClass('bg-success').text('Disabled');
+				$("#_withdrawal_status_badge").removeClass('bg-danger').text('Enabled');
+			}
+			getSettingsWithdrawalStatusLogs(1)
+			$("#loader").attr('hidden','hidden');
+		})
+		$("#loader").attr('hidden','hidden');
+
+	});
+}
+$('#_manual_process_btn').on('click', function() {
+	$("#_manual_process_modal").modal('toggle');
+})
+
+$("#_search_user_finance_btn").on('click', function(e) {
+	e.preventDefault();
+	keyword = $("#search_code_name").val();
+
+	if (!keyword || keyword == '' || keyword == ' ') {
+		return false;
+	}
+	$.ajax({
+		url: base_url+'api/v1/users/_get',
+		type: 'GET',
+		dataType: 'JSON',
+		data: {keyword:keyword}
+	})
+	.done(function(res) {
+		string = '';
+		if (res.data.status == 'success') {
+			for(var i in res.data.search){
+				string+='<a href="#" onclick="searchUserCode(\''+res.data.search[i].user_code+'\',\''+res.data.search[i].name+'\')" class="dropdown-item notify-item"><span id="user_name"> '+res.data.search[i].name+'</span> <span>(#'+res.data.search[i].user_code+')</span></a>'
+			}
+		}
+		else if(res.data.status == 'no_record'){
+			string = '<span class="margin-left-10">'+res.data.message+'</span>'
+		}
+		$("#search_user_dropdown").show()
+		$("#_member_search").html(string);
+	})
+	.fail(function() {
+		string = '<span class="margin-left-10">No records found!</span>'
+		$("#_member_search").html(string);
+	})
+});
+function searchUserCode(search_user_code, name){
+	$("#search_code_name").val('');
+	$("#_user_name").val(name);
+	$("#_user_code").val(search_user_code)
+	$("#search_user_dropdown").hide()
+}
+$("#_finance_manual_process_form").on('submit', function(e) {
+	e.preventDefault();
+
+	formData = new FormData(this);
+	_user_code = $("#_user_code").val();
+	_type = $("#_type").val();
+	_select_description = $("#_select_description").val();
+	_wallet_type = $("#_wallet_type").val();
+	_amount = $("#_amount").val();
+
+
+	if (!_user_code || _user_code == '') {
+		$.NotificationApp.send("Oh, Snap!", "Please select a User!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	if (!_type || _type == '') {
+		$.NotificationApp.send("Oh, Snap!", "Please select a Type!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	if (!_select_description || _select_description == '') {
+		$.NotificationApp.send("Oh, Snap!", "Please select a description!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	if (!_wallet_type || _wallet_type == '') {
+		$.NotificationApp.send("Oh, Snap!", "Please select a Wallet Type!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	if (!_amount || _amount == '') {
+		$.NotificationApp.send("Oh, Snap!", "Amount is required!","top-right","rgba(0,0,0,0.2)","warning");
+		return false;
+	}
+
+	sweetAlert({
+		title:'Please Confirm!',
+		text: "Process this request?",
+		type:'warning',
+		showCancelButton: true,
+		confirmButtonColor: '#05cb62',
+		cancelButtonColor: '#98a6ad',
+		confirmButtonText: 'Yes, proceed!'
+	},function(isConfirm){
+		('ok');
+	});
+	$('.swal2-confirm').click(function(){
+		$("#loader").removeAttr('hidden','hidden');
+		$.ajax({
+			url: base_url+'api/v1/finance/_process',
+			type: 'POST',
+			dataType: 'JSON',
+			data: formData,
+			cache       : false,
+		    contentType : false,
+		    processData : false,
+		    statusCode: {
+				403: function() {
+					$.NotificationApp.send("Oh Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+				}
+			}
+		})
+		.done(function(res) {
+			if (res.data.status == 'success') {
+				$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+				$('#_manual_process_modal').modal('hide');
+			}
+			else if(res.data.status == 'failed') {
+				$.NotificationApp.send("Oh, Snap!",res.data.message,"top-right","rgba(0,0,0,0.2)","error");
+			}
+			else{
+				$.NotificationApp.send("Oh, Snap!","Something went wrong! Refresh this page and try again!","top-right","rgba(0,0,0,0.2)","error");
+			}
+			newCsrfData();
+			$("#loader").attr('hidden','hidden');
+		})
+		.fail(function() {
+			newCsrfData();
+			console.log('error')
+		})
+
+
+	});
+
+
+})
+
+function getSettingsWithdrawalStatusLogs(page_no){
+	$.ajax({
+		url: base_url+'api/v1/logs/_get_settings_withdrawal', type: 'GET', dataType: 'JSON', data: {page_no:page_no}
+	})
+	.done(function(res) {
+		string = '';
+		$("#_withdrawal_status_pagination").html(res.pagination);
+		if (parseInt(res.count) > 0) {
+			for(var i in res.result) {
+				string +='<tr>'
+                    +'<td>'+res.result[i].username+'</td>'
+                    +'<td>'+res.result[i].message_log+'</td>'
+                    +'<td>'+res.result[i].created_at+'</td>'
+       			+'</tr>'
+			}
+		}
+        else{
+			string = '<tr class="text-center"><td colspan="3">No records found!</td></tr>';
+        }
+		$("#_withdrawal_status_tbl").html(string);
+		
+	})
+	.fail(function() {
+		$("#activity_logs_tbl").html('<tr class="text-center"><td colspan="7">No Records found!</td></tr>');
+	})
+}
+$('#_withdrawal_status_pagination').on('click','a',function(e){
+    e.preventDefault(); 
+    var page_no = $(this).attr('data-ci-pagination-page');
+    getSettingsWithdrawalStatusLogs(page_no, user_code);
+});
