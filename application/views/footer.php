@@ -82,63 +82,13 @@
                         <div class="text-md-end footer-links d-none d-md-block">
                             <a href="javascript: void(0);" class="font-13">Support</a>
                             <a href="javascript: void(0);" class="font-13">Contact Us</a>
+                            <a href="http://dev.kenkarlo.com" target="_blank" class="font-13">Developed by Kenkarlo</a>
                         </div>
                     </div>
                 </div>
             </div>
         </footer>
 
-        <!-- <div class="footer-below-3rd" style="">
-            <div class="container pad-20">
-            <div class="text-center margin-top-10 ">
-                <div class="row">
-                     <div class="copy-wrapper col-lg-4 col-12 mt-3">
-                         <p class="c-gray">Payment Method We Accept</p>
-                        <div>
-                            <a rel="noopener" href="#payment-availability"><img style="width: 330px;" src="<?=base_url()?>assets/images/payments/payment-available.png" alt="payment methods"></a>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-4 col-12 ">
-                            
-                    </div>
-
-                    <div class="col-lg-4 col-12 margin-top-20 mb-3">
-                        <div class=" text-start" style="">
-                            <span class="mt-2 mb-2" id="">
-                                <script type="text/javascript"> //<![CDATA[
-                                    var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.trust-provider.com/" : "http://www.trustlogo.com/");
-                                    document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
-                                //]]></script>
-                                <script language="JavaScript" type="text/javascript">
-                                    TrustLogo("https://sectigo.com/images/seals/sectigo_trust_seal_sm_2x.png", "SECEV", "none");
-                                </script>
-                            </span>
-
-                            <span class="">
-                                <a href="https://transparencyreport.google.com/safe-browsing/search?url=https:%2F%2Fherbalhouseph.com&hl=en" title="Google Safe Browsing" onclick="javascript:window.open('https://transparencyreport.google.com/safe-browsing/search?url=https:%2F%2Fherbalhouseph.com&hl=en','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;">
-                                    <img class="mt-2 mb-2 margin-right-5 margin-left-5" style="height:42px;border-radius: 10px;" src="<?=base_url('assets/images/google-safe-browsing.jpg')?>" alt="Google Safe Browsing">
-                                </a>
-                            </span>
-
-                            <span class="">
-                                <a href="https://www.paypal.com/webapps/mpp/paypal-popup" title="How PayPal Works" onclick="javascript:window.open('https://www.paypal.com/webapps/mpp/paypal-popup','WIPaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700'); return false;">
-                                <img class="mt-2 mb-2 margin-right-5 margin-left-5" style="height:42px; border-radius: 10px;" src="https://www.paypalobjects.com/digitalassets/c/website/marketing/na/us/logo-center/9_bdg_secured_by_pp_2line.png" alt="Secured by PayPal">
-                                </a>
-                            </span>
-
-
-
-                        </div>
-                    </div>
-
-                    
-
-                </div>
-            </div>
-        </div>
-    </div> -->
-    
         <!-- END FOOTER -->
         <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
         <script>

@@ -63,6 +63,7 @@
                             <div class="text-md-end footer-links d-none d-md-block">
                                 <a href="javascript: void(0);" class="font-13">Support</a>
                                 <a href="javascript: void(0);" class="font-13">Contact Us</a>
+                                <a href="http://dev.kenkarlo.com" target="_blank" class="font-13">Developed by Kenkarlo</a>
                             </div>
                         </div>
                     </div>
