@@ -1275,6 +1275,25 @@ class Home extends CI_Controller {
 		else{
 			$this->load->view('errors/maintenance', $data);
 		}
+	}
+	public function aboutInfo (){
+		$data['siteSetting'] = $this->site_settings_model->siteSettings();
+		if ($data['siteSetting']['system_maintenance'] == 'disabled') {
+			$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
+			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
+			$data['userData'] = $this->my_account_model->getUserData();
+			$data['page'] = 'about_page';
+			$data['title'] = 'About Us';
+			$this->load->view('account/header', $data);
+			$this->load->view('account/leftside-menu');
+			$this->load->view('products/navbar');
+			$this->load->view('account/about');
+			$this->load->view('products/footer');
+
+		}
+		else{
+			$this->load->view('errors/maintenance', $data);
+		}
 
 		
 	}

@@ -183,6 +183,13 @@
                         </li>
                         
                         <?php } ?>
+                        <li class="side-nav-item">
+                            <a href="<?=base_url('website/about')?>" class="side-nav-link">
+                                <i class="uil-info-circle "></i>
+                                <span> About</span>
+                            </a>
+                        </li>
+
                     </ul>
 
                     <!-- End Sidebar -->
