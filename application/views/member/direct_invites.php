@@ -109,6 +109,10 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div class="row mb-2">
+                                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                                <button type="button" class="btn-close font-12" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                Some affected users may show different or duplicate Invites list due to adjusting of the User level invites manually. Rest assured this is only a display error. Distribution of funds after an Encoding or purchase is correct and not to worry about..
+                                            </div>
                                             <div class="col-sm-4 mt-2">
                                                 <div class="text-sm-start">
                                                     <select class="form-control select2" name="" data-toggle="select2" id="_select_level" >
