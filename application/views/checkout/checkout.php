@@ -274,32 +274,7 @@
                                                                 </div>
                                                             </div> <!-- end row -->
 
-                                                            <!-- <h4 class="mt-4">Shipping Method</h4>
-
-                                                            <p class="text-muted mb-3">Fill the form below in order to
-                                                                send you the order's invoice.</p>
-
-                                                            <div class="row">
-                                                                <div class="col-md-6">
-                                                                    <div class="border p-3 rounded mb-3 mb-md-0">
-                                                                        <div class="form-check">
-                                                                            <input type="radio" id="shippingMethodRadio1" name="shippingOptions" class="form-check-input" checked>
-                                                                            <label class="form-check-label font-16 fw-bold" for="shippingMethodRadio1">Standard Delivery - FREE</label>
-                                                                        </div>
-                                                                        <p class="mb-0 ps-3 pt-1">Estimated 5-7 days shipping (Duties and tax may be due upon delivery)</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-md-6">
-                                                                    <div class="border p-3 rounded">
-                                                                        <div class="form-check">
-                                                                            <input type="radio" id="shippingMethodRadio2" name="shippingOptions" class="form-check-input">
-                                                                            <label class="form-check-label font-16 fw-bold" for="shippingMethodRadio2">Fast Delivery - $25</label>
-                                                                        </div>
-                                                                        <p class="mb-0 ps-3 pt-1">Estimated 1-2 days shipping (Duties and tax may be due upon delivery)</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div> -->
-                                                            <!-- end row-->
+                                                           
 
                                                             <div class="row mt-4">
                                                                 <div class="col-sm-6">
@@ -342,8 +317,7 @@
                                                     <div class="col-lg-8">
                                                         <h4 class="mt-2">Payment Selection</h4>
 
-                                                        <p class="text-muted mb-4">Fill the form below in order to
-                                                            send you the order's invoice.</p>
+                                                        <p class="text-muted mb-4">Choose your Payment to place your order.</p>
                                                         <form id="_complete_order_form">
                                                         <input type="hidden" name="<?=$csrf['name'];?>" value="<?=$csrf['hash'];?>" />
                                                         <div id="payment_wrapper">
