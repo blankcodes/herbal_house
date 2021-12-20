@@ -10,7 +10,14 @@ $("#hide_password").on('click', function() {
 	$(this).attr('hidden','hidden');
 	$("#show_password").removeAttr('hidden');
 })
-
+$("#_forgot_password").on('click', function() {
+	swal({
+		title: "Forgot Password",
+		text: "Please contact Admin to reset your password!",
+		icon: 'info',
+		button: "Okay",
+	});
+})
 $("#login_form").on('submit', function(e) {
 	e.preventDefault();
 	$("#login_btn").attr('disabled','disabled').text('Please wait...');

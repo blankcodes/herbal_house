@@ -78,7 +78,7 @@
                                     </div>
 
                                     <div class="text-center mt-1 mb-3">
-                                        <a href="#forgot_password">Forgot Password</a>
+                                        <button type="button" class="btn-link btn" id="_forgot_password">Forgot Password</button>
                                     </div>
 
                                 </form>
