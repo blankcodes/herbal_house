@@ -13,7 +13,7 @@ $("#hide_password").on('click', function() {
 $("#_forgot_password").on('click', function() {
 	swal({
 		title: "Forgot Password",
-		text: "Please contact Admin to reset your password!",
+		text: "Please contact the website Admin to reset your password!",
 		icon: 'info',
 		button: "Okay",
 	});
