@@ -161,7 +161,8 @@ class Products extends CI_Controller {
         $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
 	}
 	public function getShopProducts() {
-		if ($this->input->get('nonce') !== $this->session->_product_nonce || empty($this->input->get('nonce'))) {
+		if (empty($this->input->get('nonce'))) {
+		// if ($this->input->get('nonce') !== $this->session->_product_nonce || empty($this->input->get('nonce'))) {
 			$data['status'] = 405;
 			$data['response'] = 'Request is not allowed!';
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));
@@ -221,7 +222,8 @@ class Products extends CI_Controller {
 		}
 	}
 	public function getProductCategoryHome() {
-		if ($this->input->get('nonce') !== $this->session->_product_nonce || empty($this->input->get('nonce'))) {
+		if (empty($this->input->get('nonce'))) {
+		// if ($this->input->get('nonce') !== $this->session->_product_nonce || empty($this->input->get('nonce'))) {
 			$data['status'] = 405;
 			$data['response'] = 'Request is not allowed!';
 			$this->output->set_content_type('application/json')->set_output(json_encode($data));

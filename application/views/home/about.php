@@ -176,7 +176,7 @@
                             </li>
                             <?php } else { ?>
                             <li class="nav-item me-0">
-                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success btn-rounded text-uppercase padding-right-20 padding-left-20 d-none d-lg-inline-flex">
+                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success btn-rounded text-uppercase padding-right-20 padding-left-20 d-none d-lg-inline-flex pt-1 pb-1 btn-login">
                                    Login
                                 </a>
                             <?php } ?>
@@ -221,7 +221,7 @@
                                 </h1>
                                 <p class="mb-4 font-16 c-white">Herbal House is a 100% Filipino owned company based in Leyte particularly in Tacloban City. It is a company led by passionate and goal-driven young entrepreneurs that aims to help improve the health and wellness of every individual. </p>
 
-                                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=join_btn&utm_campaign=about_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Join Us Now <i class="mdi mdi-arrow-right"></i> </a>
+                                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=join_btn&utm_campaign=about_page')?>')" class="btn btn-success rounded font-15 k-btn">Join Us Now <i class="mdi mdi-arrow-right"></i> </a>
                             </div>
                         </div>
                         <div class="col-md-5 offset-md-2">

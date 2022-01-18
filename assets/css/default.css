@@ -1627,7 +1627,7 @@ body{
   }
   .mobile-nav-btn{
     text-align: center;
-    padding: 12px 5px;
+    padding: 7px 5px;
     font-size: 30px;
     cursor: pointer;
   }
@@ -1911,7 +1911,7 @@ body{
 }
 .index-pages{
   background:#fafbfe;
-  padding-top: 50px;
+  padding-top: 20px;
   padding-bottom: 50px;
   /*-webkit-transform: skewY(-2deg);*/
   /*transform: skewY(-2deg);*/
@@ -2093,4 +2093,18 @@ body{
 }
 .cursor-pointer{
   cursor: pointer;
+}
+.cart-icon-badge-top {
+   top: 30px !important;
+}
+.dripicons-cart .noti-icon{
+  color: #fff;
+}
+.btn-login{
+  letter-spacing: inherit;
+}
+.btn-login:hover{
+  background-color: #05ac54 !important;
+  border-color: #05ac54 !important;
+  transition: .5s background-color;
 }

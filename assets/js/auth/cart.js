@@ -33,7 +33,7 @@ $("#_add_to_cart").on('click', function(e) {
 	})
 	.done(function(res) {
 		if (res.data.status == 'success') {
-			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$.NotificationApp.send("",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 			getCartData();
 		}
 		$("#_add_to_cart").removeAttr('disabled');
@@ -61,7 +61,7 @@ $("#_add_to_mobile_cart").on('click', function(e) {
 	})
 	.done(function(res) {
 		if (res.data.status == 'success') {
-			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$.NotificationApp.send("",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
 			getCartData();
 		}
 		$("#_add_to_mobile_cart").removeAttr('disabled');
@@ -103,7 +103,15 @@ function addToCart(p_pub_id) {
 	})
 	.done(function(res) {
 		if (res.data.status == 'success') {
-			$.NotificationApp.send("Success!",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			$.NotificationApp.send("",res.data.message,"top-right","rgba(0,0,0,0.2)","success");
+			// $.toast({
+			//     heading: '',
+			//     text: res.data.message,
+			//     showHideTransition: 'slide',
+			//     position: 'top-right', 
+   //  			bgColor: '#05cb62',
+   //  			loader: false, 
+			// })
 			getCartData();
 		}
 		$("#_add_to_cart").removeAttr('disabled');
@@ -113,10 +121,15 @@ function addToCart(p_pub_id) {
 	})
 }
 function getCartData(){
-	$.ajax({
-		url: base_url+'api/v1/cart/_get_cart_data', type: 'GET', dataType: 'JSON',
+	fetch(base_url+'api/v1/cart/_get_cart_data', {
+  		method: "GET",
+		  	headers: {
+		    	'Accept': 'application/json',
+		    	'Content-Type': 'application/json'
+		  	},
 	})
-	.done(function(res) {
+	.then(response => response.json())
+	.then(res => {
 		string = '';
 		if (res.data.length > 0) {
 			for(var i in res.data) {
@@ -139,11 +152,10 @@ function getCartData(){
 		}
 		$("#cart_panel").html(string)
 		$("#cart_panel_home_mobile").html(string)
-		
 	})
-	.fail(function() {
-		console.log("error");
-	})
+	.catch((error) => {
+		console.error('Error:', error);
+	});
 }
 function getShoppingCartData(){
 	$("#_shopping_cart_tbl").html('<tr class="text-center mt-1 mb-3"><td colspan="4">Getting your cart...</td></tr>');
@@ -202,8 +214,8 @@ function getShoppingCartData(){
             }
 		}
 		else{
-			string = '<tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr>'
-			mob_string = '<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr></div>'
+			string = '<tr class="text-center mt-3"><td colspan="4"><img width="200" class="mt-3" src="'+base_url+'assets/images/empty_cart.webp" alt="Empty Cart"><br><h4 class="mt-4">You Cart is Empty!</h4><br><button onclick="_accessPage(\''+base_url+'#shop_now\')" class="btn btn-success btn-rounded">Shop Now</button></td></tr>'
+			mob_string = '<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><img width="250" src="'+base_url+'assets/images/empty_cart.webp" alt="Empty Cart"><br><h4 class="mt-4">You Cart is Empty!</h4><br><button onclick="_accessPage(\''+base_url+'#shop_now\')" class="btn btn-success btn-rounded">Shop Now</button></td></tr></div>'
 
 			$("#_sub_total_mob").text('₱ 0.00');
             $("#_total_mob").text('₱ 0.00');
@@ -216,8 +228,8 @@ function getShoppingCartData(){
 		$(".mobile_cart_wrapper").html(mob_string);
 	})
 	.fail(function() {
-		$("#_shopping_cart_tbl").html('<tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr>');
-		$(".mobile_cart_wrapper").html('<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><i class="uil-sad-squint"></i> Your cart is empty!</td></tr></div>');
+		$("#_shopping_cart_tbl").html('<tr class="text-center mt-1"><td colspan="4"><img width="200" class="mt-3" src="'+base_url+'assets/images/empty_cart.webp" alt="Empty Cart"><br><h4 class="mt-4">You Cart is Empty!</h4><br><button onclick="_accessPage(\''+base_url+'#shop_now\')" class="btn btn-success btn-rounded">Shop Now</button></td></tr>');
+		$(".mobile_cart_wrapper").html('<div class="text-center mb-5 mt-3"><tr class="text-center mt-1"><td colspan="4"><img width="250" src="'+base_url+'assets/images/empty_cart.webp" alt="Empty Cart"><br><h4 class="mt-4">You Cart is Empty!</h4><br><button onclick="_accessPage(\''+base_url+'#shop_now\')" class="btn btn-success btn-rounded">Shop Now</button></td></tr></div>');
 		
 		$("#_sub_total_mob").text('₱ 0.00');
         $("#_total_mob").text('₱ 0.00');
@@ -355,9 +367,9 @@ function recommendedProducts(p_pub_id, nonce) {
 				}
 				string += '<div class="col-md-3 col-lg-3 col-6">'
                        +'<div class="card">'
-                           	+'<a href="'+products[i].url+'"><img src="'+products[i].product_image+'" class="card-img-top" alt="'+products[i].product_name+'"></a>'
+                           	+'<a href="#'+products[i].product_name+'" onclick="_accessPage(\''+products[i].url+'\')"><img src="'+products[i].product_image+'" class="card-img-top" alt="'+products[i].product_name+'"></a>'
                            	+'<div class="card-body">'
-                                +'<a href="'+products[i].url+'"><h5 class="card-title text-secondary">'+products[i].product_name+'<br>'
+                                +'<a href="#'+products[i].product_name+'" onclick="_accessPage(\''+products[i].url+'\')"><h5 class="card-title text-secondary">'+products[i].product_name+'<br>'
                                 	+'<small class="product-category">'+products[i].category+'</small></h5>'
                                 +'</a>'
                                 +'<h3 class="card-title text-success">₱ '+products[i].price+'</h3>'

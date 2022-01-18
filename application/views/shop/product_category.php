@@ -65,15 +65,15 @@
                                 <div class="row" id="_prodcat_products">
                                     <?php foreach($products as $p) { ?>
                                     <div class="col-md-4 col-lg-3 col-6">
-                                        <div class="card">
-                                                <a href="<?=$p['product_url']?>"><img src="<?=$p['image_url']?>" class="card-img-top" alt="<?=$p['name']?>"></a>
-                                                <div class="card-body card-title-div">
-                                                    <a href="<?=$p['product_url']?>"><h2 class="card-title text-secondary product-name"><?=$p['name']?><br>
-                                                        <small class="product-category"><?=$category['name']?></small></h2>
-                                                    </a>
-                                                    <h3 class="card-title text-success">₱ <?=$p['price']?></h3>
-                                                    <button href="#add_to_cart" class="btn btn-success rounded btn-sm mt-2 prod-cat-btn" onclick="addToCart('<?=$p['p_pub_id']?>')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>
-                                                </div> 
+                                        <div class="card cursor-pointer">
+                                            <span onclick="_accessPage('<?=$p['product_url']?>')"><img src="<?=$p['image_url']?>" class="card-img-top" alt="<?=$p['name']?>"></span>
+                                            <div class="card-body card-title-div">
+                                                <span onclick="_accessPage('<?=$p['product_url']?>')"><h2 class="card-title text-secondary product-name"><?=$p['name']?><br>
+                                                <small class="product-category"><?=$category['name']?></small></h2>
+                                                </span>
+                                                <h3 class="card-title text-success">₱ <?=$p['price']?></h3>
+                                                <button href="#add_to_cart" class="btn btn-success rounded btn-sm mt-2 prod-cat-btn" onclick="addToCart('<?=$p['p_pub_id']?>')"><i class="uil-shopping-cart-alt me-1"></i> Add to cart</button>
+                                            </div> 
                                         </div> 
                                     </div> 
                                     <?php } ?>
@@ -86,7 +86,7 @@
                     <div id="mobile-view" class="mobile-menu">
                         <nav class="mobile-bottom-nav row">
                             <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                                     <i class="uil-home-alt "></i> 
                                     <div class="mt--28 ">
                                         <small>Home</small>
@@ -94,7 +94,7 @@
                                 </div>      
                             </div>
                             <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('account')?>')">
                                     <i class="uil-user"></i>
                                     <div class="mt--28">
                                         <small>Account</small>
@@ -102,7 +102,7 @@
                                 </div>      
                             </div>
                             <div class="col-4 col-md-4">       
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                                     <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                                     <div class="mt--28">
                                         <small>Cart</small>

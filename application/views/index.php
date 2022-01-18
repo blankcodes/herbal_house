@@ -5,9 +5,13 @@
         <title>Herbal House Philippines - Explore our Healthy, Organic, Herbal Products</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="description" content="Explore our Herbal Products, Healthy Products, Nutritious, Organic Products, Supplements, Coffee, Healthy Diet, Juice. Mangosteen, Buah Merah, Purple Corn Juice, Spirulina, Glutagen, Serpentina. Earning at Home through E-commerce and Dropshipping while Staying Healthy here at Herbal House Philippines."/>
+        <meta name="keywords" content="Explore our Herbal Products, Healthy Products, Nutritious, Organic Products, Supplements, Coffee, Healthy Diet, Juice. Mangosteen, Buah Merah, Purple Corn Juice, Spirulina, Glutagen, Serpentina. Earning at Home through E-commerce and Dropshipping while Staying Healthy here at Herbal House Philippines."/>
         <meta name="theme-color" content="#0acf67" />
         <meta name="mobile-web-app-capable" content="yes">
-
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="default">
+        <meta name="apple-mobile-web-app-title" content="herbal House Philippines">
+        
         <!-- Open Graph data -->
         <meta property="fb:app_id" content="" />
         <meta property="og:type" content="article" />
@@ -29,7 +33,9 @@
         <meta name="twitter:image" content="<?=base_url('assets/images/gallery/herbal-house-philippines-cover.jpg')?>">
 
         <!-- favicon -->
-        <link rel="shortcut icon" href="<?=base_url()?>assets/images/favicon.png">
+        <link rel="shortcut icon" href="<?=base_url()?>assets/images/favicon.webp">
+        <link rel="apple-touch-icon" href="<?=base_url()?>assets/images/favicon.webp" crossorigin="anonymous">
+        <link rel="manifest" href="/manifest.json" crossorigin="anonymous">
 
         <!-- Css -->
         <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
@@ -178,7 +184,7 @@
                             </li>
                             <?php } else { ?>
                             <li class="nav-item me-0">
-                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success btn-rounded text-uppercase padding-right-20 padding-left-20 d-none d-lg-inline-flex">
+                                <a href="<?=base_url('login')?>" class="btn btn-sm btn-success pt-1 pb-1 btn-rounded text-uppercase padding-right-20 padding-left-20 d-none d-lg-inline-flex btn-login">
                                    Login
                                 </a>
                             <?php } ?>
@@ -279,7 +285,7 @@
                                     <small class="text-capitalize fw-400 font-14">Your Partner in Good Health.</small>
                                     <div>
                                         <a href="#_watch_video" class="btn btn-outline-light rounded mt-2">Watch Video</a>
-                                        <a href="<?=base_url()?>account/signup?utm_source=herbalhouse&utm_medium=join_now_btn&utm_campaign=home_page" class="btn btn-outline-light rounded mt-2">Join</a>
+                                        <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')" class="btn btn-outline-light rounded mt-2">Join</a>
                                     </div>
                                 </h1>
                             </div>
@@ -287,6 +293,34 @@
                     </div>
                 </div>
             </div>
+
+            <!-- <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner" role="listbox">
+                        <div class="carousel-item active">
+                            <img src="assets/images/bg1.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                       </div>
+                        <div class="carousel-item">
+                            <img src="assets/images/bg2.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                       </div>
+                        <div class="carousel-item">
+                            <img src="assets/images/bg.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                       </div>
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleCaption" role="button" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleCaption" role="button" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </a>
+                </div> -->
         </section>
 
         <section class="product_section">
@@ -303,7 +337,7 @@
                         </div>
 
 
-                        <div class="row mt-4" id="_mob_category_wrapper">
+                        <div class="row mt-2" id="_mob_category_wrapper">
                             <div class="col-md-6 col-lg-3 col-6">
                                 <div class="card">
                                     <img src="<?=base_url()?>assets/images/category/dietary-supplements.webp" class="card-img-top" alt="Dietary Supplements">
@@ -345,7 +379,7 @@
         <!-- Join now Section -->
         <div class="margin-bottom-40 margin-top-40 text-center">
             <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
-                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Join Now <i class="mdi mdi-arrow-right"></i></a>
+                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')" class="btn btn-success rounded font-15 k-btn">Join Now <i class="mdi mdi-arrow-right"></i></a>
         </div>
 
         <div class="margin-top-20 pt-4 bg-light-lighten border-top border-light" id="web-view"></div>
@@ -439,7 +473,7 @@
         <div id="mobile-view" class="mobile-menu">
             <nav class="mobile-bottom-nav row">
                 <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                         <i class="uil-home-alt active"></i> 
                         <div class="mt--28 active">
                             <small>Home</small>
@@ -447,7 +481,7 @@
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('account')?>')">
                         <i class="uil-user"></i>
                         <div class="mt--28">
                             <small>Account</small>
@@ -455,7 +489,7 @@
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">       
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                         <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                         <div class="mt--28">
                             <small>Cart</small>
@@ -468,7 +502,7 @@
 
         <div class="margin-bottom-70 margin-top-40 text-center">
             <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
-                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
+                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')"  class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
         </div>
 
         <!-- END CONTACT -->

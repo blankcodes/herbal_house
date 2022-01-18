@@ -1,4 +1,11 @@
 <!-- Footer -->
+
+      <div id="loader" class="loader-div" hidden>
+            <div class="loader-wrapper">
+                <img src="<?=base_url('assets/images/loader.gif')?>" width="120" heigth="120">
+            </div>
+        </div>
+
 <script>
 	var base_url = '<?=base_url()?>';
 </script>
@@ -15,8 +22,9 @@
 <script src="<?=base_url();?>assets/js/auth/_csrf.js"></script>
 <?php } ?>
 <script src="<?=base_url();?>assets/vendor/sweetalert/sweetalert.min.js"></script>
-<script src="<?=base_url();?>assets/js/vendor.min.js"></script>
-<script src="<?=base_url();?>assets/js/app.min.js"></script>
+<script src="<?=base_url()?>assets/js/vendor.js"></script>
+<script src="<?=base_url()?>assets/js/app.js"></script>
+<script src="<?=base_url()?>assets/js/auth/_access.js"></script>
 
 </body>
 </html>

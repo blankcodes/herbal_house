@@ -387,7 +387,7 @@
                     <div id="mobile-view" class="mobile-menu">
                         <nav class="mobile-bottom-nav row">
                             <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                                     <i class="uil-home-alt "></i> 
                                     <div class="mt--28 ">
                                         <small>Home</small>
@@ -395,7 +395,7 @@
                                 </div>      
                             </div>
                             <div class="col-4 col-md-4">
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('account')?>')">
                                     <i class="uil-user"></i>
                                     <div class="mt--28">
                                         <small>Account</small>
@@ -403,7 +403,7 @@
                                 </div>      
                             </div>
                             <div class="col-4 col-md-4">       
-                                <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                                     <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                                     <div class="mt--28">
                                         <small>Cart</small>

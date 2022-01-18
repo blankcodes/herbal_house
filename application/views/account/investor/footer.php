@@ -39,9 +39,8 @@
     
     
 		 <!-- bundle -->
-		<script src="<?=base_url()?>assets/vendor/jquery-3.4.1.min.js"></script>
-		<script src="<?=base_url()?>assets/js/vendor.min.js"></script>
-        <script src="<?=base_url()?>assets/js/app.min.js"></script>
+		<script src="<?=base_url()?>assets/js/vendor.js"></script>
+        <script src="<?=base_url()?>assets/js/app.js"></script>
 		<script src="<?=base_url()?>assets/js/cilpboard.min.js"></script>
         <script src="<?=base_url()?>assets/js/auth/notification.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>

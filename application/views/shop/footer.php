@@ -1,4 +1,8 @@
-
+        <div id="loader" class="loader-div" hidden>
+            <div class="loader-wrapper">
+                <img src="<?=base_url('assets/images/loader.gif')?>" width="120" heigth="120">
+            </div>
+        </div>
         <div>
             <!-- Footer Start -->
                 <!-- START FOOTER -->
@@ -25,12 +29,12 @@
                              <div class="col-lg-2 col-6 mt-4 mt-lg-0">
                                 <h5 class="text-light font-13">Company</h5>
                                 <ul class="list-unstyled ps-0 mb-0 mt-3">
-                                    <li class="mt-2"><a href="<?=base_url('about')?>" class="text-muted">About Us</a></li>
-                                    <li class="mt-2"><a href="<?=base_url('membership')?>" class="text-muted">Membership</a></li>
-                                    <li class="mt-2"><a href="<?=base_url('account/signup')?>" class="text-muted">Sign Up</a></li>
+                                    <li class="mt-2"><a href="#about_us" onclick="_accessPage('<?=base_url('about')?>')" class="text-muted">About Us</a></li>
+                                    <li class="mt-2"><a href="#membership" onclick="_accessPage('<?=base_url('membership')?>')" class="text-muted">Membership</a></li>
+                                    <li class="mt-2"><a href="#signup" onclick="_accessPage('<?=base_url('account/signup')?>')" class="text-muted">Sign Up</a></li>
                                     <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Terms</a></li>
                                     <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Privacy</a></li>
-                                    <li class="mt-2"><a href="<?=base_url('login')?>" class="text-muted">Account</a></li>
+                                    <li class="mt-2"><a href="#login"  onclick="_accessPage('<?=base_url('login')?>')" class="text-muted">Account</a></li>
                                 </ul>
                             </div>
                             
@@ -39,7 +43,7 @@
 
                                 <ul class="list-unstyled ps-0 mb-0 mt-3">
                                     <?php  foreach($this->products_model->getProductCategoryLimit() as $q) { ?>
-                                        <li class="mt-2"><a href="<?=base_url('product/category/').$q['category_url']?>" target="_blank" rel="noopener" class="text-muted"><?=$q['name']?></a></li>
+                                        <li class="mt-2"><a href="#category" onclick="_accessPage('<?=base_url('product/category/').$q['category_url']?>')" rel="noopener" class="text-muted"><?=$q['name']?></a></li>
                                     <?php } ?>
                                 </ul>
 
@@ -83,10 +87,10 @@
         </script>
 
          <!-- bundle -->
-        <script src="<?=base_url()?>assets/vendor/jquery-3.4.1.min.js"></script>
-        <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
-        <script src="<?=base_url()?>assets/js/app.min.js"></script>
+        <script src="<?=base_url()?>assets/js/vendor.js"></script>
+        <script src="<?=base_url()?>assets/js/app.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
+        <script src="<?=base_url()?>assets/js/auth/_access.js"></script>
         <?php if ($page == 'shop_product'){ ?>
         <script src="<?=base_url()?>assets/js/auth/_scroll.js"></script>
         <?php } ?>

@@ -247,7 +247,7 @@
 
                         <div class="margin-bottom-30 margin-top-30 text-center">
                             <h2 class="font-25 mb-2">Start Earning at Home while staying Healthy!</h2>
-                                <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Sign up Now! <i class="mdi mdi-arrow-right"></i></a>
+                                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=join_btn&utm_campaign=about_page')?>')" class="btn btn-success rounded font-15 k-btn">Sign up Now! <i class="mdi mdi-arrow-right"></i></a>
                         </div>
 
                         <div class="mt-4 row">
@@ -392,7 +392,7 @@
 
                 <div class="margin-bottom-50 margin-top-70 text-center">
                     <h2 class="font-25 mb-2">Start Earning at Home while staying Healthy</h2>
-                        <a href="<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>" target="_blank" class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
+                        <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=join_btn&utm_campaign=about_page')?>')" class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
                 </div>
                 <!-- end row -->
 
@@ -405,7 +405,7 @@
         <div id="mobile-view" class="mobile-menu">
             <nav class="mobile-bottom-nav row">
                 <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                         <i class="uil-home-alt"></i> 
                         <div class="mt--28 ">
                             <small>Home</small>
@@ -413,7 +413,7 @@
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('account')?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('account')?>')">
                         <i class="uil-user"></i>
                         <div class="mt--28">
                             <small>Account</small>
@@ -421,7 +421,7 @@
                     </div>      
                 </div>
                 <div class="col-4 col-md-4">       
-                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                         <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                         <div class="mt--28">
                             <small>Cart</small>

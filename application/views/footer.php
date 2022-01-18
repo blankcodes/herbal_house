@@ -44,9 +44,9 @@
                      <div class="col-lg-2 col-6 mt-4 mt-lg-0">
                         <h5 class="text-light font-13">Company</h5>
                         <ul class="list-unstyled ps-0 mb-0 mt-3">
-                            <li class="mt-2"><a href="<?=base_url('about')?>" class="text-muted">About Us</a></li>
-                            <li class="mt-2"><a href="<?=base_url('membership')?>" class="text-muted">Membership</a></li>
-                            <li class="mt-2"><a href="<?=base_url('account/signup')?>" class="text-muted">Sign Up</a></li>
+                            <li class="mt-2"><a href="#about_us" onclick="_accessPage('<?=base_url('about')?>')" class="text-muted">About Us</a></li>
+                            <li class="mt-2"><a href="#membership" onclick="_accessPage('<?=base_url('membership')?>')" class="text-muted">Membership</a></li>
+                            <li class="mt-2"><a href="#signup" onclick="_accessPage('<?=base_url('account/signup')?>')" class="text-muted">Sign Up</a></li>
                             <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Terms</a></li>
                             <li class="mt-2"><a href="javascript: void(0);" class="text-muted">Privacy</a></li>
                         </ul>
@@ -57,7 +57,7 @@
 
                         <ul class="list-unstyled ps-0 mb-0 mt-3">
                         <?php  foreach($this->products_model->getProductCategoryLimit() as $q) { ?>
-                            <li class="mt-2"><a href="<?=base_url('product/category/').$q['category_url']?>" target="_blank" rel="noopener" class="text-muted"><?=$q['name']?></a></li>
+                            <li class="mt-2"><a href="#category" onclick="_accessPage('<?=base_url('product/category/').$q['category_url']?>')"  rel="noopener" class="text-muted"><?=$q['name']?></a></li>
                         <?php } ?>
                         </ul>
 
@@ -90,39 +90,22 @@
         </footer>
 
         <!-- END FOOTER -->
-        <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
+        <script src="<?=base_url()?>assets/js/vendor.js"></script>
+        <script src="<?=base_url()?>assets/js/app.js"></script>
         <script>
         	var base_url = '<?=base_url();?>';
         	var page = '<?=$page;?>';
 <?php if (isset($nonce['hash'])) { ?>
             <?= 'var nonce = "'.$nonce['hash'].'";'; ?><?php } ?>
             
-            function openNav() {
-              document.getElementById("mySidenav").style.width = "250px";
-            }
-
-            /* Set the width of the side navigation to 0 */
-            function closeNav() {
-              document.getElementById("mySidenav").style.width = "0";
-            }
-
-            var navItems = document.querySelectorAll(".mobile-bottom-nav__item");
-            navItems.forEach(function(e, i) {
-                e.addEventListener("click", function(e) {
-                    navItems.forEach(function(e2, i2) {
-                        e2.classList.remove("mobile-bottom-nav__item--active");
-                    })
-                    this.classList.add("mobile-bottom-nav__item--active");
-                });
-            });
-
         </script>
         <!-- bundle -->
-        <script src="<?=base_url()?>assets/js/app.min.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_csrf.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_products.js"></script>
         <script src="<?=base_url()?>assets/js/auth/_contact.js"></script>
+        <script src="<?=base_url()?>assets/js/auth/_access.js"></script>
+        <script src="<?=base_url()?>assets/js/auth/app.js"></script>
 <?php if ($page == 'register_new_account'){ ?><script src="<?=base_url()?>assets/js/auth/_register.js"></script><?php } ?>
     </body>
 

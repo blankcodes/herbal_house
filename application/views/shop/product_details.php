@@ -224,7 +224,7 @@
                         <div id="mobile-view" class="mobile-menu">
                             <nav class="mobile-bottom-nav row">
                                 <div class="col-3 col-md-3">
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                                         <i class="uil-home-alt "></i> 
                                         <div class="mt--28">
                                             <small>Home</small>
@@ -232,7 +232,7 @@
                                     </div>      
                                 </div>
                                 <div class="col-3 col-md-3">
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                                         <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                                         <div class="mt--28">
                                             <small>Cart</small>
@@ -242,7 +242,7 @@
 
                                 <div class="col-6 col-md-6">  
                                     <input min="1" value="1" type="hidden" id="_qty_" name="qty" class="mobile-qty-prod form-control">     
-                                    <div class="mobile-nav-btn">
+                                    <div class="mobile-nav-btn pt-2">
                                         <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_add_to_mobile_cart"><i class=" uil-shopping-trolley "></i> Add to Cart</button>
                                     </div>
                                 </div>

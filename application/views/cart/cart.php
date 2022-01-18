@@ -135,7 +135,7 @@
                                                     </div> <!-- end col -->
                                                     <div class="col-sm-6">
                                                         <div class="text-sm-end">
-                                                            <button id="_checkout_btn" onclick="window.location='<?=base_url('checkout')?>'" class="btn btn-success font-15 rounded k-btn">
+                                                            <button id="_checkout_btn" onclick="_accessPage('<?=base_url('checkout')?>')" class="btn btn-success font-15 rounded k-btn">
                                                                 <i class="uil-cart me-1"></i> Check Out </button>
                                                         </div>
                                                     </div> <!-- end col -->
@@ -155,7 +155,7 @@
                         <div id="mobile-view" class="mobile-menu">
                             <nav class="mobile-bottom-nav row">
                                 <div class="col-3 col-md-3">
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url()?>'">
+                                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url()?>')">
                                         <i class="uil-home-alt "></i> 
                                         <div class="mt--28">
                                             <small>Home</small>
@@ -163,7 +163,7 @@
                                     </div>      
                                 </div>
                                 <div class="col-3 col-md-3">
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('cart')?>'">
+                                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('cart')?>')">
                                         <i class="uil-shopping-trolley"></i> <span class="bounce bg-success" id="mobile_nav_cart_alert"></span>
                                         <div class="mt--28">
                                             <small>Cart</small>
@@ -171,8 +171,8 @@
                                     </div>    
                                 </div>
 
-                                <div class="col-6 col-md-6">  
-                                    <div class="mobile-nav-btn" onclick="window.location.href='<?=base_url('checkout')?>'">
+                                <div class="col-6 col-md-6 pt-1">  
+                                    <div class="mobile-nav-btn" onclick="_accessPage('<?=base_url('checkout')?>')" >
                                         <button class="c-white prod-add-to-cart-btn btn btn-success btn-rounded" id="_checkout_btn"><i class=" uil-shopping-cart-alt"></i> Checkout</button>
                                     </div>
                                 </div>

@@ -25,10 +25,13 @@ class Home extends CI_Controller {
     	$checkMaintenance = $this->my_account_model->checkMaintenance();
 		if ($data['siteSetting']['system_maintenance'] == 'disabled') {
 			$data['userData'] = $this->my_account_model->getUserData();
-			$data['nonce'] = $this->csrf_model->productNonce(); /* get CSRF data */
+			
+			// unset($_SESSION['_product_nonce']);
+			$data['nonce'] = $this->csrf_model->productNonce();
+			$this->session->set_userdata('_product_nonce', $data['nonce']['hash']);
+
 			$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
 			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
-			$this->session->set_userdata('_product_nonce', $data['nonce']['hash']);
 			$data['csrf'] = $this->csrf_model->getCsrfData();
 			$data['page'] = 'index';
 	    	$this->load->view('index', $data);
@@ -472,6 +475,7 @@ class Home extends CI_Controller {
 		}
 	}
 	public function activityLogs (){
+		$data['siteSetting'] = $this->site_settings_model->siteSettings();
 		$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
 		$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 		if ($this->session->user_id == 1 && isset($this->session->admin )) {

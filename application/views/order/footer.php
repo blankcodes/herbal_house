@@ -83,9 +83,8 @@
         </script>
 
          <!-- bundle -->
-        <script src="<?=base_url()?>assets/vendor/jquery-3.4.1.min.js"></script>
-        <script src="<?=base_url()?>assets/js/vendor.min.js"></script>
-        <script src="<?=base_url()?>assets/js/app.min.js"></script>
+        <script src="<?=base_url()?>assets/js/vendor.js"></script>
+        <script src="<?=base_url()?>assets/js/app.js"></script>
         <script src="<?=base_url()?>assets/js/auth/cart.js"></script>
         <script src="<?=base_url()?>assets/js/auth/checkout.js"></script>
         <script src="<?=base_url()?>assets/js/auth/order_details.js"></script>
