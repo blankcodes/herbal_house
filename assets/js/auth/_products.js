@@ -118,7 +118,7 @@ function showProductDataCat(page_no, nonce) {
                         +'<div class="card pointer-cursor" onclick="_accessPage(\''+base_url+'product/category/'+res.result[i].category_url+'\')">'
                             +'<img src="'+base_url+''+res.result[i].image+'" class="card-img-top" alt="'+res.result[i].name+'">'
                             +'<div class="card-body">'
-                                +'<span class="text-success product-category-btn fw-600 stretched-link">'+res.result[i].name+' <i class="uil-angle-right "></i></span>'
+                                +'<span class="text-success product-category-btn fw-600 stretched-link">'+res.result[i].name+' </span>'
                             +'</div> '
                         +'</div> '
                     +'</div>'

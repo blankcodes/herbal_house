@@ -234,4 +234,22 @@ class Stat_model extends CI_Model {
         return $this->db->SELECT('SUM(amount) as total_investment')
             ->GET('investment_points_tbl')->row_array();
     }
+    public function getCarouselResource(){
+        $query = $this->db->SELECT('image, name, status, redirect_link, status')
+            ->WHERE('status', 'active')
+            ->ORDER_BY('priority', 'asc')
+            ->GET('home_page_banner_tbl')->result_array();
+
+        $result = array();
+        foreach($query as $q){
+            $array = array(
+            'name'=>$q['name'],
+            'image'=>base_url().$q['image'],
+            'status'=>$q['status'],
+            'url'=>$q['redirect_link'],
+            );
+            array_push($result, $array);
+        }
+        return $result;
+    }
 }

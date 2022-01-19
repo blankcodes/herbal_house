@@ -16,6 +16,7 @@ class Home extends CI_Controller {
         $this->load->model('register_model');
         $this->load->model('member_model');
         $this->load->model('login_model');
+        $this->load->model('stat_model');
 		$this->load->library('user_agent');
         $this->load->library('form_validation');
 		$this->load->helper('cookie');
@@ -33,6 +34,7 @@ class Home extends CI_Controller {
 			$data['analyticSrc'] = '<script async src="https://www.googletagmanager.com/gtag/js?id=G-VDGGJR2S0C"></script>';
 			$data['analyticData'] = "<script> window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-VDGGJR2S0C');</script>";
 			$data['csrf'] = $this->csrf_model->getCsrfData();
+			$data['carouselBanner'] = $this->stat_model->getCarouselResource();
 			$data['page'] = 'index';
 	    	$this->load->view('index', $data);
 			$this->load->view('footer');

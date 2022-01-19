@@ -134,7 +134,7 @@
 	}
 	.mobile-nav-btn{
 		text-align: center;
-		padding: 10px 20px;
+		padding: 3px 20px;
 		font-size: 30px;
 		cursor: pointer;
 		position: relative;
@@ -191,17 +191,13 @@
 
 	/* mobile search*/
 	.search-mobile-product-wrapper{
-		margin-top: 30px !important;
+		margin-top: 10px !important;
 		margin-bottom: 20px;
 	}
 	.search-mobile-product, .mobile-cart-btn{
 	    vertical-align:middle;
 	}
-	.search-mobile-icon{
-	    position: absolute;
-	    top: 41px !important;
-	    left: 60px !important;
-	}
+	
 	.search-mobile-product{
 	    border-radius: 20px;
 	    height: 45px;
@@ -221,7 +217,7 @@
 	}
 	.search-mobile-product{
 	    border-radius: 20px;
-	    height: 45px;
+	    height: 40px;
 	    position: relative;
 	    text-indent: 30px;
 	}
@@ -233,9 +229,52 @@
 	.product--details{
 		padding: 0px 20px !important;
 	}
-	
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 23%!important;
+	    left: 20px !important;
+	}
 
 }
+
+
+@media only screen and (max-width: 767px) {
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 41px !important;
+	    left: 17% !important;
+	}
+}
+@media only screen and (max-width: 713px) {
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 41px !important;
+	    left: 17% !important;
+	}
+}
+@media only screen and (max-width: 576px) {
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 41px !important;
+	    left: 9% !important;
+	}
+}
+@media only screen and (max-width: 575px) {
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 41px !important;
+	    left: 6% !important;
+	}
+}
+@media only screen and (max-width: 428px) {
+	.search-mobile-icon{
+	    position: absolute;
+	    top: 23% !important;
+	    left: 20px !important;
+	    z-index: 99;
+	}
+}
+
 @media only screen and (max-width: 415px) {
 	.card-title-div{
     	width: 180px !important;
@@ -385,23 +424,13 @@
 
 	/*product mobile search*/
 	.search-mobile-product-wrapper{
-		margin-top: 80px !important;
+		margin-top: 10px !important;
 		margin-bottom: 20px;
-	}
-	.search-mobile-product, .mobile-cart-btn{
-	    vertical-align:middle;
 	}
 	.search-mobile-icon{
 	    position: absolute;
-	    top: 41px !important;
-	    left: 30px !important;
-	}
-	.search-mobile-product{
-	    border-radius: 20px;
-	    height: 45px;
-	    position: relative;
-	    text-indent: 30px;
-	    border: none;
+	    top: 23% !important;
+	    left: 23px !important;
 	}
 
 	.search-mobile-product, .mobile-cart-btn{
@@ -414,7 +443,7 @@
 	}
 	.search-mobile-product{
 	    border-radius: 20px;
-	    height: 45px;
+	    height: 38px;
 	    position: relative;
 	    text-indent: 30px;
 	    border: none !important;

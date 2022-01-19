@@ -41,8 +41,8 @@
         <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
         <link href="assets/css/app.min.css" rel="stylesheet" type="text/css" id="light-style" />
         <link href="assets/css/app-dark.min.css" rel="stylesheet" type="text/css" id="dark-style" />  
-        <link href="assets/css/default.css" rel="stylesheet" type="text/css" />
-        <link href="assets/css/product.css" rel="stylesheet" type="text/css" />
+        <link href="assets/css/default.css?v=<?=filemtime('assets/css/default.css')?>" rel="stylesheet" type="text/css" />
+        <link href="assets/css/product.css?v=<?=filemtime('assets/css/product.css')?>" rel="stylesheet" type="text/css" />
         <?= $analyticSrc; ?>
         
         <?= $analyticData; ?>
@@ -252,7 +252,7 @@
         <!-- START PRODUCTS MOB-->
        
 
-        <section class="product_section" >
+        <section class=" carousel-search-section">
             <div class="container" id="shop_now">
                 <div class="mb-3 search_wrapper_home">
                     <form id="_mobile_search_product_form">
@@ -271,9 +271,53 @@
                     </div>
                 </div>
             </div>
+
+            <div class="container" id="mobile-view">
+                <div id="_mob_home_carousel" class="carousel slide mob-home-carousel" data-bs-ride="carousel">
+                    <div class="carousel-inner" role="listbox" id="_mob_home_page_carousel">
+                        <?php 
+                            $count = 0;
+                            foreach($carouselBanner as $c) {
+                            
+                            if ($count == 0) {
+                                $status = 'active';
+                            }
+                            else{
+                                $status = '';
+                            }
+                            $count++;
+                            ?>
+
+                           <div class="carousel-item <?=$status?>">
+                                <img src="<?=$c['image']?>" alt="<?=$c['name']?>" class="d-block img-fluid ">
+                                <div class="carousel-caption d-none d-md-block ">
+                                </div>
+                            </div> 
+
+                            
+                        <?php } ?>
+                       <!--  <div class="carousel-item active">
+                            <img src="assets/images/bg1.webp" alt="herbal house philippines organic products" class="d-block img-fluid ">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="assets/images/bg2.webp" alt="herbal house philippines organic products" class="d-block img-fluid ">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="assets/images/bg.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
+                            <div class="carousel-caption d-none d-md-block ">
+                            </div>
+                       </div> -->
+                    </div>
+                </div>
+            </div>
         </section>
 
-         <section class="index-section margin-top-30" id="mobile-view">
+        <!-- index-section -->
+         <!-- <section class=" margin-top-30" id="mobile-view">
             <div class="hero-overlay">
                 <div class="container">
                     <div class="row align-items-center">
@@ -293,37 +337,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- <div id="carouselExampleCaption" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner" role="listbox">
-                        <div class="carousel-item active">
-                            <img src="assets/images/bg1.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
-                            <div class="carousel-caption d-none d-md-block ">
-                            </div>
-                       </div>
-                        <div class="carousel-item">
-                            <img src="assets/images/bg2.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
-                            <div class="carousel-caption d-none d-md-block ">
-                            </div>
-                       </div>
-                        <div class="carousel-item">
-                            <img src="assets/images/bg.webp" alt="herbal house philippines organic products" class="d-block img-fluid">
-                            <div class="carousel-caption d-none d-md-block ">
-                            </div>
-                       </div>
-                    </div>
-                    <a class="carousel-control-prev" href="#carouselExampleCaption" role="button" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </a>
-                    <a class="carousel-control-next" href="#carouselExampleCaption" role="button" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </a>
-                </div> -->
-        </section>
-
-        <section class="product_section">
+        </section> -->
+        <section class="product_section mob-product-section ">
             <div class="index-pages">
                 <div class="container">
                     <div class=" text-center" id="mobile-view">
@@ -375,18 +390,16 @@
             </div>
         </section>
         <!-- END PRODUCTS -->
+        <div id="mobile-view" class="mob-home-bgx"></div>
 
         <!-- Join now Section -->
-        <div class="margin-bottom-40 margin-top-40 text-center">
-            <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
-                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')" class="btn btn-success rounded font-15 k-btn">Join Now <i class="mdi mdi-arrow-right"></i></a>
-        </div>
+        
 
         <div class="margin-top-20 pt-4 bg-light-lighten border-top border-light" id="web-view"></div>
         <section class="index-pages" id="_watch_video">
             <div class="container text-center ">
                 <h3 class="product-title-home"><span class="">About <span class="text-success">Herbal</span> House <span class="text-success">Philippines</span></h3>
-                <p class="text-muted mt-2 product-sub-home">Earning at home through E-commerce and Dropshipping while Staying Healthy.</p>
+                <p class="text-muted mt-2 product-sub-home">Earning at Home through E-commerce and Dropshipping while Staying Healthy.</p>
                 <div class="row">
                     <div class="col-lg-1"></div>
                     <div class="col-lg-10">
@@ -399,6 +412,10 @@
             </div>
         </section>
 
+        <div class="margin-bottom-40 margin-top-40 text-center ">
+            <h2 class=" mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
+                <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')" class="btn btn-success rounded font-15 k-btn">Join Now <i class="mdi mdi-arrow-right"></i></a>
+        </div>
 
         <!-- START CONTACT -->
         <div class="bg-light-lighten border-top border-light" id="web-view"></div>
@@ -501,7 +518,7 @@
         <!-- End Mobile Nav -->
 
         <div class="margin-bottom-70 margin-top-40 text-center">
-            <h2 class="font-25 mb-2 home-title-join">Start Earning at Home while staying Healthy!</h2>
+            <h2 class="mb-2 home-title-join">Start Earning Now! Join Us</h2>
                 <a href="#join_now" onclick="_accessPage('<?=base_url('account/signup?utm_source=herbalhouse&utm_medium=sign_up_btn&utm_campaign=membership_page')?>')"  class="btn btn-success rounded font-15 k-btn">Sign up Now <i class="mdi mdi-arrow-right"></i></a>
         </div>
 

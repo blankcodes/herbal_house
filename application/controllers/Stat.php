@@ -101,4 +101,8 @@ class Stat extends CI_Controller {
         $data['count'] = $all_count;
         $this->output->set_content_type('application/json')->set_output(json_encode($data));
     }
+    public function getCarouselResource(){
+        return $this->stat_model->getCarouselResource();
+        // $this->output->set_content_type('application/json')->set_output(json_encode(array('data'=>$data)));
+    }
 }
